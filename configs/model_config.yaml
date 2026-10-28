@@ -1,5 +1,5 @@
-# 1D-CNN Model Architectures Configuration
-# Based on Abdelbaset et al. (Sensors 2024), Tables 1, 3, and 4
+# 1D-CNN and Recurrent Model Architectures Configuration
+# Based on Abdelbaset et al. (Sensors 2024), Tables 1, 3, and 4, plus Bi-GRU Temporal Extension
 
 input:
   input_shape: [1024, 2]       # 1024 samples, 2 channels (I, Q)
@@ -90,6 +90,27 @@ models:
       - type: "global_avg_pool1d"
       - type: "dense"
         units: 128
+        activation: "relu"
+      - type: "dropout"
+        rate: 0.50
+      - type: "dense"
+        units: 1
+        activation: "sigmoid"
+
+  bigru:
+    name: "Bi-GRU Temporal"
+    description: "Bidirectional Gated Recurrent Unit network for temporal symbol transitions"
+    gru_units: 128
+    dense_units: 64
+    dropout_rate: 0.50
+    target_params: 117889
+    layers:
+      - type: "bidirectional_gru"
+        units: 128
+        merge_mode: "concat"
+        return_sequences: false
+      - type: "dense"
+        units: 64
         activation: "relu"
       - type: "dropout"
         rate: 0.50

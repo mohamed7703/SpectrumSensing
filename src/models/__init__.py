@@ -8,13 +8,14 @@ from src.models.base_model import BaseSpectrumClassifier, LayerSpec
 from src.models.cnn_baseline import BaselineCNN
 from src.models.cnn_batchnorm import BatchNormCNN
 from src.models.cnn_gap import GAPCNN
+from src.models.bigru_model import BiGRUModel
 
 
 def get_model(model_name: str, input_shape: tuple = (1024, 2), **kwargs) -> BaseSpectrumClassifier:
     """Instantiate a spectrum sensing model by name.
 
     Args:
-        model_name: One of 'baseline', 'batchnorm', 'gap'.
+        model_name: One of 'baseline', 'batchnorm', 'gap', 'bigru'.
         input_shape: Input frame shape (default 1024, 2).
         **kwargs: Additional parameters for model constructor.
 
@@ -28,8 +29,13 @@ def get_model(model_name: str, input_shape: tuple = (1024, 2), **kwargs) -> Base
         return BatchNormCNN(input_shape=input_shape, **kwargs)
     elif "gap" in key or "pool" in key:
         return GAPCNN(input_shape=input_shape, **kwargs)
+    elif "gru" in key or "rnn" in key or "recurrent" in key:
+        return BiGRUModel(input_shape=input_shape, **kwargs)
     else:
-        raise ValueError(f"Unknown model architecture '{model_name}'. Choose from 'baseline', 'batchnorm', 'gap'.")
+        raise ValueError(
+            f"Unknown model architecture '{model_name}'. "
+            "Choose from 'baseline', 'batchnorm', 'gap', 'bigru'."
+        )
 
 
 __all__ = [
@@ -38,5 +44,6 @@ __all__ = [
     "BaselineCNN",
     "BatchNormCNN",
     "GAPCNN",
+    "BiGRUModel",
     "get_model",
 ]
