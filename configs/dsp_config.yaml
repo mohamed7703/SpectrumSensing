@@ -1,0 +1,23 @@
+# Configuration for Phase 2: Digital Signal Processing (DSP) Transforms
+
+fft:
+  window: "hann"                  # "hann", "hamming", "blackman", "boxcar"
+  fft_shift: true                 # Shift zero frequency to center of spectrum
+  normalize_energy: true          # Maintain Parseval energy equality
+
+psd:
+  nfft: 256                       # Number of FFT bins for spectral estimation
+  noverlap: 128                   # Number of overlapping samples (typically 50%)
+  scaling: "density"              # "density" (V^2/Hz) or "spectrum" (V^2)
+  detrend: false                  # Subtract mean before FFT
+
+spectrogram:
+  nperseg: 64                     # Window length per STFT segment
+  noverlap: 48                    # Window overlap per STFT segment (75%)
+  output_db: true                 # Convert output matrix to decibels 10*log10
+  dynamic_range_db: 80.0          # Clip lower floor relative to peak
+
+filter:
+  default_sample_rate: 2.0e6      # 2.0 MHz nominal SDR sample rate
+  cutoff_freq: 5.0e5              # 500 kHz lowpass cutoff
+  filter_order: 5                 # Butterworth filter order

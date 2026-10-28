@@ -2,28 +2,24 @@
 > Last Updated: 2026-10-28T15:20:00+03:00
 
 ## Current Phase
-**Phase 1: Mathematical Foundations (COMPLETED)**
-*Transitioning to Phase 2: Physical / SDR Layer*
+**Phase 2: Physical / SDR Layer**
 
 ## Completed Milestones
 - [x] Read and analyze paper (Abdelbaset et al., Sensors 2024)
 - [x] Read and analyze deployment plan
-- [x] Create project folder structure
+- [x] Create project folder structure & GitHub remote (mohamed7703/SpectrumSensing)
 - [x] Create AGENTS.md with project conventions
 - [x] Create SKILL.md files for all 4 phases
 - [x] Set up memory and progress tracking system
 - [x] Initialize Python environment with dependencies
-- [x] Complete Task P1-001: Binary Hypothesis Testing Module
-- [x] Complete Task P1-002: Energy Detection Decision Statistic
-- [x] Complete Task P1-003: Detection Metrics (Pd, Pfa) & ROC Curves
-- [x] Complete Task P1-004: Channel Fading Models (Rayleigh, Rician, Nakagami-m)
-- [x] Complete Task P1-005: Noise Models & SNR Wall Analysis
+- [x] Complete Phase 1: Mathematical Foundations (P1-001 to P1-005)
+  - 56 unit tests passing, 5 experiment logs, 5 verification plots
 
-## Phase 2 Backlog Preparation
-- [ ] P2-001: DSP Transform Library (FFT, Welch PSD, STFT Spectrograms)
-- [ ] P2-002: I/Q Signal Preprocessing & Normalization Pipeline
-- [ ] P2-003: Unified SDR Hardware Abstraction Layer
-- [ ] P2-004: Real-time Streaming Buffer & Latency Profiling
+## Active Phase 2 Milestone
+- [x] Complete Task P2-001: DSP Transform Library (FFT, Welch PSD, STFT Spectrograms)
+- [ ] Task P2-002: I/Q Signal Preprocessing & Normalization Pipeline
+- [ ] Task P2-003: Unified SDR Hardware Abstraction Layer
+- [ ] Task P2-004: Real-Time Streaming Buffer & Latency Profiling
 
 ## Execution Order
 ```
