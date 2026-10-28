@@ -26,3 +26,10 @@
 - **Decision:** Use TensorFlow/Keras as primary DL framework
 - **Alternatives Considered:** PyTorch
 - **Rationale:** Direct compatibility with paper's code and architecture specifications
+
+
+### Decision 003: Remote Repository Provisioning
+- **Date:** 2026-10-28
+- **Context:** User requested public GitHub tracking of codebase and mathematical verifications
+- **Decision:** Created repository `mohamed7703/SpectrumSensing` on GitHub with `main` tracking branch
+- **URL:** https://github.com/mohamed7703/SpectrumSensing
