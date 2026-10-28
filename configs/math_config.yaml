@@ -1,0 +1,18 @@
+# Configuration for Phase 1: Mathematical Foundations
+
+hypothesis_testing:
+  num_samples: 1024               # Length L of sample window (matches RadioML frame length)
+  num_trials: 1000                # Number of Monte Carlo iterations for empirical validation
+  noise_variance: 1.0             # Noise variance sigma_w^2
+  signal_power: 1.0               # Nominal transmit signal power sigma_s^2
+  snr_db: 0.0                     # Signal-to-Noise Ratio in decibels
+  default_modulation: "bpsk"      # Default modulation: 'bpsk', 'qpsk', 'sinusoid', 'gaussian'
+
+channel:
+  fading_type: "awgn"             # "awgn", "rayleigh", "rician", "nakagami"
+  rician_k_factor: 4.0            # K-factor for Rician fading (linear scale)
+  nakagami_m: 1.5                 # Shape parameter m for Nakagami-m fading
+
+energy_detection:
+  pfa_target: 0.05                # Target Probability of False Alarm for threshold setting
+  threshold_rule: "cfar"          # Constant False Alarm Rate thresholding
