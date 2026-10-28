@@ -21,7 +21,7 @@
   - Total test suite: 156/156 unit tests passing across entire repository
 
 ## Active Phase 4 Milestone
-- [ ] Task P4-001: RadioML 2018.01A Dataset Ingestion & Preprocessing Loader
+- [x] Task P4-001: RadioML 2018.01A Dataset Ingestion & Preprocessing Loader
 - [ ] Task P4-002: 1D-CNN Architectures (Baseline 2M, BatchNorm 23K, GAP 15K params)
 - [ ] Task P4-003: Bi-GRU Recurrent Temporal Architecture
 - [ ] Task P4-004: Training Pipeline (BCE Loss, SGD Optimizer, Learning Rate Scheduling)

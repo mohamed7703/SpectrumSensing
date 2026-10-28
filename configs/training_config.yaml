@@ -1,0 +1,78 @@
+# AI/ML Deep Learning Spectrum Sensing Configuration
+# Per Abdelbaset et al. (Sensors 2024) and Deployment Plan
+
+dataset:
+  name: "RadioML 2018.01A"
+  data_path: "data/GOLD_XYZ_OSC.0001_1024.hdf5"
+  synthetic_fallback: true
+  frame_shape: [1024, 2]
+  num_frames_total: 2555904
+  modulation_classes:
+    - "OOK"
+    - "4ASK"
+    - "8ASK"
+    - "BPSK"
+    - "QPSK"
+    - "8PSK"
+    - "16PSK"
+    - "32PSK"
+    - "16APSK"
+    - "32APSK"
+    - "64APSK"
+    - "128APSK"
+    - "16QAM"
+    - "32QAM"
+    - "64QAM"
+    - "128QAM"
+    - "256QAM"
+    - "AM-SSB-WC"
+    - "AM-SSB-SC"
+    - "AM-DSB-WC"
+    - "AM-DSB-SC"
+    - "FM"
+    - "GMSK"
+    - "OQPSK"
+
+  snr_filtering:
+    min_snr_db: -8.0      # Paper's filter: exclude below SNR wall (-8.2 dB)
+    max_snr_db: 30.0
+    all_snrs: [-20, -18, -16, -14, -12, -10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]
+
+  splits:
+    train_ratio: 0.70
+    val_ratio: 0.15
+    test_ratio: 0.15
+    random_seed: 42
+
+training:
+  optimizer:
+    name: "SGD"
+    learning_rate: 0.001
+    momentum: 0.0
+    weight_decay: 0.0001
+  loss: "binary_crossentropy"
+  batch_sizes:
+    baseline: 128
+    batchnorm: 2048
+    gap: 512
+    bigru: 256
+  epochs:
+    baseline: 10
+    batchnorm: 40
+    gap: 32
+    bigru: 25
+  early_stopping:
+    monitor: "val_loss"
+    patience: 6
+    restore_best_weights: true
+
+evaluation:
+  target_pfa: 0.05
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "auc"
+    - "f1_score"
+  output_model_dir: "saved_models/"
+  plots_dir: "results/plots/"
