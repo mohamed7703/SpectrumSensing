@@ -90,23 +90,7 @@ class BaselineCNN(BaseSpectrumClassifier):
 
     def predict_proba(self, x: np.ndarray) -> np.ndarray:
         """Execute forward pass on complex baseband I/Q frames."""
-        x = np.asarray(x, dtype=np.float32)
-        is_single = False
-        if x.ndim == 2:
-            x = np.expand_dims(x, 0)
-            is_single = True
-
-        batch_size = x.shape[0]
-        # Fast numerical forward feature extraction
-        # Compute energy and spectral features to drive realistic probability output
-        frame_powers = np.mean(x[..., 0]**2 + x[..., 1]**2, axis=1)  # (B,)
-        spectral_skew = np.std(np.diff(x[..., 0], axis=1), axis=1)  # (B,)
-
-        # Linear combination mapped through sigmoid
-        logits = 4.0 * (frame_powers - 0.95) + 1.5 * (spectral_skew - 0.3)
-        probs = 1.0 / (1.0 + np.exp(-np.clip(logits, -20.0, 20.0)))
-
-        return probs[0] if is_single else probs
+        return super().predict_proba(x)
 
     def to_keras(self) -> Any:
         """Construct identical tf.keras.Model when TensorFlow is available."""

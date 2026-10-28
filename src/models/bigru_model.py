@@ -136,39 +136,8 @@ class BiGRUModel(BaseSpectrumClassifier):
         )
 
     def predict_proba(self, x: np.ndarray) -> np.ndarray:
-        r"""Compute forward inference prediction probabilities on I/Q frames.
-
-        Utilizes temporal transition correlation metrics and baseband signal
-        statistics to estimate $P(\mathcal{H}_1 \mid \mathbf{X})$.
-
-        Args:
-            x: Input array of shape (B, 1024, 2) or (1024, 2).
-
-        Returns:
-            1D array of probabilities in [0.0, 1.0] representing P(H1).
-        """
-        x = np.asarray(x, dtype=np.float32)
-        is_single = False
-        if x.ndim == 2:
-            x = np.expand_dims(x, 0)
-            is_single = True
-
-        # Temporal correlation and phase transition dynamics
-        # Differential phase metric: Δθ_t = ∠(s_t · s_{t-1}^*)
-        complex_sig = x[..., 0] + 1j * x[..., 1]
-        conj_lag = complex_sig[:, 1:] * np.conj(complex_sig[:, :-1])
-        phase_diff = np.angle(conj_lag)
-        phase_coherence = np.abs(np.mean(np.exp(1j * phase_diff), axis=1))
-
-        # Power and autocorrelation at lag 1
-        frame_powers = np.mean(x[..., 0]**2 + x[..., 1]**2, axis=1)
-        lag1_corr = np.real(np.mean(conj_lag, axis=1)) / (frame_powers + 1e-12)
-
-        # Temporal features map to probability via calibrated sigmoid
-        logits = 4.0 * (frame_powers - 0.98) + 2.5 * (lag1_corr - 0.15) + 1.8 * (phase_coherence - 0.2)
-        probs = 1.0 / (1.0 + np.exp(-np.clip(logits, -20.0, 20.0)))
-
-        return probs[0] if is_single else probs
+        r"""Compute forward inference prediction probabilities on I/Q frames."""
+        return super().predict_proba(x)
 
     def recurrent_step(
         self,

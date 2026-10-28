@@ -1,21 +1,35 @@
-"""AI/ML Training and Dataset Pipeline Module.
+"""Training Pipeline and Optimization Module for Spectrum Sensing Models.
 
-Provides RadioML 2018.01A dataset loaders, synthetic generators,
-loss functions, training loops, and hyperparameter management.
+Includes RadioML dataset ingestion, Binary Cross-Entropy loss with L2 decay,
+SGD optimization, early stopping, and training coordination.
 """
 
 from src.training.dataset_loader import (
     RadioMLDataset,
     SyntheticRadioMLGenerator,
     DatasetLoader,
-    MODULATION_CLASSES,
-    ALL_SNR_LEVELS,
+)
+from src.training.loss_functions import BinaryCrossEntropyLoss
+from src.training.trainer import (
+    EvaluationMetrics,
+    compute_binary_metrics,
+    SGDOptimizer,
+    EarlyStopping,
+    ModelCheckpoint,
+    TrainingHistory,
+    SpectrumSensingTrainer,
 )
 
 __all__ = [
     "RadioMLDataset",
     "SyntheticRadioMLGenerator",
     "DatasetLoader",
-    "MODULATION_CLASSES",
-    "ALL_SNR_LEVELS",
+    "BinaryCrossEntropyLoss",
+    "EvaluationMetrics",
+    "compute_binary_metrics",
+    "SGDOptimizer",
+    "EarlyStopping",
+    "ModelCheckpoint",
+    "TrainingHistory",
+    "SpectrumSensingTrainer",
 ]

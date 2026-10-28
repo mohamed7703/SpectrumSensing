@@ -76,20 +76,7 @@ class GAPCNN(BaseSpectrumClassifier):
 
     def predict_proba(self, x: np.ndarray) -> np.ndarray:
         """Execute forward pass on complex baseband I/Q frames."""
-        x = np.asarray(x, dtype=np.float32)
-        is_single = False
-        if x.ndim == 2:
-            x = np.expand_dims(x, 0)
-            is_single = True
-
-        # Global average pooling pools temporal activations
-        frame_powers = np.mean(x[..., 0]**2 + x[..., 1]**2, axis=1)
-        freq_energy = np.mean(np.abs(np.fft.fft(x[..., 0] + 1j * x[..., 1], axis=1)[:, :64]), axis=1) / 32.0
-
-        logits = 4.2 * (frame_powers - 0.98) + 2.0 * (freq_energy - 0.8)
-        probs = 1.0 / (1.0 + np.exp(-np.clip(logits, -20.0, 20.0)))
-
-        return probs[0] if is_single else probs
+        return super().predict_proba(x)
 
     def to_keras(self) -> Any:
         """Construct identical tf.keras.Model when TensorFlow is available."""

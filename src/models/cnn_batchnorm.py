@@ -88,23 +88,7 @@ class BatchNormCNN(BaseSpectrumClassifier):
 
     def predict_proba(self, x: np.ndarray) -> np.ndarray:
         """Execute forward pass on complex baseband I/Q frames."""
-        x = np.asarray(x, dtype=np.float32)
-        is_single = False
-        if x.ndim == 2:
-            x = np.expand_dims(x, 0)
-            is_single = True
-
-        # Normalized feature extraction
-        frame_powers = np.mean(x[..., 0]**2 + x[..., 1]**2, axis=1)
-        kurtosis_approx = np.mean(x[..., 0]**4, axis=1) / (np.mean(x[..., 0]**2, axis=1)**2 + 1e-6)
-
-        # BatchNorm shifts and centers features
-        norm_pow = (frame_powers - 1.0) / 0.15
-        norm_kurt = (kurtosis_approx - 3.0) / 0.5
-        logits = 3.5 * norm_pow + 1.2 * norm_kurt
-        probs = 1.0 / (1.0 + np.exp(-np.clip(logits, -20.0, 20.0)))
-
-        return probs[0] if is_single else probs
+        return super().predict_proba(x)
 
     def to_keras(self) -> Any:
         """Construct identical tf.keras.Model when TensorFlow is available."""
