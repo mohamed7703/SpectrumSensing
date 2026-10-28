@@ -17,7 +17,7 @@
 
 ## Active Phase 2 Milestone
 - [x] Complete Task P2-001: DSP Transform Library (FFT, Welch PSD, STFT Spectrograms)
-- [ ] Task P2-002: I/Q Signal Preprocessing & Normalization Pipeline
+- [x] Complete Task P2-002: I/Q Signal Preprocessing & Normalization Pipeline
 - [ ] Task P2-003: Unified SDR Hardware Abstraction Layer
 - [ ] Task P2-004: Real-Time Streaming Buffer & Latency Profiling
 
