@@ -22,7 +22,7 @@
 
 ## Active Phase 4 Milestone
 - [x] Task P4-001: RadioML 2018.01A Dataset Ingestion & Preprocessing Loader
-- [ ] Task P4-002: 1D-CNN Architectures (Baseline 2M, BatchNorm 23K, GAP 15K params)
+- [x] Task P4-002: 1D-CNN Architectures (Baseline 2M, BatchNorm 23K, GAP 15K params)
 - [ ] Task P4-003: Bi-GRU Recurrent Temporal Architecture
 - [ ] Task P4-004: Training Pipeline (BCE Loss, SGD Optimizer, Learning Rate Scheduling)
 - [ ] Task P4-005: Benchmark Evaluation (ROC Curves, Pd vs SNR, Confusion Matrices vs Energy Detector)

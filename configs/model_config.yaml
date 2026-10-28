@@ -1,0 +1,98 @@
+# 1D-CNN Model Architectures Configuration
+# Based on Abdelbaset et al. (Sensors 2024), Tables 1, 3, and 4
+
+input:
+  input_shape: [1024, 2]       # 1024 samples, 2 channels (I, Q)
+  num_classes: 1               # Binary classification (H0 vs H1)
+  output_activation: "sigmoid"
+
+models:
+  baseline_cnn:
+    name: "Baseline 1D-CNN"
+    description: "Standard 1D-CNN with Flatten and Dense layers (Table 1 from paper)"
+    target_params: 2087457
+    layers:
+      - type: "conv1d"
+        filters: 32
+        kernel_size: 3
+        padding: "valid"
+        activation: "relu"
+      - type: "maxpool1d"
+        pool_size: 2
+      - type: "conv1d"
+        filters: 64
+        kernel_size: 3
+        padding: "valid"
+        activation: "relu"
+      - type: "maxpool1d"
+        pool_size: 2
+      - type: "flatten"
+      - type: "dense"
+        units: 128
+        activation: "relu"
+      - type: "dropout"
+        rate: 0.50
+      - type: "dense"
+        units: 1
+        activation: "sigmoid"
+
+  batchnorm_cnn:
+    name: "BatchNorm 1D-CNN"
+    description: "1D-CNN with Batch Normalization and Dropout regularization (Table 3)"
+    target_params: 23009
+    layers:
+      - type: "conv1d"
+        filters: 32
+        kernel_size: 3
+        padding: "valid"
+        activation: null
+      - type: "batch_norm"
+      - type: "relu"
+      - type: "maxpool1d"
+        pool_size: 2
+      - type: "dropout"
+        rate: 0.25
+      - type: "conv1d"
+        filters: 64
+        kernel_size: 3
+        padding: "valid"
+        activation: null
+      - type: "batch_norm"
+      - type: "relu"
+      - type: "maxpool1d"
+        pool_size: 2
+      - type: "dropout"
+        rate: 0.25
+      - type: "flatten"
+      - type: "dense"
+        units: 1
+        activation: "sigmoid"
+
+  gap_cnn:
+    name: "GAP 1D-CNN"
+    description: "Global Average Pooling 1D-CNN with 14.8k parameters (Table 4)"
+    target_params: 14881
+    layers:
+      - type: "conv1d"
+        filters: 32
+        kernel_size: 3
+        padding: "valid"
+        activation: "relu"
+      - type: "maxpool1d"
+        pool_size: 2
+      - type: "conv1d"
+        filters: 64
+        kernel_size: 3
+        padding: "valid"
+        activation: "relu"
+      - type: "maxpool1d"
+        pool_size: 2
+      - type: "global_avg_pool1d"
+      - type: "dense"
+        units: 128
+        activation: "relu"
+      - type: "dropout"
+        rate: 0.50
+      - type: "dense"
+        units: 1
+        activation: "sigmoid"
