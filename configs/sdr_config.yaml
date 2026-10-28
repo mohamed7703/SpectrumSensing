@@ -1,0 +1,91 @@
+# SDR Hardware Configuration Profile
+# Cognitive Radio Spectrum Sensing Platform
+# Per Abdelbaset et al. (Sensors 2024) and CR SDR Deployment Plan
+
+defaults:
+  center_freq: 2.412e9        # 2.412 GHz (WiFi Channel 1 / ISM Band)
+  sample_rate: 2.4e6          # 2.4 MSPS
+  gain: 20.0                  # 20 dB RF gain
+  num_samples_per_frame: 1024 # Standard RadioML frame size
+  timeout_ms: 1000
+
+devices:
+  rtlsdr:
+    name: "RTL-SDR Blog V3"
+    tier: "Edge Sensor"
+    role: "Distributed cooperative sensing"
+    adc_bits: 8
+    freq_range: [24.0e6, 1766.0e6]       # 24 MHz - 1.766 GHz
+    max_bandwidth: 2.4e6                 # 2.4 MHz safe continuous
+    gain_range: [0.0, 49.6]              # dB
+    supported_gains: [0.0, 0.9, 1.4, 2.7, 3.7, 7.7, 8.7, 12.5, 14.4, 15.7, 16.6, 19.7, 20.7, 22.9, 25.4, 28.0, 29.7, 32.8, 33.8, 36.4, 37.2, 38.6, 40.2, 42.1, 43.4, 43.9, 44.5, 48.0, 49.6]
+    default_sample_rate: 2.4e6
+    channels: 1
+
+  hackrf:
+    name: "HackRF One"
+    tier: "Portable TX"
+    role: "Jamming emulation, frequency hopping"
+    adc_bits: 8
+    freq_range: [1.0e6, 6000.0e6]        # 1 MHz - 6 GHz
+    max_bandwidth: 20.0e6                # 20 MHz
+    lna_gain_range: [0.0, 40.0]          # 8 dB steps (0 to 40)
+    vga_gain_range: [0.0, 62.0]          # 2 dB steps (0 to 62)
+    default_sample_rate: 10.0e6
+    channels: 1
+
+  plutosdr:
+    name: "ADALM-PLUTO"
+    tier: "Mobile SU"
+    role: "UAV tracking, SU emulation"
+    adc_bits: 12
+    freq_range: [325.0e6, 3800.0e6]      # Standard (hackable to 70MHz - 6GHz)
+    max_bandwidth: 20.0e6                # 20 MHz instantaneous
+    gain_range: [-4.0, 71.0]             # dB
+    default_sample_rate: 5.0e6
+    channels: 1
+    uri: "ip:192.168.2.1"
+
+  limesdr:
+    name: "LimeSDR-USB"
+    tier: "MIMO Node"
+    role: "Cellular emulation, PHY security"
+    adc_bits: 12
+    freq_range: [100.0e3, 3800.0e6]      # 100 kHz - 3.8 GHz
+    max_bandwidth: 61.44e6               # 61.44 MHz
+    gain_range: [0.0, 73.0]              # dB
+    default_sample_rate: 10.0e6
+    channels: 2                          # 2x2 MIMO
+
+  usrp_b210:
+    name: "USRP B210"
+    tier: "Lab Grade"
+    role: "Full-duplex MIMO, AI inference"
+    adc_bits: 12
+    freq_range: [70.0e6, 6000.0e6]       # 70 MHz - 6 GHz
+    max_bandwidth: 56.0e6                # 56 MHz (single-ch) or 30.72 MHz (dual-ch)
+    gain_range: [0.0, 76.0]              # dB
+    default_sample_rate: 16.0e6
+    channels: 2                          # 2x2 MIMO
+
+  usrp_x310:
+    name: "USRP X310"
+    tier: "Enterprise"
+    role: "Wideband I/Q streaming to GPU"
+    adc_bits: 14
+    freq_range: [10.0e6, 6000.0e6]       # UBX-160 daughterboard
+    max_bandwidth: 160.0e6               # 160 MHz per channel
+    gain_range: [0.0, 38.0]              # dB
+    default_sample_rate: 100.0e6
+    channels: 2
+
+  mock_sdr:
+    name: "Mock HITL SDR Generator"
+    tier: "Simulation / HITL"
+    role: "Hardware-in-the-loop testbed verification"
+    adc_bits: 16
+    freq_range: [1.0e6, 10000.0e6]
+    max_bandwidth: 200.0e6
+    gain_range: [0.0, 100.0]
+    default_sample_rate: 2.4e6
+    channels: 1

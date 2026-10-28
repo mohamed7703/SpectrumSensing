@@ -1,8 +1,8 @@
 # Project State — AI-Driven Cognitive Radio Spectrum Sensing
-> Last Updated: 2026-10-28T15:20:00+03:00
+> Last Updated: 2026-10-28T21:55:00+03:00
 
 ## Current Phase
-**Phase 2: Physical / SDR Layer**
+**Phase 3: Network Simulation (NS-3 & MAC Layer)**
 
 ## Completed Milestones
 - [x] Read and analyze paper (Abdelbaset et al., Sensors 2024)
@@ -14,12 +14,15 @@
 - [x] Initialize Python environment with dependencies
 - [x] Complete Phase 1: Mathematical Foundations (P1-001 to P1-005)
   - 56 unit tests passing, 5 experiment logs, 5 verification plots
+- [x] Complete Phase 2: Physical / SDR Layer (P2-001 to P2-004)
+  - 52 unit tests passing, 4 experiment logs, 4 verification plots
+  - Total test suite: 108/108 unit tests passing across entire repository
 
-## Active Phase 2 Milestone
-- [x] Complete Task P2-001: DSP Transform Library (FFT, Welch PSD, STFT Spectrograms)
-- [x] Complete Task P2-002: I/Q Signal Preprocessing & Normalization Pipeline
-- [ ] Task P2-003: Unified SDR Hardware Abstraction Layer
-- [ ] Task P2-004: Real-Time Streaming Buffer & Latency Profiling
+## Active Phase 3 Milestone
+- [ ] Task P3-001: NS-3 Simulation Architecture & Topology Configuration
+- [ ] Task P3-002: MAC Layer Protocol Implementation (Pure ALOHA, Slotted ALOHA, ILA-CSMA)
+- [ ] Task P3-003: Trace Parser & End-to-End Delay Analysis Pipeline
+- [ ] Task P3-004: Game-Theoretic Nash Equilibrium Analysis & Optimization
 
 ## Execution Order
 ```
