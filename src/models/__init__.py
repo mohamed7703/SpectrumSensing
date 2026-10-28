@@ -1,7 +1,7 @@
 """Deep Learning Spectrum Sensing Models Module.
 
 Provides 1D-CNN architectures (Baseline, BatchNorm, GAP), Bi-GRU recurrent models,
-and model factory functions.
+model factory functions, and edge export/quantization tools.
 """
 
 from src.models.base_model import BaseSpectrumClassifier, LayerSpec
@@ -9,6 +9,13 @@ from src.models.cnn_baseline import BaselineCNN
 from src.models.cnn_batchnorm import BatchNormCNN
 from src.models.cnn_gap import GAPCNN
 from src.models.bigru_model import BiGRUModel
+from src.models.model_export import (
+    ModelExporter,
+    QuantizationSummary,
+    EdgeBenchmarkReport,
+    quantize_affine_int8,
+    quantize_fp16,
+)
 
 
 def get_model(model_name: str, input_shape: tuple = (1024, 2), **kwargs) -> BaseSpectrumClassifier:
@@ -45,5 +52,10 @@ __all__ = [
     "BatchNormCNN",
     "GAPCNN",
     "BiGRUModel",
+    "ModelExporter",
+    "QuantizationSummary",
+    "EdgeBenchmarkReport",
+    "quantize_affine_int8",
+    "quantize_fp16",
     "get_model",
 ]
