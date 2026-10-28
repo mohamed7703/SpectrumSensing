@@ -1,8 +1,8 @@
 # Project State — AI-Driven Cognitive Radio Spectrum Sensing
-> Last Updated: 2026-10-28T21:55:00+03:00
+> Last Updated: 2026-10-28T22:31:00+03:00
 
 ## Current Phase
-**Phase 3: Network Simulation (NS-3 & MAC Layer)**
+**Phase 4: AI/ML Sensing (Deep Learning Models & Edge Export)**
 
 ## Completed Milestones
 - [x] Read and analyze paper (Abdelbaset et al., Sensors 2024)
@@ -16,13 +16,17 @@
   - 56 unit tests passing, 5 experiment logs, 5 verification plots
 - [x] Complete Phase 2: Physical / SDR Layer (P2-001 to P2-004)
   - 52 unit tests passing, 4 experiment logs, 4 verification plots
-  - Total test suite: 108/108 unit tests passing across entire repository
+- [x] Complete Phase 3: Network Simulation (P3-001 to P3-004)
+  - 48 unit tests passing, 4 experiment logs, 4 verification plots
+  - Total test suite: 156/156 unit tests passing across entire repository
 
-## Active Phase 3 Milestone
-- [ ] Task P3-001: NS-3 Simulation Architecture & Topology Configuration
-- [ ] Task P3-002: MAC Layer Protocol Implementation (Pure ALOHA, Slotted ALOHA, ILA-CSMA)
-- [ ] Task P3-003: Trace Parser & End-to-End Delay Analysis Pipeline
-- [ ] Task P3-004: Game-Theoretic Nash Equilibrium Analysis & Optimization
+## Active Phase 4 Milestone
+- [ ] Task P4-001: RadioML 2018.01A Dataset Ingestion & Preprocessing Loader
+- [ ] Task P4-002: 1D-CNN Architectures (Baseline 2M, BatchNorm 23K, GAP 15K params)
+- [ ] Task P4-003: Bi-GRU Recurrent Temporal Architecture
+- [ ] Task P4-004: Training Pipeline (BCE Loss, SGD Optimizer, Learning Rate Scheduling)
+- [ ] Task P4-005: Benchmark Evaluation (ROC Curves, Pd vs SNR, Confusion Matrices vs Energy Detector)
+- [ ] Task P4-006: Edge Deployment & Model Quantization Export (.h5, .tflite, .onnx)
 
 ## Execution Order
 ```

@@ -1,0 +1,501 @@
+# NS-3 ASCII Trace Log: Cognitive Radio Network Simulation
++ 0.010617306 /NodeList/1158 pkt_id=1158000 size=1024B
+- 0.010667306 /NodeList/1158 ila_csma_tx pkt_id=1158000 dur=8.19ms
++ 0.010676074 /NodeList/1837 pkt_id=1837000 size=1024B
++ 0.011270283 /NodeList/1221 pkt_id=1221000 size=1024B
++ 0.011467344 /NodeList/744 pkt_id=744000 size=1024B
++ 0.011976242 /NodeList/741 pkt_id=741000 size=1024B
++ 0.012747439 /NodeList/998 pkt_id=998000 size=1024B
++ 0.014769050 /NodeList/811 pkt_id=811000 size=1024B
++ 0.015123873 /NodeList/1617 pkt_id=1617000 size=1024B
++ 0.015355149 /NodeList/647 pkt_id=647000 size=1024B
++ 0.015496371 /NodeList/1314 pkt_id=1314000 size=1024B
++ 0.015642258 /NodeList/775 pkt_id=775000 size=1024B
++ 0.016461503 /NodeList/423 pkt_id=423000 size=1024B
++ 0.016513000 /NodeList/1323 pkt_id=1323000 size=1024B
++ 0.018704203 /NodeList/595 pkt_id=595000 size=1024B
++ 0.018761101 /NodeList/52 pkt_id=52000 size=1024B
+r 0.018859306 /NodeList/1158 ila_csma_ack pkt_id=1158000
+- 0.018881101 /NodeList/52 ila_csma_tx pkt_id=52000 dur=8.19ms
++ 0.018933369 /NodeList/1101 pkt_id=1101000 size=1024B
++ 0.021019140 /NodeList/766 pkt_id=766000 size=1024B
++ 0.022765898 /NodeList/535 pkt_id=535000 size=1024B
++ 0.023109834 /NodeList/1911 pkt_id=1911000 size=1024B
++ 0.024341717 /NodeList/1952 pkt_id=1952000 size=1024B
++ 0.024640196 /NodeList/395 pkt_id=395000 size=1024B
++ 0.024839155 /NodeList/841 pkt_id=841000 size=1024B
++ 0.026584182 /NodeList/205 pkt_id=205000 size=1024B
+r 0.027073101 /NodeList/52 ila_csma_ack pkt_id=52000
+- 0.027334182 /NodeList/205 ila_csma_tx pkt_id=205000 dur=8.19ms
++ 0.027472584 /NodeList/519 pkt_id=519000 size=1024B
++ 0.028808611 /NodeList/1568 pkt_id=1568000 size=1024B
++ 0.029729964 /NodeList/812 pkt_id=812000 size=1024B
++ 0.031025849 /NodeList/683 pkt_id=683000 size=1024B
++ 0.031225773 /NodeList/239 pkt_id=239000 size=1024B
++ 0.031254541 /NodeList/1949 pkt_id=1949000 size=1024B
++ 0.031611047 /NodeList/826 pkt_id=826000 size=1024B
++ 0.031940985 /NodeList/1929 pkt_id=1929000 size=1024B
+d 0.032236074 /NodeList/1837 ila_csma_drop pkt_id=1837000 max_retries_reached
++ 0.032650636 /NodeList/797 pkt_id=797000 size=1024B
+d 0.032729834 /NodeList/1911 ila_csma_drop pkt_id=1911000 max_retries_reached
++ 0.033522070 /NodeList/1045 pkt_id=1045000 size=1024B
++ 0.035166139 /NodeList/270 pkt_id=270000 size=1024B
++ 0.035175654 /NodeList/1894 pkt_id=1894000 size=1024B
+r 0.035526182 /NodeList/205 ila_csma_ack pkt_id=205000
+- 0.035555654 /NodeList/1894 ila_csma_tx pkt_id=1894000 dur=8.19ms
++ 0.035718375 /NodeList/150 pkt_id=150000 size=1024B
++ 0.035850912 /NodeList/1902 pkt_id=1902000 size=1024B
++ 0.037027367 /NodeList/85 pkt_id=85000 size=1024B
++ 0.037136607 /NodeList/136 pkt_id=136000 size=1024B
++ 0.037536713 /NodeList/872 pkt_id=872000 size=1024B
++ 0.037640823 /NodeList/1069 pkt_id=1069000 size=1024B
++ 0.038524723 /NodeList/1356 pkt_id=1356000 size=1024B
+d 0.038753369 /NodeList/1101 ila_csma_drop pkt_id=1101000 max_retries_reached
++ 0.039096501 /NodeList/1721 pkt_id=1721000 size=1024B
++ 0.039539527 /NodeList/590 pkt_id=590000 size=1024B
++ 0.039582795 /NodeList/227 pkt_id=227000 size=1024B
+d 0.039655149 /NodeList/647 ila_csma_drop pkt_id=647000 max_retries_reached
+d 0.041356242 /NodeList/741 ila_csma_drop pkt_id=741000 max_retries_reached
++ 0.041573600 /NodeList/1318 pkt_id=1318000 size=1024B
++ 0.041627540 /NodeList/1205 pkt_id=1205000 size=1024B
+d 0.041922258 /NodeList/775 ila_csma_drop pkt_id=775000 max_retries_reached
++ 0.042346739 /NodeList/1743 pkt_id=1743000 size=1024B
+d 0.042507344 /NodeList/744 ila_csma_drop pkt_id=744000 max_retries_reached
+d 0.043273000 /NodeList/1323 ila_csma_drop pkt_id=1323000 max_retries_reached
+r 0.043747654 /NodeList/1894 ila_csma_ack pkt_id=1894000
+- 0.044006713 /NodeList/872 ila_csma_tx pkt_id=872000 dur=8.19ms
+d 0.044020196 /NodeList/395 ila_csma_drop pkt_id=395000 max_retries_reached
+d 0.044484203 /NodeList/595 ila_csma_drop pkt_id=595000 max_retries_reached
++ 0.044509409 /NodeList/415 pkt_id=415000 size=1024B
++ 0.045232674 /NodeList/650 pkt_id=650000 size=1024B
+d 0.045308611 /NodeList/1568 ila_csma_drop pkt_id=1568000 max_retries_reached
++ 0.045503376 /NodeList/795 pkt_id=795000 size=1024B
++ 0.045764949 /NodeList/972 pkt_id=972000 size=1024B
++ 0.046673223 /NodeList/69 pkt_id=69000 size=1024B
+d 0.046689050 /NodeList/811 ila_csma_drop pkt_id=811000 max_retries_reached
+d 0.046731047 /NodeList/826 ila_csma_drop pkt_id=826000 max_retries_reached
++ 0.046762476 /NodeList/1729 pkt_id=1729000 size=1024B
++ 0.047227380 /NodeList/768 pkt_id=768000 size=1024B
+d 0.047336371 /NodeList/1314 ila_csma_drop pkt_id=1314000 max_retries_reached
++ 0.048257414 /NodeList/1841 pkt_id=1841000 size=1024B
+d 0.048410283 /NodeList/1221 ila_csma_drop pkt_id=1221000 max_retries_reached
+d 0.049180823 /NodeList/1069 ila_csma_drop pkt_id=1069000 max_retries_reached
+d 0.050207439 /NodeList/998 ila_csma_drop pkt_id=998000 max_retries_reached
++ 0.051457637 /NodeList/1161 pkt_id=1161000 size=1024B
++ 0.051789005 /NodeList/1660 pkt_id=1660000 size=1024B
++ 0.051859419 /NodeList/1433 pkt_id=1433000 size=1024B
+r 0.052198713 /NodeList/872 ila_csma_ack pkt_id=872000
+- 0.052339964 /NodeList/812 ila_csma_tx pkt_id=812000 dur=8.19ms
++ 0.052652874 /NodeList/723 pkt_id=723000 size=1024B
++ 0.052719674 /NodeList/1382 pkt_id=1382000 size=1024B
++ 0.052911203 /NodeList/485 pkt_id=485000 size=1024B
++ 0.053033625 /NodeList/422 pkt_id=422000 size=1024B
+d 0.053307367 /NodeList/85 ila_csma_drop pkt_id=85000 max_retries_reached
+d 0.053879140 /NodeList/766 ila_csma_drop pkt_id=766000 max_retries_reached
++ 0.053995165 /NodeList/633 pkt_id=633000 size=1024B
+d 0.054401503 /NodeList/423 ila_csma_drop pkt_id=423000 max_retries_reached
++ 0.054520942 /NodeList/164 pkt_id=164000 size=1024B
+d 0.054672584 /NodeList/519 ila_csma_drop pkt_id=519000 max_retries_reached
+d 0.054859155 /NodeList/841 ila_csma_drop pkt_id=841000 max_retries_reached
+d 0.055169409 /NodeList/415 ila_csma_drop pkt_id=415000 max_retries_reached
++ 0.055864979 /NodeList/1315 pkt_id=1315000 size=1024B
++ 0.055986729 /NodeList/1620 pkt_id=1620000 size=1024B
+d 0.056423873 /NodeList/1617 ila_csma_drop pkt_id=1617000 max_retries_reached
+d 0.056481717 /NodeList/1952 ila_csma_drop pkt_id=1952000 max_retries_reached
+d 0.057165898 /NodeList/535 ila_csma_drop pkt_id=535000 max_retries_reached
+d 0.057453600 /NodeList/1318 ila_csma_drop pkt_id=1318000 max_retries_reached
++ 0.057713062 /NodeList/1364 pkt_id=1364000 size=1024B
++ 0.057780046 /NodeList/435 pkt_id=435000 size=1024B
++ 0.057901951 /NodeList/1019 pkt_id=1019000 size=1024B
+d 0.058069005 /NodeList/1660 ila_csma_drop pkt_id=1660000 max_retries_reached
++ 0.058075082 /NodeList/1386 pkt_id=1386000 size=1024B
++ 0.058726883 /NodeList/620 pkt_id=620000 size=1024B
++ 0.058884121 /NodeList/726 pkt_id=726000 size=1024B
+d 0.059090912 /NodeList/1902 ila_csma_drop pkt_id=1902000 max_retries_reached
++ 0.059520867 /NodeList/125 pkt_id=125000 size=1024B
++ 0.060397156 /NodeList/451 pkt_id=451000 size=1024B
+r 0.060531964 /NodeList/812 ila_csma_ack pkt_id=812000
++ 0.060636663 /NodeList/1940 pkt_id=1940000 size=1024B
+- 0.060686663 /NodeList/1940 ila_csma_tx pkt_id=1940000 dur=8.19ms
++ 0.061735324 /NodeList/281 pkt_id=281000 size=1024B
++ 0.062126481 /NodeList/28 pkt_id=28000 size=1024B
++ 0.062568373 /NodeList/1261 pkt_id=1261000 size=1024B
+d 0.062992674 /NodeList/650 ila_csma_drop pkt_id=650000 max_retries_reached
++ 0.063132416 /NodeList/555 pkt_id=555000 size=1024B
+d 0.063282476 /NodeList/1729 ila_csma_drop pkt_id=1729000 max_retries_reached
+d 0.063325849 /NodeList/683 ila_csma_drop pkt_id=683000 max_retries_reached
+d 0.063358375 /NodeList/150 ila_csma_drop pkt_id=150000 max_retries_reached
++ 0.063443637 /NodeList/176 pkt_id=176000 size=1024B
+d 0.063600985 /NodeList/1929 ila_csma_drop pkt_id=1929000 max_retries_reached
++ 0.063686547 /NodeList/1390 pkt_id=1390000 size=1024B
++ 0.063756009 /NodeList/903 pkt_id=903000 size=1024B
+d 0.064057414 /NodeList/1841 ila_csma_drop pkt_id=1841000 max_retries_reached
++ 0.064696267 /NodeList/1926 pkt_id=1926000 size=1024B
+d 0.065746729 /NodeList/1620 ila_csma_drop pkt_id=1620000 max_retries_reached
++ 0.066375084 /NodeList/763 pkt_id=763000 size=1024B
+d 0.067444723 /NodeList/1356 ila_csma_drop pkt_id=1356000 max_retries_reached
++ 0.067797455 /NodeList/759 pkt_id=759000 size=1024B
++ 0.067951182 /NodeList/635 pkt_id=635000 size=1024B
+d 0.068266139 /NodeList/270 ila_csma_drop pkt_id=270000 max_retries_reached
++ 0.068266815 /NodeList/643 pkt_id=643000 size=1024B
++ 0.068449996 /NodeList/1442 pkt_id=1442000 size=1024B
++ 0.068612403 /NodeList/287 pkt_id=287000 size=1024B
++ 0.068856373 /NodeList/1206 pkt_id=1206000 size=1024B
+r 0.068878663 /NodeList/1940 ila_csma_ack pkt_id=1940000
+- 0.068906373 /NodeList/1206 ila_csma_tx pkt_id=1206000 dur=8.19ms
+d 0.069441951 /NodeList/1019 ila_csma_drop pkt_id=1019000 max_retries_reached
++ 0.069626961 /NodeList/988 pkt_id=988000 size=1024B
+d 0.069954541 /NodeList/1949 ila_csma_drop pkt_id=1949000 max_retries_reached
++ 0.070118439 /NodeList/821 pkt_id=821000 size=1024B
++ 0.070137826 /NodeList/1669 pkt_id=1669000 size=1024B
++ 0.070491820 /NodeList/1486 pkt_id=1486000 size=1024B
++ 0.070548074 /NodeList/1732 pkt_id=1732000 size=1024B
++ 0.070642974 /NodeList/732 pkt_id=732000 size=1024B
++ 0.071188794 /NodeList/1139 pkt_id=1139000 size=1024B
++ 0.071472921 /NodeList/424 pkt_id=424000 size=1024B
+d 0.071585773 /NodeList/239 ila_csma_drop pkt_id=239000 max_retries_reached
++ 0.071834621 /NodeList/292 pkt_id=292000 size=1024B
+d 0.072076607 /NodeList/136 ila_csma_drop pkt_id=136000 max_retries_reached
+d 0.072559527 /NodeList/590 ila_csma_drop pkt_id=590000 max_retries_reached
++ 0.072565428 /NodeList/1309 pkt_id=1309000 size=1024B
++ 0.072840451 /NodeList/1157 pkt_id=1157000 size=1024B
+d 0.073371203 /NodeList/485 ila_csma_drop pkt_id=485000 max_retries_reached
+d 0.073450636 /NodeList/797 ila_csma_drop pkt_id=797000 max_retries_reached
++ 0.073524500 /NodeList/273 pkt_id=273000 size=1024B
+d 0.073844949 /NodeList/972 ila_csma_drop pkt_id=972000 max_retries_reached
+d 0.074199419 /NodeList/1433 ila_csma_drop pkt_id=1433000 max_retries_reached
+d 0.074713223 /NodeList/69 ila_csma_drop pkt_id=69000 max_retries_reached
++ 0.074855375 /NodeList/449 pkt_id=449000 size=1024B
+d 0.074902070 /NodeList/1045 ila_csma_drop pkt_id=1045000 max_retries_reached
+d 0.075366739 /NodeList/1743 ila_csma_drop pkt_id=1743000 max_retries_reached
++ 0.075372637 /NodeList/1900 pkt_id=1900000 size=1024B
++ 0.075699848 /NodeList/1726 pkt_id=1726000 size=1024B
++ 0.075771787 /NodeList/1244 pkt_id=1244000 size=1024B
++ 0.075920537 /NodeList/271 pkt_id=271000 size=1024B
++ 0.076125821 /NodeList/513 pkt_id=513000 size=1024B
+d 0.076147540 /NodeList/1205 ila_csma_drop pkt_id=1205000 max_retries_reached
+r 0.077098373 /NodeList/1206 ila_csma_ack pkt_id=1206000
+- 0.077152403 /NodeList/287 ila_csma_tx pkt_id=287000 dur=8.19ms
++ 0.078106009 /NodeList/429 pkt_id=429000 size=1024B
++ 0.078954960 /NodeList/1592 pkt_id=1592000 size=1024B
++ 0.079149093 /NodeList/568 pkt_id=568000 size=1024B
++ 0.079380263 /NodeList/75 pkt_id=75000 size=1024B
+d 0.080040942 /NodeList/164 ila_csma_drop pkt_id=164000 max_retries_reached
++ 0.080789164 /NodeList/1230 pkt_id=1230000 size=1024B
+d 0.080976501 /NodeList/1721 ila_csma_drop pkt_id=1721000 max_retries_reached
+d 0.081062795 /NodeList/227 ila_csma_drop pkt_id=227000 max_retries_reached
++ 0.081190961 /NodeList/1394 pkt_id=1394000 size=1024B
++ 0.081793674 /NodeList/1491 pkt_id=1491000 size=1024B
++ 0.082028856 /NodeList/735 pkt_id=735000 size=1024B
+d 0.083099674 /NodeList/1382 ila_csma_drop pkt_id=1382000 max_retries_reached
++ 0.083855097 /NodeList/1001 pkt_id=1001000 size=1024B
+d 0.083975165 /NodeList/633 ila_csma_drop pkt_id=633000 max_retries_reached
+d 0.084875084 /NodeList/763 ila_csma_drop pkt_id=763000 max_retries_reached
++ 0.085109433 /NodeList/1402 pkt_id=1402000 size=1024B
+r 0.085344403 /NodeList/287 ila_csma_ack pkt_id=287000
++ 0.085360890 /NodeList/1444 pkt_id=1444000 size=1024B
+- 0.085408856 /NodeList/735 ila_csma_tx pkt_id=735000 dur=8.19ms
+d 0.085666815 /NodeList/643 ila_csma_drop pkt_id=643000 max_retries_reached
++ 0.085942535 /NodeList/18 pkt_id=18000 size=1024B
+d 0.087080867 /NodeList/125 ila_csma_drop pkt_id=125000 max_retries_reached
+d 0.087224121 /NodeList/726 ila_csma_drop pkt_id=726000 max_retries_reached
++ 0.087286667 /NodeList/1899 pkt_id=1899000 size=1024B
+d 0.087476267 /NodeList/1926 ila_csma_drop pkt_id=1926000 max_retries_reached
+d 0.087627380 /NodeList/768 ila_csma_drop pkt_id=768000 max_retries_reached
++ 0.087981216 /NodeList/728 pkt_id=728000 size=1024B
+d 0.088463376 /NodeList/795 ila_csma_drop pkt_id=795000 max_retries_reached
++ 0.088634261 /NodeList/1220 pkt_id=1220000 size=1024B
+d 0.089066481 /NodeList/28 ila_csma_drop pkt_id=28000 max_retries_reached
++ 0.089205040 /NodeList/259 pkt_id=259000 size=1024B
+d 0.089315324 /NodeList/281 ila_csma_drop pkt_id=281000 max_retries_reached
+d 0.089472416 /NodeList/555 ila_csma_drop pkt_id=555000 max_retries_reached
++ 0.089522648 /NodeList/1482 pkt_id=1482000 size=1024B
+d 0.089633062 /NodeList/1364 ila_csma_drop pkt_id=1364000 max_retries_reached
+d 0.089797156 /NodeList/451 ila_csma_drop pkt_id=451000 max_retries_reached
++ 0.089928336 /NodeList/681 pkt_id=681000 size=1024B
++ 0.090346991 /NodeList/1156 pkt_id=1156000 size=1024B
+d 0.090535082 /NodeList/1386 ila_csma_drop pkt_id=1386000 max_retries_reached
+d 0.090808373 /NodeList/1261 ila_csma_drop pkt_id=1261000 max_retries_reached
+d 0.090908074 /NodeList/1732 ila_csma_drop pkt_id=1732000 max_retries_reached
+d 0.092452874 /NodeList/723 ila_csma_drop pkt_id=723000 max_retries_reached
++ 0.092872358 /NodeList/1116 pkt_id=1116000 size=1024B
+d 0.092964979 /NodeList/1315 ila_csma_drop pkt_id=1315000 max_retries_reached
++ 0.093218641 /NodeList/1535 pkt_id=1535000 size=1024B
+d 0.093497637 /NodeList/1161 ila_csma_drop pkt_id=1161000 max_retries_reached
+r 0.093600856 /NodeList/735 ila_csma_ack pkt_id=735000
+- 0.093718794 /NodeList/1139 ila_csma_tx pkt_id=1139000 dur=8.19ms
+d 0.093753625 /NodeList/422 ila_csma_drop pkt_id=422000 max_retries_reached
+d 0.093863637 /NodeList/176 ila_csma_drop pkt_id=176000 max_retries_reached
+d 0.094040046 /NodeList/435 ila_csma_drop pkt_id=435000 max_retries_reached
++ 0.094780928 /NodeList/1994 pkt_id=1994000 size=1024B
++ 0.094852396 /NodeList/1766 pkt_id=1766000 size=1024B
++ 0.095438599 /NodeList/1908 pkt_id=1908000 size=1024B
++ 0.095468347 /NodeList/917 pkt_id=917000 size=1024B
++ 0.095501899 /NodeList/1826 pkt_id=1826000 size=1024B
++ 0.095750385 /NodeList/511 pkt_id=511000 size=1024B
+d 0.096300537 /NodeList/271 ila_csma_drop pkt_id=271000 max_retries_reached
+d 0.096366961 /NodeList/988 ila_csma_drop pkt_id=988000 max_retries_reached
++ 0.098128643 /NodeList/1768 pkt_id=1768000 size=1024B
++ 0.098143958 /NodeList/1807 pkt_id=1807000 size=1024B
+d 0.098811820 /NodeList/1486 ila_csma_drop pkt_id=1486000 max_retries_reached
++ 0.099270596 /NodeList/1966 pkt_id=1966000 size=1024B
+d 0.099384500 /NodeList/273 ila_csma_drop pkt_id=273000 max_retries_reached
+d 0.100131182 /NodeList/635 ila_csma_drop pkt_id=635000 max_retries_reached
+d 0.100589996 /NodeList/1442 ila_csma_drop pkt_id=1442000 max_retries_reached
+d 0.100794960 /NodeList/1592 ila_csma_drop pkt_id=1592000 max_retries_reached
+d 0.101153674 /NodeList/1491 ila_csma_drop pkt_id=1491000 max_retries_reached
+d 0.101782648 /NodeList/1482 ila_csma_drop pkt_id=1482000 max_retries_reached
+r 0.101910794 /NodeList/1139 ila_csma_ack pkt_id=1139000
+- 0.102080263 /NodeList/75 ila_csma_tx pkt_id=75000 dur=8.19ms
++ 0.102148941 /NodeList/1428 pkt_id=1428000 size=1024B
++ 0.102516154 /NodeList/1790 pkt_id=1790000 size=1024B
++ 0.102948988 /NodeList/794 pkt_id=794000 size=1024B
++ 0.103005806 /NodeList/1958 pkt_id=1958000 size=1024B
+d 0.103146883 /NodeList/620 ila_csma_drop pkt_id=620000 max_retries_reached
+d 0.103162974 /NodeList/732 ila_csma_drop pkt_id=732000 max_retries_reached
+d 0.103600890 /NodeList/1444 ila_csma_drop pkt_id=1444000 max_retries_reached
+d 0.104566009 /NodeList/429 ila_csma_drop pkt_id=429000 max_retries_reached
+d 0.104695375 /NodeList/449 ila_csma_drop pkt_id=449000 max_retries_reached
+d 0.104926547 /NodeList/1390 ila_csma_drop pkt_id=1390000 max_retries_reached
+d 0.105118439 /NodeList/821 ila_csma_drop pkt_id=821000 max_retries_reached
++ 0.105258648 /NodeList/548 pkt_id=548000 size=1024B
++ 0.106074983 /NodeList/1376 pkt_id=1376000 size=1024B
++ 0.106573261 /NodeList/1567 pkt_id=1567000 size=1024B
++ 0.108448700 /NodeList/140 pkt_id=140000 size=1024B
+d 0.108516009 /NodeList/903 ila_csma_drop pkt_id=903000 max_retries_reached
+d 0.109412358 /NodeList/1116 ila_csma_drop pkt_id=1116000 max_retries_reached
++ 0.110097248 /NodeList/561 pkt_id=561000 size=1024B
+d 0.110174621 /NodeList/292 ila_csma_drop pkt_id=292000 max_retries_reached
+d 0.110272263 /NodeList/75 ila_csma_drop pkt_id=75000 max_retries_reached
+- 0.110377248 /NodeList/561 ila_csma_tx pkt_id=561000 dur=8.19ms
++ 0.110488742 /NodeList/123 pkt_id=123000 size=1024B
++ 0.110546930 /NodeList/339 pkt_id=339000 size=1024B
++ 0.110925794 /NodeList/664 pkt_id=664000 size=1024B
++ 0.110934934 /NodeList/628 pkt_id=628000 size=1024B
+d 0.111901216 /NodeList/728 ila_csma_drop pkt_id=728000 max_retries_reached
+d 0.111949164 /NodeList/1230 ila_csma_drop pkt_id=1230000 max_retries_reached
++ 0.112318997 /NodeList/1183 pkt_id=1183000 size=1024B
+d 0.112705040 /NodeList/259 ila_csma_drop pkt_id=259000 max_retries_reached
+d 0.112865821 /NodeList/513 ila_csma_drop pkt_id=513000 max_retries_reached
++ 0.113186666 /NodeList/1810 pkt_id=1810000 size=1024B
++ 0.114303404 /NodeList/98 pkt_id=98000 size=1024B
++ 0.114373724 /NodeList/364 pkt_id=364000 size=1024B
+d 0.114557826 /NodeList/1669 ila_csma_drop pkt_id=1669000 max_retries_reached
+d 0.114572921 /NodeList/424 ila_csma_drop pkt_id=424000 max_retries_reached
+d 0.114739848 /NodeList/1726 ila_csma_drop pkt_id=1726000 max_retries_reached
+d 0.114831787 /NodeList/1244 ila_csma_drop pkt_id=1244000 max_retries_reached
+d 0.115117455 /NodeList/759 ila_csma_drop pkt_id=759000 max_retries_reached
++ 0.115198726 /NodeList/1991 pkt_id=1991000 size=1024B
+d 0.115665428 /NodeList/1309 ila_csma_drop pkt_id=1309000 max_retries_reached
++ 0.115959986 /NodeList/1624 pkt_id=1624000 size=1024B
+d 0.116060451 /NodeList/1157 ila_csma_drop pkt_id=1157000 max_retries_reached
+d 0.116249093 /NodeList/568 ila_csma_drop pkt_id=568000 max_retries_reached
+d 0.116642535 /NodeList/18 ila_csma_drop pkt_id=18000 max_retries_reached
++ 0.116806350 /NodeList/1427 pkt_id=1427000 size=1024B
+d 0.116829433 /NodeList/1402 ila_csma_drop pkt_id=1402000 max_retries_reached
++ 0.117101655 /NodeList/1764 pkt_id=1764000 size=1024B
+d 0.117112637 /NodeList/1900 ila_csma_drop pkt_id=1900000 max_retries_reached
++ 0.117156954 /NodeList/86 pkt_id=86000 size=1024B
++ 0.117624465 /NodeList/413 pkt_id=413000 size=1024B
+d 0.117658641 /NodeList/1535 ila_csma_drop pkt_id=1535000 max_retries_reached
+d 0.117770961 /NodeList/1394 ila_csma_drop pkt_id=1394000 max_retries_reached
++ 0.117789080 /NodeList/1456 pkt_id=1456000 size=1024B
+d 0.118150596 /NodeList/1966 ila_csma_drop pkt_id=1966000 max_retries_reached
+- 0.118586350 /NodeList/1427 ila_csma_tx pkt_id=1427000 dur=8.19ms
+d 0.118600928 /NodeList/1994 ila_csma_drop pkt_id=1994000 max_retries_reached
+d 0.119108941 /NodeList/1428 ila_csma_drop pkt_id=1428000 max_retries_reached
++ 0.119147997 /NodeList/455 pkt_id=455000 size=1024B
++ 0.119151178 /NodeList/1041 pkt_id=1041000 size=1024B
+d 0.119428643 /NodeList/1768 ila_csma_drop pkt_id=1768000 max_retries_reached
+d 0.119443958 /NodeList/1807 ila_csma_drop pkt_id=1807000 max_retries_reached
++ 0.120379732 /NodeList/1170 pkt_id=1170000 size=1024B
+d 0.120646667 /NodeList/1899 ila_csma_drop pkt_id=1899000 max_retries_reached
+d 0.120835097 /NodeList/1001 ila_csma_drop pkt_id=1001000 max_retries_reached
++ 0.121631311 /NodeList/1707 pkt_id=1707000 size=1024B
++ 0.121945636 /NodeList/845 pkt_id=845000 size=1024B
++ 0.122071044 /NodeList/5 pkt_id=5000 size=1024B
+d 0.122188336 /NodeList/681 ila_csma_drop pkt_id=681000 max_retries_reached
++ 0.122200404 /NodeList/1408 pkt_id=1408000 size=1024B
++ 0.122415335 /NodeList/188 pkt_id=188000 size=1024B
+d 0.122505794 /NodeList/664 ila_csma_drop pkt_id=664000 max_retries_reached
++ 0.122621324 /NodeList/1297 pkt_id=1297000 size=1024B
+d 0.122826991 /NodeList/1156 ila_csma_drop pkt_id=1156000 max_retries_reached
++ 0.123108545 /NodeList/350 pkt_id=350000 size=1024B
++ 0.123163940 /NodeList/337 pkt_id=337000 size=1024B
++ 0.123273171 /NodeList/1836 pkt_id=1836000 size=1024B
++ 0.123286913 /NodeList/1133 pkt_id=1133000 size=1024B
+d 0.123598599 /NodeList/1908 ila_csma_drop pkt_id=1908000 max_retries_reached
++ 0.124353327 /NodeList/1153 pkt_id=1153000 size=1024B
++ 0.124705245 /NodeList/109 pkt_id=109000 size=1024B
++ 0.125204078 /NodeList/1371 pkt_id=1371000 size=1024B
++ 0.125403688 /NodeList/921 pkt_id=921000 size=1024B
++ 0.126367717 /NodeList/1642 pkt_id=1642000 size=1024B
+- 0.126804465 /NodeList/413 ila_csma_tx pkt_id=413000 dur=8.19ms
+d 0.126901899 /NodeList/1826 ila_csma_drop pkt_id=1826000 max_retries_reached
+d 0.127396154 /NodeList/1790 ila_csma_drop pkt_id=1790000 max_retries_reached
+d 0.127558648 /NodeList/548 ila_csma_drop pkt_id=548000 max_retries_reached
++ 0.127720161 /NodeList/894 pkt_id=894000 size=1024B
+d 0.127808347 /NodeList/917 ila_csma_drop pkt_id=917000 max_retries_reached
++ 0.127944638 /NodeList/294 pkt_id=294000 size=1024B
++ 0.127996795 /NodeList/1236 pkt_id=1236000 size=1024B
++ 0.128798958 /NodeList/1251 pkt_id=1251000 size=1024B
++ 0.128836348 /NodeList/869 pkt_id=869000 size=1024B
+d 0.129252396 /NodeList/1766 ila_csma_drop pkt_id=1766000 max_retries_reached
++ 0.129470818 /NodeList/940 pkt_id=940000 size=1024B
++ 0.130316337 /NodeList/1341 pkt_id=1341000 size=1024B
++ 0.130989564 /NodeList/290 pkt_id=290000 size=1024B
++ 0.131254047 /NodeList/718 pkt_id=718000 size=1024B
+d 0.131534983 /NodeList/1376 ila_csma_drop pkt_id=1376000 max_retries_reached
++ 0.132329258 /NodeList/1936 pkt_id=1936000 size=1024B
++ 0.132573194 /NodeList/725 pkt_id=725000 size=1024B
++ 0.132907340 /NodeList/1278 pkt_id=1278000 size=1024B
++ 0.133049532 /NodeList/129 pkt_id=129000 size=1024B
+d 0.133388988 /NodeList/794 ila_csma_drop pkt_id=794000 max_retries_reached
+d 0.134190385 /NodeList/511 ila_csma_drop pkt_id=511000 max_retries_reached
++ 0.134491965 /NodeList/865 pkt_id=865000 size=1024B
++ 0.134925862 /NodeList/583 pkt_id=583000 size=1024B
+- 0.135138545 /NodeList/350 ila_csma_tx pkt_id=350000 dur=8.19ms
+d 0.135214261 /NodeList/1220 ila_csma_drop pkt_id=1220000 max_retries_reached
++ 0.135280915 /NodeList/258 pkt_id=258000 size=1024B
++ 0.136017910 /NodeList/230 pkt_id=230000 size=1024B
++ 0.136639243 /NodeList/409 pkt_id=409000 size=1024B
+d 0.136661655 /NodeList/1764 ila_csma_drop pkt_id=1764000 max_retries_reached
+d 0.136720404 /NodeList/1408 ila_csma_drop pkt_id=1408000 max_retries_reached
+d 0.137348700 /NodeList/140 ila_csma_drop pkt_id=140000 max_retries_reached
++ 0.137701712 /NodeList/1473 pkt_id=1473000 size=1024B
++ 0.137809518 /NodeList/1252 pkt_id=1252000 size=1024B
++ 0.138211726 /NodeList/161 pkt_id=161000 size=1024B
++ 0.139205132 /NodeList/155 pkt_id=155000 size=1024B
++ 0.139301953 /NodeList/1575 pkt_id=1575000 size=1024B
+d 0.139459986 /NodeList/1624 ila_csma_drop pkt_id=1624000 max_retries_reached
+d 0.139508742 /NodeList/123 ila_csma_drop pkt_id=123000 max_retries_reached
++ 0.139881356 /NodeList/240 pkt_id=240000 size=1024B
++ 0.140045926 /NodeList/636 pkt_id=636000 size=1024B
+d 0.140573261 /NodeList/1567 ila_csma_drop pkt_id=1567000 max_retries_reached
+d 0.141491311 /NodeList/1707 ila_csma_drop pkt_id=1707000 max_retries_reached
++ 0.141600209 /NodeList/404 pkt_id=404000 size=1024B
++ 0.141649066 /NodeList/769 pkt_id=769000 size=1024B
++ 0.141723568 /NodeList/908 pkt_id=908000 size=1024B
++ 0.141761868 /NodeList/1517 pkt_id=1517000 size=1024B
++ 0.142804438 /NodeList/733 pkt_id=733000 size=1024B
+d 0.143094934 /NodeList/628 ila_csma_drop pkt_id=628000 max_retries_reached
++ 0.143095315 /NodeList/1122 pkt_id=1122000 size=1024B
++ 0.143363741 /NodeList/742 pkt_id=742000 size=1024B
+- 0.143399066 /NodeList/769 ila_csma_tx pkt_id=769000 dur=8.19ms
+d 0.144721324 /NodeList/1297 ila_csma_drop pkt_id=1297000 max_retries_reached
+d 0.145285806 /NodeList/1958 ila_csma_drop pkt_id=1958000 max_retries_reached
+d 0.145319732 /NodeList/1170 ila_csma_drop pkt_id=1170000 max_retries_reached
++ 0.145783845 /NodeList/608 pkt_id=608000 size=1024B
+d 0.146029080 /NodeList/1456 ila_csma_drop pkt_id=1456000 max_retries_reached
+d 0.146116465 /NodeList/413 ila_csma_drop pkt_id=413000 max_retries_reached
++ 0.146290788 /NodeList/60 pkt_id=60000 size=1024B
+d 0.147116954 /NodeList/86 ila_csma_drop pkt_id=86000 max_retries_reached
++ 0.147238461 /NodeList/1253 pkt_id=1253000 size=1024B
++ 0.147433176 /NodeList/269 pkt_id=269000 size=1024B
++ 0.147687959 /NodeList/1107 pkt_id=1107000 size=1024B
++ 0.147869502 /NodeList/510 pkt_id=510000 size=1024B
++ 0.149353243 /NodeList/363 pkt_id=363000 size=1024B
++ 0.149830215 /NodeList/1393 pkt_id=1393000 size=1024B
+d 0.150027997 /NodeList/455 ila_csma_drop pkt_id=455000 max_retries_reached
++ 0.150234242 /NodeList/1685 pkt_id=1685000 size=1024B
+d 0.150366930 /NodeList/339 ila_csma_drop pkt_id=339000 max_retries_reached
++ 0.150427024 /NodeList/99 pkt_id=99000 size=1024B
+d 0.150458997 /NodeList/1183 ila_csma_drop pkt_id=1183000 max_retries_reached
++ 0.150894909 /NodeList/1350 pkt_id=1350000 size=1024B
++ 0.150989507 /NodeList/389 pkt_id=389000 size=1024B
+d 0.151191965 /NodeList/865 ila_csma_drop pkt_id=865000 max_retries_reached
++ 0.151503314 /NodeList/1182 pkt_id=1182000 size=1024B
++ 0.151554440 /NodeList/973 pkt_id=973000 size=1024B
+- 0.151604440 /NodeList/973 ila_csma_tx pkt_id=973000 dur=8.19ms
++ 0.151868856 /NodeList/473 pkt_id=473000 size=1024B
++ 0.152410341 /NodeList/525 pkt_id=525000 size=1024B
++ 0.152482970 /NodeList/362 pkt_id=362000 size=1024B
++ 0.152931650 /NodeList/1765 pkt_id=1765000 size=1024B
+d 0.153104638 /NodeList/294 ila_csma_drop pkt_id=294000 max_retries_reached
+d 0.153123404 /NodeList/98 ila_csma_drop pkt_id=98000 max_retries_reached
+d 0.153200915 /NodeList/258 ila_csma_drop pkt_id=258000 max_retries_reached
++ 0.153579852 /NodeList/938 pkt_id=938000 size=1024B
+d 0.153647717 /NodeList/1642 ila_csma_drop pkt_id=1642000 max_retries_reached
+d 0.153696795 /NodeList/1236 ila_csma_drop pkt_id=1236000 max_retries_reached
+d 0.153814047 /NodeList/718 ila_csma_drop pkt_id=718000 max_retries_reached
+d 0.153935335 /NodeList/188 ila_csma_drop pkt_id=188000 max_retries_reached
+d 0.154073724 /NodeList/364 ila_csma_drop pkt_id=364000 max_retries_reached
+d 0.154109248 /NodeList/561 ila_csma_drop pkt_id=561000 max_retries_reached
+d 0.154426666 /NodeList/1810 ila_csma_drop pkt_id=1810000 max_retries_reached
+d 0.154573327 /NodeList/1153 ila_csma_drop pkt_id=1153000 max_retries_reached
++ 0.154980681 /NodeList/209 pkt_id=209000 size=1024B
++ 0.155086797 /NodeList/392 pkt_id=392000 size=1024B
++ 0.155143067 /NodeList/1255 pkt_id=1255000 size=1024B
+d 0.155158726 /NodeList/1991 ila_csma_drop pkt_id=1991000 max_retries_reached
+d 0.155383940 /NodeList/337 ila_csma_drop pkt_id=337000 max_retries_reached
+d 0.155400161 /NodeList/894 ila_csma_drop pkt_id=894000 max_retries_reached
+d 0.155560545 /NodeList/350 ila_csma_drop pkt_id=350000 max_retries_reached
++ 0.156081940 /NodeList/193 pkt_id=193000 size=1024B
+d 0.156825245 /NodeList/109 ila_csma_drop pkt_id=109000 max_retries_reached
++ 0.157267026 /NodeList/218 pkt_id=218000 size=1024B
++ 0.157405032 /NodeList/619 pkt_id=619000 size=1024B
+d 0.157723688 /NodeList/921 ila_csma_drop pkt_id=921000 max_retries_reached
+d 0.157993171 /NodeList/1836 ila_csma_drop pkt_id=1836000 max_retries_reached
+d 0.158646913 /NodeList/1133 ila_csma_drop pkt_id=1133000 max_retries_reached
++ 0.158659178 /NodeList/437 pkt_id=437000 size=1024B
+d 0.158745862 /NodeList/583 ila_csma_drop pkt_id=583000 max_retries_reached
+d 0.159056337 /NodeList/1341 ila_csma_drop pkt_id=1341000 max_retries_reached
++ 0.159539985 /NodeList/964 pkt_id=964000 size=1024B
+d 0.159709518 /NodeList/1252 ila_csma_drop pkt_id=1252000 max_retries_reached
++ 0.159710352 /NodeList/1040 pkt_id=1040000 size=1024B
+d 0.159776348 /NodeList/869 ila_csma_drop pkt_id=869000 max_retries_reached
+- 0.159809502 /NodeList/510 ila_csma_tx pkt_id=510000 dur=8.19ms
++ 0.159971347 /NodeList/805 pkt_id=805000 size=1024B
+d 0.160209532 /NodeList/129 ila_csma_drop pkt_id=129000 max_retries_reached
+d 0.160930818 /NodeList/940 ila_csma_drop pkt_id=940000 max_retries_reached
++ 0.161022871 /NodeList/815 pkt_id=815000 size=1024B
++ 0.161052956 /NodeList/1415 pkt_id=1415000 size=1024B
+d 0.161278350 /NodeList/1427 ila_csma_drop pkt_id=1427000 max_retries_reached
++ 0.161398895 /NodeList/1887 pkt_id=1887000 size=1024B
++ 0.161458676 /NodeList/1532 pkt_id=1532000 size=1024B
+d 0.162150788 /NodeList/60 ila_csma_drop pkt_id=60000 max_retries_reached
++ 0.162382607 /NodeList/1275 pkt_id=1275000 size=1024B
++ 0.162455223 /NodeList/9 pkt_id=9000 size=1024B
+d 0.162498461 /NodeList/1253 ila_csma_drop pkt_id=1253000 max_retries_reached
++ 0.162668978 /NodeList/1674 pkt_id=1674000 size=1024B
+d 0.163271178 /NodeList/1041 ila_csma_drop pkt_id=1041000 max_retries_reached
++ 0.163545768 /NodeList/1003 pkt_id=1003000 size=1024B
++ 0.163941736 /NodeList/1052 pkt_id=1052000 size=1024B
+d 0.164545636 /NodeList/845 ila_csma_drop pkt_id=845000 max_retries_reached
++ 0.164606591 /NodeList/37 pkt_id=37000 size=1024B
+d 0.164797910 /NodeList/230 ila_csma_drop pkt_id=230000 max_retries_reached
+d 0.164963845 /NodeList/608 ila_csma_drop pkt_id=608000 max_retries_reached
+d 0.164991044 /NodeList/5 ila_csma_drop pkt_id=5000 max_retries_reached
+d 0.165098958 /NodeList/1251 ila_csma_drop pkt_id=1251000 max_retries_reached
+d 0.165405926 /NodeList/636 ila_csma_drop pkt_id=636000 max_retries_reached
++ 0.165759494 /NodeList/1551 pkt_id=1551000 size=1024B
++ 0.165958724 /NodeList/217 pkt_id=217000 size=1024B
++ 0.166019345 /NodeList/888 pkt_id=888000 size=1024B
++ 0.166074651 /NodeList/1511 pkt_id=1511000 size=1024B
+d 0.166089258 /NodeList/1936 ila_csma_drop pkt_id=1936000 max_retries_reached
+d 0.166405132 /NodeList/155 ila_csma_drop pkt_id=155000 max_retries_reached
+d 0.166731726 /NodeList/161 ila_csma_drop pkt_id=161000 max_retries_reached
++ 0.166788251 /NodeList/963 pkt_id=963000 size=1024B
++ 0.166868439 /NodeList/207 pkt_id=207000 size=1024B
++ 0.167202376 /NodeList/335 pkt_id=335000 size=1024B
+d 0.167488856 /NodeList/473 ila_csma_drop pkt_id=473000 max_retries_reached
++ 0.167725076 /NodeList/1769 pkt_id=1769000 size=1024B
+d 0.167944438 /NodeList/733 ila_csma_drop pkt_id=733000 max_retries_reached
+- 0.168041940 /NodeList/193 ila_csma_tx pkt_id=193000 dur=8.19ms
+d 0.168047959 /NodeList/1107 ila_csma_drop pkt_id=1107000 max_retries_reached
+d 0.168173243 /NodeList/363 ila_csma_drop pkt_id=363000 max_retries_reached
++ 0.169572586 /NodeList/474 pkt_id=474000 size=1024B
+d 0.169684078 /NodeList/1371 ila_csma_drop pkt_id=1371000 max_retries_reached
++ 0.169896627 /NodeList/679 pkt_id=679000 size=1024B
+d 0.170073194 /NodeList/725 ila_csma_drop pkt_id=725000 max_retries_reached
++ 0.170117128 /NodeList/302 pkt_id=302000 size=1024B
+d 0.170127340 /NodeList/1278 ila_csma_drop pkt_id=1278000 max_retries_reached
+d 0.170143741 /NodeList/742 ila_csma_drop pkt_id=742000 max_retries_reached
++ 0.170283510 /NodeList/1240 pkt_id=1240000 size=1024B
++ 0.170695334 /NodeList/1654 pkt_id=1654000 size=1024B
++ 0.170744953 /NodeList/1803 pkt_id=1803000 size=1024B
+d 0.171618895 /NodeList/1887 ila_csma_drop pkt_id=1887000 max_retries_reached
+d 0.171799852 /NodeList/938 ila_csma_drop pkt_id=938000 max_retries_reached
+d 0.171880209 /NodeList/404 ila_csma_drop pkt_id=404000 max_retries_reached
+d 0.172281868 /NodeList/1517 ila_csma_drop pkt_id=1517000 max_retries_reached
++ 0.172817321 /NodeList/671 pkt_id=671000 size=1024B

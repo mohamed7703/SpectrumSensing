@@ -1,0 +1,88 @@
+# NS-3 / CRN Discrete-Event Simulation Configuration
+# Cognitive Radio Network — Topology, Traffic, and Channel Parameters
+# Based on paper scenarios and deployment plan
+
+simulation:
+  duration_s: 10.0            # Simulation wall-clock duration
+  time_resolution_us: 1.0     # Minimum event granularity (1 µs)
+  random_seed: 42
+  num_runs: 5                 # Independent replications for confidence intervals
+
+topology:
+  # Area definition (meters)
+  area_width: 500.0
+  area_height: 500.0
+
+  primary_users:
+    count: 2
+    # Fixed PU base stations
+    positions:
+      - [250.0, 450.0]         # PU-1 center of north edge
+      - [250.0, 50.0]          # PU-2 center of south edge
+    tx_power_dbm: 30.0         # 1 W EIRP
+    activity_model: "on_off"   # "on_off" | "periodic" | "always_on"
+    on_off:
+      mean_on_s: 2.0           # Mean ON duration (exponential)
+      mean_off_s: 3.0          # Mean OFF duration (exponential)
+
+  secondary_users:
+    count: 10
+    placement: "random_uniform" # "random_uniform" | "grid" | "cluster" | "manual"
+    mobility_model: "static"    # "static" | "random_walk" | "random_waypoint"
+    tx_power_dbm: 20.0          # 100 mW
+    sensing_period_ms: 10.0     # How often SUs sense the channel
+
+  # Scalability test scenarios
+  scalability_scenarios:
+    - num_sus: 10
+    - num_sus: 50
+    - num_sus: 100
+    - num_sus: 500
+    - num_sus: 2000
+
+channel:
+  # Propagation model
+  propagation_model: "log_distance"   # "free_space" | "log_distance" | "two_ray_ground"
+  path_loss_exponent: 3.5             # Urban environment
+  reference_distance_m: 1.0
+  reference_loss_db: 46.67            # Free-space loss at 1m at 2.4 GHz
+  shadowing_std_db: 8.0               # Log-normal shadow fading (dB)
+
+  # Fading
+  fading_model: "rayleigh"            # "none" | "rayleigh" | "rician"
+  rician_k_factor: 4.0                # Only used if fading_model == "rician"
+
+  # Noise
+  noise_figure_db: 7.0                # Receiver noise figure
+  thermal_noise_dbm_per_hz: -174.0    # kT at room temperature
+  bandwidth_hz: 2.4e6                 # Channel bandwidth (matches RTL-SDR)
+
+traffic:
+  # UDP Echo traffic model (per deployment plan)
+  packet_size_bytes: 1024
+  num_packets: 1000
+  inter_packet_interval_s: 0.01       # 100 packets/second
+  traffic_model: "deterministic"      # "deterministic" | "poisson" | "bursty"
+  poisson_rate_pps: 100.0             # Packets per second (if Poisson)
+
+  # Data rates
+  data_rate_mbps: 1.0                 # Channel data rate
+  propagation_delay_ms: 0.5           # Per-hop wired backhaul delay
+
+mac:
+  protocol: "ila_csma"        # "pure_aloha" | "slotted_aloha" | "ila_csma" | "csma_ca"
+  slot_duration_us: 500.0     # Slot size for slotted protocols
+  max_retransmissions: 5
+  backoff_min_slots: 1
+  backoff_max_slots: 32
+  ila_csma:
+    cad_threshold_dbm: -90.0  # Channel Activity Detection threshold
+    rssi_threshold_dbm: -85.0 # Stage 2 RSSI decision threshold
+    difs_us: 50.0             # DCF Inter-Frame Space
+    sifs_us: 10.0             # Short Inter-Frame Space
+
+metrics:
+  record_per_packet: true
+  record_delay_histogram: true
+  output_trace_format: "ns3_ascii"    # "ns3_ascii" | "csv" | "json"
+  trace_file: "results/logs/simulation_trace.tr"
