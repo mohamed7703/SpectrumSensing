@@ -1,0 +1,2255 @@
+{
+  "sources": {
+    "integrity": {
+      "path": "S:\\Projects\\SpectrumSensing\\results\\recovery\\R006-integrity-and-gradients.json",
+      "sha256": "bd8ad3ac56510f3f0023f32d5a1a81b30a114ba6b6dad688de8d4ccbca0e6a1b"
+    },
+    "mock": {
+      "path": "S:\\Projects\\SpectrumSensing\\results\\recovery\\R002-foundations.json",
+      "sha256": "15a74284a3b11d20eecf4b6647d9208f42a1f9c2e62637820186401a04bac932"
+    },
+    "native": {
+      "path": "S:\\Projects\\SpectrumSensing\\results\\recovery\\R003b-native-smoke\\record.json",
+      "sha256": "8b628343b31bd9e626fa79451767a5f2b058427e9348a93028041e9e4e5df747"
+    },
+    "stress": {
+      "path": "S:\\Projects\\SpectrumSensing\\results\\recovery\\R005-runtime-stress\\record.json",
+      "sha256": "c23334ccd08a5b5292a6aef8ab1387e34a06e1ebe6cd6e557de26cbc5a89c8ae"
+    }
+  },
+  "integrity": {
+    "tests": {
+      "file": "S:\\Projects\\SpectrumSensing-audit-2026-11-05\\recovery-local-full-suite.xml",
+      "sha256": "ed67a2a150634f09f97cd8721fc96dadd5279f1d140a331cdb548a44fe42aa0b",
+      "cases": 325,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "preserved_historical_files": [
+      "S:\\Projects\\SpectrumSensing\\scripts\\build_verification_report_package.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_bigru.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_channel_fading.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_cnn_architectures.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_crn_topology.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_dataset_loader.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_detection_metrics.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_dsp_transforms.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_energy_detection.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_evaluation.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_hypothesis_testing.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_iq_preprocessing.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_mac_protocols.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_model_export.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_nash_equilibrium.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_noise_models.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_sdr_abstraction.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_streaming_latency.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_trace_delay_analysis.py",
+      "S:\\Projects\\SpectrumSensing\\scripts\\verify_trainer.py",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-001-hypothesis-testing.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-002-energy-detection.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-003-detection-metrics.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-004-channel-fading.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-005-noise-models.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-006-dsp-transforms.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-007-iq-preprocessing.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-008-sdr-abstraction.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-009-streaming-latency.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-010-crn-topology.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-011-mac-protocols.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-012-trace-delay-analysis.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-013-nash-equilibrium.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-014-dataset-loader.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-015-cnn-architectures.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-016-bigru-architecture.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-017-training-pipeline.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-018-benchmark-evaluation.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-019-model-edge-export.md",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\p3_003_sample_trace.tr",
+      "S:\\Projects\\SpectrumSensing\\results\\logs\\TEMPLATE.md",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p1_001_hypothesis_testing.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p1_002_energy_detection.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p1_003_roc_curves.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p1_004_channel_fading.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p1_005_snr_wall.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p2_001_dsp_transforms.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p2_002_iq_preprocessing.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p2_003_sdr_abstraction.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p2_004_streaming_latency.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p3_001_crn_topology.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p3_002_mac_protocols.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p3_003_trace_delay_analysis.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p3_004_nash_equilibrium.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p4_001_dataset_loader.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p4_002_cnn_architectures.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p4_003_bigru_architecture.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p4_004_training_pipeline.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p4_005_benchmark_evaluation.png",
+      "S:\\Projects\\SpectrumSensing\\results\\plots\\p4_006_model_edge_export.png",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\.gitkeep",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_1.txt",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_10.txt",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_11.txt",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_12.txt",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_2.txt",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_3.txt",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_4.txt",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_5.txt",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_6.txt",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_7.txt",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_8.txt",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_9.txt",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\.gitkeep",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\baseline_1d-cnn.onnx",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\baseline_1d-cnn.tflite",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\baseline_1d-cnn_fp16.tflite",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\baseline_1d-cnn_int8.tflite",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\baseline_1d-cnn_weights.npz",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\batchnorm_1d-cnn.onnx",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\batchnorm_1d-cnn.tflite",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\batchnorm_1d-cnn_fp16.tflite",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\batchnorm_1d-cnn_int8.tflite",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\batchnorm_1d-cnn_weights.npz",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\bi-gru_temporal.onnx",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\bi-gru_temporal.tflite",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\bi-gru_temporal_fp16.tflite",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\bi-gru_temporal_int8.tflite",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\bi-gru_temporal_weights.npz",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\gap_1d-cnn.onnx",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\gap_1d-cnn.tflite",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\gap_1d-cnn_fp16.tflite",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\gap_1d-cnn_int8.tflite",
+      "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\gap_1d-cnn_weights.npz",
+      "C:\\Users\\aamah\\OneDrive\\Desktop\\COMPREHENSIVE_VERIFICATION_REPORT.md",
+      "S:\\M folder\\semster 9\\sensors-24-07907.pdf",
+      "S:\\Projects\\SpectrumSensing\\docs\\COMPREHENSIVE_VERIFICATION_REPORT.md"
+    ],
+    "preserved_local_assets": [
+      "S:\\M folder\\semster 9\\grad. project\\find_correct_model.ipynb",
+      "S:\\M folder\\semster 9\\grad. project\\quick_ab_test.ipynb",
+      "S:\\M folder\\semster 9\\grad. project\\train_improved.ipynb",
+      "S:\\M folder\\semster 9\\grad. project\\train_v3(\u0627\u062e\u0631 \u0646\u0633\u062e\u0629 \u0634\u063a\u0627\u0644\u0629 \u0645\u0646\u0647)_colab.ipynb",
+      "S:\\M folder\\semster 9\\grad. project\\train_v3_colab.ipynb",
+      "S:\\M folder\\semster 9\\grad. project\\train_v4_colab.ipynb",
+      "S:\\M folder\\semster 9\\grad. project\\GAP_v4_best.h5",
+      "S:\\M folder\\semster 9\\grad. project\\model_epoch_32.h5",
+      "S:\\M folder\\semster 9\\grad. project\\usrppp_noise.dat"
+    ]
+  },
+  "mock": {
+    "scope": "synthetic_and_discrete_event_implementation_validation",
+    "limitations": [
+      "No physical SDR or real-time validation",
+      "No trained model or RadioML evaluation",
+      "Network uses any-positive-overlap collision rule, not SINR"
+    ],
+    "python": "3.10.11",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "config": {
+      "scope": "synthetic_and_discrete_event_implementation_validation",
+      "physical": {
+        "sample_rate": 2400000,
+        "adc_bits": 12,
+        "gain": 50,
+        "snr_db": 10,
+        "frame_length": 1024,
+        "acquisition_chunk": 4096,
+        "calibration_frames": 400,
+        "h0_test_frames": 3000,
+        "h1_test_frames": 300,
+        "calibration_seed": 1729,
+        "h0_test_seed": 1730,
+        "h1_test_seed": 42,
+        "target_pfa": 0.05,
+        "target_pd": 0.9,
+        "confidence_level": 0.95
+      },
+      "sample_bound": {
+        "snrs_db": [
+          -3,
+          -2,
+          0,
+          5
+        ],
+        "uncertainty_db": 1,
+        "target_pfa": 0.05,
+        "target_pd": 0.9
+      },
+      "network": {
+        "random_seed": 1,
+        "horizon_s": 0.1,
+        "slot_duration_s": 0.01,
+        "pulse_on_s": 0.002,
+        "pulse_off_s": 0.004,
+        "short_horizon_s": 0.015
+      }
+    },
+    "config_sha256": "fb1e1d6e96e5b74ea840c0d6d01815fc8fc84960411751d25e03609049e5ae48",
+    "source_sha256": {
+      "src\\math_models\\__init__.py": "658a0c67daa6fdef3dd60b3465e2c62b3df4115f50a2ff1d24ca3944f8a238fd",
+      "src\\math_models\\channel_fading.py": "67918ad0267d6fff585d3c947644c3304f9012bde0693a4a67cab8b554abc8f6",
+      "src\\math_models\\detection_metrics.py": "97d4b2ce97e02777716aec4d71ab9a2eff3d188a775aab0e41d76220a974153d",
+      "src\\math_models\\energy_detection.py": "f508e168ad6f98cefb58e35c2cf16ba2a0b682b680fead1da7e0c1969a986a13",
+      "src\\math_models\\hypothesis_testing.py": "b30611aa34630f5b7bb6ec12f9d6abb3ee9d4f618536336b9f964a24c5f32d27",
+      "src\\math_models\\noise_models.py": "949de1d965cbf45f5ce5b79d1dced84d6fb8586face8643a51311962917a6aa0",
+      "src\\sdr_interface\\__init__.py": "8cb8570592710a072440506e08532da6997931de4a79637319a5478d0519b6b8",
+      "src\\sdr_interface\\base_sdr.py": "a4169b2438c165f7337ec7d051732cc42eb744b226024089d9feb145b61d7dbb",
+      "src\\sdr_interface\\factory.py": "e8c2f7f9e0c9068610e1ccfa1b2eef046f386d09458c4d6c9e950b7fd8d51f44",
+      "src\\sdr_interface\\hackrf_driver.py": "c436415ce4fb3947ae5f1a38db6e25daeeb7df730a5f1a3c3f5bba8d91801d68",
+      "src\\sdr_interface\\limesdr_driver.py": "f82f7c29fe8c51af43d39dbe46a221e8ea0b5c9cdac201034b811eae6ca9eb59",
+      "src\\sdr_interface\\mock_sdr.py": "dc6c5a8e078042772ba5bad4aee307f97dca0ef8ad93619b361534a80b9598cd",
+      "src\\sdr_interface\\plutosdr_driver.py": "9454ec953e349ed11d3a03171c562e4f18d562c88d60f502d5d4d44416acbf44",
+      "src\\sdr_interface\\rtlsdr_driver.py": "729a4f178315148d6bc9035a3911e8410eaa67a9053b4950335e86737098be7a",
+      "src\\sdr_interface\\stream_handler.py": "0a69c6129055b9e41d1e567155380df051ccdf6c4455dbb0d15c2bd2389693d9",
+      "src\\sdr_interface\\usrp_driver.py": "af26e0a1283165c5ae4de54c9827d14c3df83477013c70da85bc443955ed7267",
+      "src\\ns3_simulation\\__init__.py": "ea320e686a2fcddd79fbb59b23496215b65b2c510a3b5e34abb2329d92b80681",
+      "src\\ns3_simulation\\channel_model.py": "c26f5c11cc8dfef5d82761db32bace367989483c31961a518433cd2637b81108",
+      "src\\ns3_simulation\\mac_ila_csma.py": "e36c53a4dc3ee90d13e461d167158092981ef2b4701b4b23f93c07b3722856e9",
+      "src\\ns3_simulation\\mac_pure_aloha.py": "102554f4e7254612043ebc1026fd9e065b665ba8c88be4ae4de0fa30a2789c8f",
+      "src\\ns3_simulation\\mac_slotted_aloha.py": "4d4fbec4fc0edd9048bb5c9df5f9ad65fa950dc67f7d0052da4a126d4068bec8",
+      "src\\ns3_simulation\\nash_equilibrium.py": "6818d917d279ad3e98c253f6ca188d71fc017920ee7ea47f44a2224c46fa4890",
+      "src\\ns3_simulation\\sim_engine.py": "bdddfa4168b9d7c002849bc7369cd5bd6c95934d8f2d19978b8bcf2b89776c97",
+      "src\\ns3_simulation\\topology_builder.py": "949228c74c9c8f9fd0a10698ec7d5bde4b4a96df6d9d890cef0f747638f918bb",
+      "src\\ns3_simulation\\trace_parser.py": "391732c1d8ff73cd13cd2f39b2775b15e1aa471586ecb3e92e1828a9605b0c87",
+      "src\\ns3_simulation\\traffic_generator.py": "46e543d2a7af89c8c2502a05989cdd22ae38f5dfbad5db2e812ced6c5481c6c8",
+      "src\\ns3_simulation\\transmission_tracker.py": "79663b26e26a79bc2a5bd6eafbd8e2f8e680833d1c5ca33079406d998a5f3abf"
+    },
+    "sample_bound_checks": [
+      {
+        "snr_db": -3,
+        "sufficient_samples": 83123,
+        "exact_worst_case_pd": 0.9999999999995733
+      },
+      {
+        "snr_db": -2,
+        "sufficient_samples": 4240,
+        "exact_worst_case_pd": 0.9999999999991034
+      },
+      {
+        "snr_db": 0,
+        "sufficient_samples": 467,
+        "exact_worst_case_pd": 0.9999999999967163
+      },
+      {
+        "snr_db": 5,
+        "sufficient_samples": 30,
+        "exact_worst_case_pd": 0.9999999999591378
+      }
+    ],
+    "physical": {
+      "calibration": {
+        "threshold": 0.5749610282673531,
+        "frames": 400,
+        "order_rank": 388,
+        "target_pfa": 0.05,
+        "confidence_level": 0.95
+      },
+      "h0": {
+        "positive_decisions": 49,
+        "frames": 3000,
+        "rate": 0.01633333333333333,
+        "exact_two_sided_interval": [
+          0.012107284493423128,
+          0.02153661599591766
+        ],
+        "exact_one_sided_interval": [
+          0.0,
+          0.020678082624598207
+        ]
+      },
+      "h1": {
+        "positive_decisions": 300,
+        "frames": 300,
+        "rate": 1.0,
+        "exact_two_sided_interval": [
+          0.9877790253057036,
+          1.0
+        ],
+        "exact_one_sided_interval": [
+          0.9900639180554768,
+          1.0
+        ]
+      },
+      "acceptance_met": true
+    },
+    "network": {
+      "csma": {
+        "attempts": 1,
+        "successful": 0,
+        "collided": 1,
+        "dropped": 1,
+        "pu_collisions": 1,
+        "pu_overlap_s": 0.002
+      },
+      "pure": {
+        "attempts": 1,
+        "successful": 0,
+        "collided": 1,
+        "dropped": 1,
+        "pu_collisions": 1,
+        "pu_overlap_s": 0.002
+      },
+      "slotted": {
+        "attempts": 1,
+        "successful": 0,
+        "collided": 1,
+        "dropped": 1,
+        "pu_collisions": 1,
+        "pu_overlap_s": 0.002
+      },
+      "unfinished_slot": {
+        "attempts": 1,
+        "successful": 0,
+        "pending": 1,
+        "receive_time": null
+      }
+    }
+  },
+  "native": {
+    "scope": "native_neural_and_export_smoke_only_not_radioml_or_paper_reproduction",
+    "config": {
+      "scope": "native_neural_and_export_smoke_only_not_radioml_or_paper_reproduction",
+      "models": [
+        "baseline",
+        "batchnorm",
+        "gap"
+      ],
+      "model_seed": 193,
+      "data": {
+        "train_seed": 1301,
+        "validation_seed": 1302,
+        "calibration_seed": 1303,
+        "test_seed": 1304,
+        "modulations": [
+          "QPSK"
+        ],
+        "snrs_db": [
+          -10,
+          0,
+          10
+        ],
+        "training_frames_per_condition": 16,
+        "validation_frames_per_condition": 8,
+        "calibration_h0_frames": 400,
+        "test_frames_per_condition": 100,
+        "h0_fraction": 0.5
+      },
+      "training": {
+        "optimizer": {
+          "name": "SGD",
+          "learning_rate": 0.001,
+          "momentum": 0.0,
+          "weight_decay": 0.0001
+        },
+        "epochs": 2,
+        "batch_size": 16,
+        "patience": 2,
+        "min_delta": 0.0001
+      },
+      "evaluation": {
+        "target_pfa": 0.05,
+        "calibration_confidence": 0.95,
+        "interval_confidence": 0.95
+      },
+      "export": {
+        "modes": [
+          "none",
+          "fp16",
+          "int8"
+        ],
+        "representative_frames": 64,
+        "parity_frames": 100
+      },
+      "runtime": {
+        "intra_op_threads": 2,
+        "inter_op_threads": 1
+      }
+    },
+    "config_sha256": "e3a6856e79d9df17ae8c06a86093f2bb2e050109371ccb859c51da970bbfe3cb",
+    "python": "3.10.11",
+    "tensorflow": "2.20.0",
+    "keras": "3.12.4",
+    "devices": [
+      "PhysicalDevice(name='/physical_device:CPU:0', device_type='CPU')"
+    ],
+    "partition_sizes": {
+      "train": 96,
+      "validation": 48,
+      "test": 600,
+      "calibration_h0": 400
+    },
+    "limits": [
+      "Small two-epoch synthetic fixture; no estimate of RadioML or paper performance",
+      "Intervals and calibration confidence are marginal, not simultaneous across models/conditions",
+      "Exact duplicate checks do not establish independence of real capture groups",
+      "No named edge hardware, end-to-end timing, or power measurement",
+      "Full checkpoints restore weights/state/optimizer; bitwise dropout RNG continuation is not asserted"
+    ],
+    "models": {
+      "baseline": {
+        "calibration": {
+          "threshold": 0.6075893044471742,
+          "frames": 400,
+          "order_rank": 388,
+          "target_pfa": 0.05,
+          "confidence_level": 0.95
+        },
+        "auc": 0.6966444444444444,
+        "h0": {
+          "false_alarms": 11,
+          "frames": 300,
+          "pfa": 0.03666666666666667,
+          "interval": [
+            0.01844346081245978,
+            0.06465851819636823
+          ]
+        },
+        "h1_by_snr": [
+          {
+            "snr_db": -10.0,
+            "detections": 7,
+            "frames": 100,
+            "pd": 0.07,
+            "interval": [
+              0.02860528890741859,
+              0.13891972845586656
+            ]
+          },
+          {
+            "snr_db": 0.0,
+            "detections": 18,
+            "frames": 100,
+            "pd": 0.18,
+            "interval": [
+              0.11031122915371105,
+              0.2694770859669013
+            ]
+          },
+          {
+            "snr_db": 10.0,
+            "detections": 81,
+            "frames": 100,
+            "pd": 0.81,
+            "interval": [
+              0.7193020420263277,
+              0.881556803867574
+            ]
+          }
+        ],
+        "count_params": 2087457,
+        "best_epoch": 2,
+        "convolution_kernel_change_l2": 0.0019304498564451933,
+        "checkpoint_reload_max_error": 0.0,
+        "optimizer_iterations": 12,
+        "history": [
+          {
+            "epoch": 1,
+            "loss": 0.7032141089439392,
+            "val_loss": 0.6860626014234609,
+            "val_accuracy": 0.5,
+            "val_auc": 0.6024305555555556
+          },
+          {
+            "epoch": 2,
+            "loss": 0.6672233740488688,
+            "val_loss": 0.6778948275685993,
+            "val_accuracy": 0.4791666666666667,
+            "val_auc": 0.6822916666666667
+          }
+        ],
+        "checkpoint": "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\recovery\\R003b-native-smoke\\baseline\\best.keras",
+        "exports": {
+          "none": {
+            "path": "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\recovery\\R003b-native-smoke\\baseline\\exports\\baseline_1d-cnn.tflite",
+            "bytes": 8353244,
+            "sha256": "b5a6d07e5aa4d0aeb5bb540bc51052430738d550ac6f9fda75c11b1bac8555f0",
+            "runtime": {
+              "input_dtype": "float32",
+              "output_dtype": "float32",
+              "input_quantization": [
+                0.0,
+                0
+              ],
+              "output_quantization": [
+                0.0,
+                0
+              ],
+              "clipped_input_values": 0,
+              "total_input_values": 204800
+            },
+            "parity_frames": 100,
+            "max_absolute_score_error": 3.5762786865234375e-07,
+            "mean_absolute_score_error": 9.566545486450195e-08,
+            "disagreement_at_native_threshold": 0
+          },
+          "fp16": {
+            "path": "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\recovery\\R003b-native-smoke\\baseline\\exports\\baseline_1d-cnn_fp16.tflite",
+            "bytes": 4179272,
+            "sha256": "077841118b1fcf324394cdada5657f04de8ccada4cfd160b5413e5412a1cfe1c",
+            "runtime": {
+              "input_dtype": "float32",
+              "output_dtype": "float32",
+              "input_quantization": [
+                0.0,
+                0
+              ],
+              "output_quantization": [
+                0.0,
+                0
+              ],
+              "clipped_input_values": 0,
+              "total_input_values": 204800
+            },
+            "parity_frames": 100,
+            "max_absolute_score_error": 0.00010877847671508789,
+            "mean_absolute_score_error": 1.6890764236450195e-05,
+            "disagreement_at_native_threshold": 0
+          },
+          "int8": {
+            "path": "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\recovery\\R003b-native-smoke\\baseline\\exports\\baseline_1d-cnn_int8.tflite",
+            "bytes": 2097488,
+            "sha256": "61f607acbb09ff03e7036f7f6500fe5b00fe045e1f898667459e6ba3afcabdb3",
+            "runtime": {
+              "input_dtype": "int8",
+              "output_dtype": "int8",
+              "input_quantization": [
+                0.04493865370750427,
+                0
+              ],
+              "output_quantization": [
+                0.00390625,
+                -128
+              ],
+              "clipped_input_values": 1,
+              "total_input_values": 204800
+            },
+            "parity_frames": 100,
+            "max_absolute_score_error": 0.013908922672271729,
+            "mean_absolute_score_error": 0.001467154622077942,
+            "disagreement_at_native_threshold": 0
+          }
+        }
+      },
+      "batchnorm": {
+        "calibration": {
+          "threshold": 0.6587737202644349,
+          "frames": 400,
+          "order_rank": 388,
+          "target_pfa": 0.05,
+          "confidence_level": 0.95
+        },
+        "auc": 0.7615888888888889,
+        "h0": {
+          "false_alarms": 13,
+          "frames": 300,
+          "pfa": 0.043333333333333335,
+          "interval": [
+            0.023271841004685986,
+            0.0729614642202821
+          ]
+        },
+        "h1_by_snr": [
+          {
+            "snr_db": -10.0,
+            "detections": 5,
+            "frames": 100,
+            "pd": 0.05,
+            "interval": [
+              0.01643187918172828,
+              0.11283491110546288
+            ]
+          },
+          {
+            "snr_db": 0.0,
+            "detections": 44,
+            "frames": 100,
+            "pd": 0.44,
+            "interval": [
+              0.34083602372345784,
+              0.5428125029367601
+            ]
+          },
+          {
+            "snr_db": 10.0,
+            "detections": 94,
+            "frames": 100,
+            "pd": 0.94,
+            "interval": [
+              0.8739700654191771,
+              0.9776651139286836
+            ]
+          }
+        ],
+        "count_params": 23073,
+        "best_epoch": 2,
+        "convolution_kernel_change_l2": 0.007403822150081396,
+        "checkpoint_reload_max_error": 0.0,
+        "optimizer_iterations": 12,
+        "history": [
+          {
+            "epoch": 1,
+            "loss": 0.9419047931830088,
+            "val_loss": 0.6801116658025727,
+            "val_accuracy": 0.5208333333333334,
+            "val_auc": 0.5642361111111112
+          },
+          {
+            "epoch": 2,
+            "loss": 0.7255523304144541,
+            "val_loss": 0.6515502851533365,
+            "val_accuracy": 0.5,
+            "val_auc": 0.7569444444444444
+          }
+        ],
+        "checkpoint": "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\recovery\\R003b-native-smoke\\batchnorm\\best.keras",
+        "exports": {
+          "none": {
+            "path": "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\recovery\\R003b-native-smoke\\batchnorm\\exports\\batchnorm_1d-cnn.tflite",
+            "bytes": 94216,
+            "sha256": "8573c772966ccb5607f4fc0bcb400e30c3a90be08c353796715a729fdfc08334",
+            "runtime": {
+              "input_dtype": "float32",
+              "output_dtype": "float32",
+              "input_quantization": [
+                0.0,
+                0
+              ],
+              "output_quantization": [
+                0.0,
+                0
+              ],
+              "clipped_input_values": 0,
+              "total_input_values": 204800
+            },
+            "parity_frames": 100,
+            "max_absolute_score_error": 6.556510925292969e-07,
+            "mean_absolute_score_error": 1.9788742065429687e-07,
+            "disagreement_at_native_threshold": 0
+          },
+          "fp16": {
+            "path": "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\recovery\\R003b-native-smoke\\batchnorm\\exports\\batchnorm_1d-cnn_fp16.tflite",
+            "bytes": 49568,
+            "sha256": "0d0bfba18d919bea8a9e1e1859e54bd82ab1b05de52da0c759d2aff941a213fa",
+            "runtime": {
+              "input_dtype": "float32",
+              "output_dtype": "float32",
+              "input_quantization": [
+                0.0,
+                0
+              ],
+              "output_quantization": [
+                0.0,
+                0
+              ],
+              "clipped_input_values": 0,
+              "total_input_values": 204800
+            },
+            "parity_frames": 100,
+            "max_absolute_score_error": 6.443262100219727e-05,
+            "mean_absolute_score_error": 1.921355724334717e-05,
+            "disagreement_at_native_threshold": 0
+          },
+          "int8": {
+            "path": "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\recovery\\R003b-native-smoke\\batchnorm\\exports\\batchnorm_1d-cnn_int8.tflite",
+            "bytes": 29216,
+            "sha256": "bca7d2b0a65409f2cc744ec7c3a9523e71b501a653fe5a044e042231c5dbd900",
+            "runtime": {
+              "input_dtype": "int8",
+              "output_dtype": "int8",
+              "input_quantization": [
+                0.04493865370750427,
+                0
+              ],
+              "output_quantization": [
+                0.00390625,
+                -128
+              ],
+              "clipped_input_values": 1,
+              "total_input_values": 204800
+            },
+            "parity_frames": 100,
+            "max_absolute_score_error": 0.034412682056427,
+            "mean_absolute_score_error": 0.0018480777740478515,
+            "disagreement_at_native_threshold": 0
+          }
+        }
+      },
+      "gap": {
+        "calibration": {
+          "threshold": 0.52237206697464,
+          "frames": 400,
+          "order_rank": 388,
+          "target_pfa": 0.05,
+          "confidence_level": 0.95
+        },
+        "auc": 0.8809833333333332,
+        "h0": {
+          "false_alarms": 5,
+          "frames": 300,
+          "pfa": 0.016666666666666666,
+          "interval": [
+            0.00543320531511443,
+            0.03846374496491409
+          ]
+        },
+        "h1_by_snr": [
+          {
+            "snr_db": -10.0,
+            "detections": 10,
+            "frames": 100,
+            "pd": 0.1,
+            "interval": [
+              0.049004689221485945,
+              0.17622259774017535
+            ]
+          },
+          {
+            "snr_db": 0.0,
+            "detections": 97,
+            "frames": 100,
+            "pd": 0.97,
+            "interval": [
+              0.9148239470257197,
+              0.9937700284616938
+            ]
+          },
+          {
+            "snr_db": 10.0,
+            "detections": 100,
+            "frames": 100,
+            "pd": 1.0,
+            "interval": [
+              0.9637833073548094,
+              1.0
+            ]
+          }
+        ],
+        "count_params": 14881,
+        "best_epoch": 2,
+        "convolution_kernel_change_l2": 0.0008284733048640192,
+        "checkpoint_reload_max_error": 0.0,
+        "optimizer_iterations": 12,
+        "history": [
+          {
+            "epoch": 1,
+            "loss": 0.6798737744490305,
+            "val_loss": 0.6813638313485096,
+            "val_accuracy": 0.5,
+            "val_auc": 0.875
+          },
+          {
+            "epoch": 2,
+            "loss": 0.6745268305142721,
+            "val_loss": 0.6809737441131009,
+            "val_accuracy": 0.5,
+            "val_auc": 0.8802083333333333
+          }
+        ],
+        "checkpoint": "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\recovery\\R003b-native-smoke\\gap\\best.keras",
+        "exports": {
+          "none": {
+            "path": "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\recovery\\R003b-native-smoke\\gap\\exports\\gap_1d-cnn.tflite",
+            "bytes": 63136,
+            "sha256": "9ec27a01fbdfebfad92848df29146f4f04b4efe790be70c12fb2684685982777",
+            "runtime": {
+              "input_dtype": "float32",
+              "output_dtype": "float32",
+              "input_quantization": [
+                0.0,
+                0
+              ],
+              "output_quantization": [
+                0.0,
+                0
+              ],
+              "clipped_input_values": 0,
+              "total_input_values": 204800
+            },
+            "parity_frames": 100,
+            "max_absolute_score_error": 1.1920928955078125e-07,
+            "mean_absolute_score_error": 3.635883331298828e-08,
+            "disagreement_at_native_threshold": 0
+          },
+          "fp16": {
+            "path": "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\recovery\\R003b-native-smoke\\gap\\exports\\gap_1d-cnn_fp16.tflite",
+            "bytes": 34328,
+            "sha256": "3f7de5d3ad0c8bebd5a9946d3483b065f9fb82e7b0eac691126cfdb2add51b3e",
+            "runtime": {
+              "input_dtype": "float32",
+              "output_dtype": "float32",
+              "input_quantization": [
+                0.0,
+                0
+              ],
+              "output_quantization": [
+                0.0,
+                0
+              ],
+              "clipped_input_values": 0,
+              "total_input_values": 204800
+            },
+            "parity_frames": 100,
+            "max_absolute_score_error": 3.415346145629883e-05,
+            "mean_absolute_score_error": 1.2152791023254394e-05,
+            "disagreement_at_native_threshold": 0
+          },
+          "int8": {
+            "path": "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\recovery\\R003b-native-smoke\\gap\\exports\\gap_1d-cnn_int8.tflite",
+            "bytes": 25136,
+            "sha256": "30b22ba4b252236fd269158c18a9e7e76adad46b8bf9384d2d3c9be7234a45d9",
+            "runtime": {
+              "input_dtype": "int8",
+              "output_dtype": "int8",
+              "input_quantization": [
+                0.04493865370750427,
+                0
+              ],
+              "output_quantization": [
+                0.00390625,
+                -128
+              ],
+              "clipped_input_values": 1,
+              "total_input_values": 204800
+            },
+            "parity_frames": 100,
+            "max_absolute_score_error": 0.002863645553588867,
+            "mean_absolute_score_error": 0.0010191512107849121,
+            "disagreement_at_native_threshold": 16
+          }
+        }
+      }
+    },
+    "energy_detector": {
+      "calibration": {
+        "threshold": 1.0598257182525688,
+        "frames": 400,
+        "order_rank": 388,
+        "target_pfa": 0.05,
+        "confidence_level": 0.95
+      },
+      "auc": 0.9962111111111112,
+      "h0": {
+        "false_alarms": 11,
+        "frames": 300,
+        "pfa": 0.03666666666666667,
+        "interval": [
+          0.01844346081245978,
+          0.06465851819636823
+        ]
+      },
+      "h1_by_snr": [
+        {
+          "snr_db": -10.0,
+          "detections": 90,
+          "frames": 100,
+          "pd": 0.9,
+          "interval": [
+            0.8237774022598248,
+            0.9509953107785141
+          ]
+        },
+        {
+          "snr_db": 0.0,
+          "detections": 100,
+          "frames": 100,
+          "pd": 1.0,
+          "interval": [
+            0.9637833073548094,
+            1.0
+          ]
+        },
+        {
+          "snr_db": 10.0,
+          "detections": 100,
+          "frames": 100,
+          "pd": 1.0,
+          "interval": [
+            0.9637833073548094,
+            1.0
+          ]
+        }
+      ]
+    },
+    "source_sha256": {
+      "src\\models\\__init__.py": "47589f78b919eab6464927bc46c10bcb04712185d399b7678d581514e86dd153",
+      "src\\models\\base_model.py": "ed020453765081bd3804a382aaa047229f94c6f2248f56d5278cfbbf60c68cbb",
+      "src\\models\\bigru_model.py": "72fc3af1f630748265dcb18b8c8f788354d5c145821a7f3c80f8b73201fc47e7",
+      "src\\models\\bigru_temporal.py": "fc86fd08a0f8c7a354d4e0f3ffa54d93328be2868f86aad4c4766aefc4fd21bd",
+      "src\\models\\cnn_baseline.py": "3febb455b312994789826610a4c69df3c5de9b7ee533baa2f9a2f0bfc5c18331",
+      "src\\models\\cnn_batchnorm.py": "07cbc99720569734fcc176c2d985f83cc48316c456dd1bf287deedd1ac599856",
+      "src\\models\\cnn_gap.py": "78c793318b0fd24e3407304678773beac0387425b3718ebcc3a9890a91cd7520",
+      "src\\models\\model_export.py": "ed7290e85f61b42c93e051cffb4f70f0a2eb862928562a7d3afceaa533e54b34",
+      "src\\training\\__init__.py": "5cba9c5f91f4389cc4d958a4d475c56396a89cd78ef38696028ed6877364464b",
+      "src\\training\\dataset_loader.py": "e4e7f22eb3c5df2b83d09b8be501ea7e146da93a78d7763afcf9ff0bc31b99cf",
+      "src\\training\\keras_trainer.py": "0336759279ee2fb77f3f41a5ad60328501bda6f006876566e5b655828ac96fb2",
+      "src\\training\\loss_functions.py": "419140c8428a0449d7626a81a7ab01c2c8c563496ea7e23efea5a77f0864ea2e",
+      "src\\training\\trainer.py": "88d3d8fa0ac507a314dc47dcfc2192538f5e1556020bacbce6da974110d13dff",
+      "src\\math_models\\__init__.py": "658a0c67daa6fdef3dd60b3465e2c62b3df4115f50a2ff1d24ca3944f8a238fd",
+      "src\\math_models\\channel_fading.py": "67918ad0267d6fff585d3c947644c3304f9012bde0693a4a67cab8b554abc8f6",
+      "src\\math_models\\detection_metrics.py": "97d4b2ce97e02777716aec4d71ab9a2eff3d188a775aab0e41d76220a974153d",
+      "src\\math_models\\energy_detection.py": "d804c624af9a49c2670e5b93f4054341be415cc96b458f7a9795dfde22483e43",
+      "src\\math_models\\hypothesis_testing.py": "b30611aa34630f5b7bb6ec12f9d6abb3ee9d4f618536336b9f964a24c5f32d27",
+      "src\\math_models\\noise_models.py": "949de1d965cbf45f5ce5b79d1dced84d6fb8586face8643a51311962917a6aa0",
+      "src\\math_models\\threshold_calibration.py": "1e1d70f027067dec17b012db7847d6e00e4b7c5665d6c304fce1a23ffac6e679"
+    }
+  },
+  "stress": {
+    "scope": "fixed_checkpoint_synthetic_runtime_calibration_and_receiver_gain_drift",
+    "config": {
+      "scope": "fixed_checkpoint_synthetic_runtime_calibration_and_receiver_gain_drift",
+      "receiver_gain_drift_db": [
+        -1,
+        0,
+        1
+      ],
+      "runtime_modes": [
+        "native",
+        "int8"
+      ],
+      "intra_op_threads": 2,
+      "inter_op_threads": 1
+    },
+    "source_record_sha256": "8b628343b31bd9e626fa79451767a5f2b058427e9348a93028041e9e4e5df747",
+    "config_sha256": "57f775b98f25a3c4f41cf226cdd2bf780c4c77fab7b38c92a432be5424b46348",
+    "models": {
+      "baseline": {
+        "native": {
+          "calibration_distinct_scores": 400,
+          "conditions": [
+            {
+              "gain_drift_db": -1,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.6075893044471742,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.6966555555555556,
+                "h0": {
+                  "false_alarms": 3,
+                  "frames": 300,
+                  "pfa": 0.01,
+                  "interval": [
+                    0.002067007235092314,
+                    0.028944511255692685
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 0,
+                    "frames": 100,
+                    "pd": 0.0,
+                    "interval": [
+                      0.0,
+                      0.03621669264519054
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 13,
+                    "frames": 100,
+                    "pd": 0.13,
+                    "interval": [
+                      0.07107304618545972,
+                      0.2120406770874498
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 77,
+                    "frames": 100,
+                    "pd": 0.77,
+                    "interval": [
+                      0.6751412672248969,
+                      0.8482683886985327
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "gain_drift_db": 0,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.6075893044471742,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.6966444444444444,
+                "h0": {
+                  "false_alarms": 11,
+                  "frames": 300,
+                  "pfa": 0.03666666666666667,
+                  "interval": [
+                    0.01844346081245978,
+                    0.06465851819636823
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 7,
+                    "frames": 100,
+                    "pd": 0.07,
+                    "interval": [
+                      0.02860528890741859,
+                      0.13891972845586656
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 18,
+                    "frames": 100,
+                    "pd": 0.18,
+                    "interval": [
+                      0.11031122915371105,
+                      0.2694770859669013
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 81,
+                    "frames": 100,
+                    "pd": 0.81,
+                    "interval": [
+                      0.7193020420263277,
+                      0.881556803867574
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "gain_drift_db": 1,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.6075893044471742,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.6966111111111111,
+                "h0": {
+                  "false_alarms": 37,
+                  "frames": 300,
+                  "pfa": 0.12333333333333334,
+                  "interval": [
+                    0.08834419456105247,
+                    0.16597270217334206
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 11,
+                    "frames": 100,
+                    "pd": 0.11,
+                    "interval": [
+                      0.056207020285487456,
+                      0.18830113219644257
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 33,
+                    "frames": 100,
+                    "pd": 0.33,
+                    "interval": [
+                      0.23919853462260193,
+                      0.4311727507775711
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 82,
+                    "frames": 100,
+                    "pd": 0.82,
+                    "interval": [
+                      0.7305229140330989,
+                      0.889688770846289
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "int8": {
+          "calibration_distinct_scores": 34,
+          "conditions": [
+            {
+              "gain_drift_db": -1,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.6093750000000001,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.6964777777777778,
+                "h0": {
+                  "false_alarms": 0,
+                  "frames": 300,
+                  "pfa": 0.0,
+                  "interval": [
+                    0.0,
+                    0.01222097469429642
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 0,
+                    "frames": 100,
+                    "pd": 0.0,
+                    "interval": [
+                      0.0,
+                      0.03621669264519054
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 10,
+                    "frames": 100,
+                    "pd": 0.1,
+                    "interval": [
+                      0.049004689221485945,
+                      0.17622259774017535
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 76,
+                    "frames": 100,
+                    "pd": 0.76,
+                    "interval": [
+                      0.6642645107292549,
+                      0.8397753868285532
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "gain_drift_db": 0,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.6093750000000001,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.699888888888889,
+                "h0": {
+                  "false_alarms": 8,
+                  "frames": 300,
+                  "pfa": 0.02666666666666667,
+                  "interval": [
+                    0.011581567754335203,
+                    0.051865811961082406
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 4,
+                    "frames": 100,
+                    "pd": 0.04,
+                    "interval": [
+                      0.011004493986188203,
+                      0.09925715671265994
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 17,
+                    "frames": 100,
+                    "pd": 0.17,
+                    "interval": [
+                      0.10226491003552808,
+                      0.2581754106321507
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 78,
+                    "frames": 100,
+                    "pd": 0.78,
+                    "interval": [
+                      0.686080346213682,
+                      0.8566964232501946
+                    ]
+                  }
+                ]
+              },
+              "native_threshold_transferred": {
+                "calibration": {
+                  "threshold": 0.6075893044471742,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.699888888888889,
+                "h0": {
+                  "false_alarms": 9,
+                  "frames": 300,
+                  "pfa": 0.03,
+                  "interval": [
+                    0.013807819555525978,
+                    0.05618354824169662
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 6,
+                    "frames": 100,
+                    "pd": 0.06,
+                    "interval": [
+                      0.02233488607131637,
+                      0.12602993458082282
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 18,
+                    "frames": 100,
+                    "pd": 0.18,
+                    "interval": [
+                      0.11031122915371105,
+                      0.2694770859669013
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 81,
+                    "frames": 100,
+                    "pd": 0.81,
+                    "interval": [
+                      0.7193020420263277,
+                      0.881556803867574
+                    ]
+                  }
+                ]
+              },
+              "decision_changes_at_native_threshold": 3
+            },
+            {
+              "gain_drift_db": 1,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.6093750000000001,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.6949444444444445,
+                "h0": {
+                  "false_alarms": 19,
+                  "frames": 300,
+                  "pfa": 0.06333333333333334,
+                  "interval": [
+                    0.0385580198283766,
+                    0.09713819660714995
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 8,
+                    "frames": 100,
+                    "pd": 0.08,
+                    "interval": [
+                      0.035171562517808085,
+                      0.15155763586442092
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 26,
+                    "frames": 100,
+                    "pd": 0.26,
+                    "interval": [
+                      0.17739443786765255,
+                      0.35731206310010327
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 81,
+                    "frames": 100,
+                    "pd": 0.81,
+                    "interval": [
+                      0.7193020420263277,
+                      0.881556803867574
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "batchnorm": {
+        "native": {
+          "calibration_distinct_scores": 400,
+          "conditions": [
+            {
+              "gain_drift_db": -1,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.6587737202644349,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.7617666666666666,
+                "h0": {
+                  "false_alarms": 2,
+                  "frames": 300,
+                  "pfa": 0.006666666666666667,
+                  "interval": [
+                    0.0008083864124312157,
+                    0.023873497572173746
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 0,
+                    "frames": 100,
+                    "pd": 0.0,
+                    "interval": [
+                      0.0,
+                      0.03621669264519054
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 23,
+                    "frames": 100,
+                    "pd": 0.23,
+                    "interval": [
+                      0.15173161130146726,
+                      0.3248587327751033
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 90,
+                    "frames": 100,
+                    "pd": 0.9,
+                    "interval": [
+                      0.8237774022598248,
+                      0.9509953107785141
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "gain_drift_db": 0,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.6587737202644349,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.7615888888888889,
+                "h0": {
+                  "false_alarms": 13,
+                  "frames": 300,
+                  "pfa": 0.043333333333333335,
+                  "interval": [
+                    0.023271841004685986,
+                    0.0729614642202821
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 5,
+                    "frames": 100,
+                    "pd": 0.05,
+                    "interval": [
+                      0.01643187918172828,
+                      0.11283491110546288
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 44,
+                    "frames": 100,
+                    "pd": 0.44,
+                    "interval": [
+                      0.34083602372345784,
+                      0.5428125029367601
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 94,
+                    "frames": 100,
+                    "pd": 0.94,
+                    "interval": [
+                      0.8739700654191771,
+                      0.9776651139286836
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "gain_drift_db": 1,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.6587737202644349,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.7615444444444446,
+                "h0": {
+                  "false_alarms": 40,
+                  "frames": 300,
+                  "pfa": 0.13333333333333333,
+                  "interval": [
+                    0.0969922149442858,
+                    0.17710876256786875
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 13,
+                    "frames": 100,
+                    "pd": 0.13,
+                    "interval": [
+                      0.07107304618545972,
+                      0.2120406770874498
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 64,
+                    "frames": 100,
+                    "pd": 0.64,
+                    "interval": [
+                      0.5378781066724183,
+                      0.7335915772667655
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 95,
+                    "frames": 100,
+                    "pd": 0.95,
+                    "interval": [
+                      0.887165088894537,
+                      0.9835681208182717
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "int8": {
+          "calibration_distinct_scores": 42,
+          "conditions": [
+            {
+              "gain_drift_db": -1,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.6562500000000001,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.7609388888888889,
+                "h0": {
+                  "false_alarms": 3,
+                  "frames": 300,
+                  "pfa": 0.01,
+                  "interval": [
+                    0.002067007235092314,
+                    0.028944511255692685
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 0,
+                    "frames": 100,
+                    "pd": 0.0,
+                    "interval": [
+                      0.0,
+                      0.03621669264519054
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 22,
+                    "frames": 100,
+                    "pd": 0.22,
+                    "interval": [
+                      0.14330357674980537,
+                      0.31391965378631775
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 90,
+                    "frames": 100,
+                    "pd": 0.9,
+                    "interval": [
+                      0.8237774022598248,
+                      0.9509953107785141
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "gain_drift_db": 0,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.6562500000000001,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.7630666666666668,
+                "h0": {
+                  "false_alarms": 13,
+                  "frames": 300,
+                  "pfa": 0.043333333333333335,
+                  "interval": [
+                    0.023271841004685986,
+                    0.0729614642202821
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 6,
+                    "frames": 100,
+                    "pd": 0.06,
+                    "interval": [
+                      0.02233488607131637,
+                      0.12602993458082282
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 44,
+                    "frames": 100,
+                    "pd": 0.44,
+                    "interval": [
+                      0.34083602372345784,
+                      0.5428125029367601
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 94,
+                    "frames": 100,
+                    "pd": 0.94,
+                    "interval": [
+                      0.8739700654191771,
+                      0.9776651139286836
+                    ]
+                  }
+                ]
+              },
+              "native_threshold_transferred": {
+                "calibration": {
+                  "threshold": 0.6587737202644349,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.7630666666666668,
+                "h0": {
+                  "false_alarms": 13,
+                  "frames": 300,
+                  "pfa": 0.043333333333333335,
+                  "interval": [
+                    0.023271841004685986,
+                    0.0729614642202821
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 6,
+                    "frames": 100,
+                    "pd": 0.06,
+                    "interval": [
+                      0.02233488607131637,
+                      0.12602993458082282
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 44,
+                    "frames": 100,
+                    "pd": 0.44,
+                    "interval": [
+                      0.34083602372345784,
+                      0.5428125029367601
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 94,
+                    "frames": 100,
+                    "pd": 0.94,
+                    "interval": [
+                      0.8739700654191771,
+                      0.9776651139286836
+                    ]
+                  }
+                ]
+              },
+              "decision_changes_at_native_threshold": 3
+            },
+            {
+              "gain_drift_db": 1,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.6562500000000001,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.7610222222222222,
+                "h0": {
+                  "false_alarms": 40,
+                  "frames": 300,
+                  "pfa": 0.13333333333333333,
+                  "interval": [
+                    0.0969922149442858,
+                    0.17710876256786875
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 12,
+                    "frames": 100,
+                    "pd": 0.12,
+                    "interval": [
+                      0.06356890256102586,
+                      0.2002356836200388
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 64,
+                    "frames": 100,
+                    "pd": 0.64,
+                    "interval": [
+                      0.5378781066724183,
+                      0.7335915772667655
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 95,
+                    "frames": 100,
+                    "pd": 0.95,
+                    "interval": [
+                      0.887165088894537,
+                      0.9835681208182717
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "gap": {
+        "native": {
+          "calibration_distinct_scores": 398,
+          "conditions": [
+            {
+              "gain_drift_db": -1,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.52237206697464,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.8810611111111111,
+                "h0": {
+                  "false_alarms": 0,
+                  "frames": 300,
+                  "pfa": 0.0,
+                  "interval": [
+                    0.0,
+                    0.01222097469429642
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 0,
+                    "frames": 100,
+                    "pd": 0.0,
+                    "interval": [
+                      0.0,
+                      0.03621669264519054
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 67,
+                    "frames": 100,
+                    "pd": 0.67,
+                    "interval": [
+                      0.5688272492224289,
+                      0.7608014653773981
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 100,
+                    "frames": 100,
+                    "pd": 1.0,
+                    "interval": [
+                      0.9637833073548094,
+                      1.0
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "gain_drift_db": 0,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.52237206697464,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.8809833333333332,
+                "h0": {
+                  "false_alarms": 5,
+                  "frames": 300,
+                  "pfa": 0.016666666666666666,
+                  "interval": [
+                    0.00543320531511443,
+                    0.03846374496491409
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 10,
+                    "frames": 100,
+                    "pd": 0.1,
+                    "interval": [
+                      0.049004689221485945,
+                      0.17622259774017535
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 97,
+                    "frames": 100,
+                    "pd": 0.97,
+                    "interval": [
+                      0.9148239470257197,
+                      0.9937700284616938
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 100,
+                    "frames": 100,
+                    "pd": 1.0,
+                    "interval": [
+                      0.9637833073548094,
+                      1.0
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "gain_drift_db": 1,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.52237206697464,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.8809166666666667,
+                "h0": {
+                  "false_alarms": 170,
+                  "frames": 300,
+                  "pfa": 0.5666666666666667,
+                  "interval": [
+                    0.5085004794599135,
+                    0.6235030950045907
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 76,
+                    "frames": 100,
+                    "pd": 0.76,
+                    "interval": [
+                      0.6642645107292549,
+                      0.8397753868285532
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 100,
+                    "frames": 100,
+                    "pd": 1.0,
+                    "interval": [
+                      0.9637833073548094,
+                      1.0
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 100,
+                    "frames": 100,
+                    "pd": 1.0,
+                    "interval": [
+                      0.9637833073548094,
+                      1.0
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "int8": {
+          "calibration_distinct_scores": 3,
+          "conditions": [
+            {
+              "gain_drift_db": -1,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.5234375000000001,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.8538888888888889,
+                "h0": {
+                  "false_alarms": 0,
+                  "frames": 300,
+                  "pfa": 0.0,
+                  "interval": [
+                    0.0,
+                    0.01222097469429642
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 0,
+                    "frames": 100,
+                    "pd": 0.0,
+                    "interval": [
+                      0.0,
+                      0.03621669264519054
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 14,
+                    "frames": 100,
+                    "pd": 0.14,
+                    "interval": [
+                      0.07870540492695435,
+                      0.2237279813705804
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 100,
+                    "frames": 100,
+                    "pd": 1.0,
+                    "interval": [
+                      0.9637833073548094,
+                      1.0
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "gain_drift_db": 0,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.5234375000000001,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.8441333333333334,
+                "h0": {
+                  "false_alarms": 0,
+                  "frames": 300,
+                  "pfa": 0.0,
+                  "interval": [
+                    0.0,
+                    0.01222097469429642
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 0,
+                    "frames": 100,
+                    "pd": 0.0,
+                    "interval": [
+                      0.0,
+                      0.03621669264519054
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 69,
+                    "frames": 100,
+                    "pd": 0.69,
+                    "interval": [
+                      0.5896854458397686,
+                      0.7787112078693281
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 100,
+                    "frames": 100,
+                    "pd": 1.0,
+                    "interval": [
+                      0.9637833073548094,
+                      1.0
+                    ]
+                  }
+                ]
+              },
+              "native_threshold_transferred": {
+                "calibration": {
+                  "threshold": 0.52237206697464,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.8441333333333334,
+                "h0": {
+                  "false_alarms": 60,
+                  "frames": 300,
+                  "pfa": 0.2,
+                  "interval": [
+                    0.15623130113659678,
+                    0.24980440153066547
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 34,
+                    "frames": 100,
+                    "pd": 0.34,
+                    "interval": [
+                      0.24822350154440878,
+                      0.4415332677509588
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 98,
+                    "frames": 100,
+                    "pd": 0.98,
+                    "interval": [
+                      0.9296160675289299,
+                      0.9975686631760752
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 100,
+                    "frames": 100,
+                    "pd": 1.0,
+                    "interval": [
+                      0.9637833073548094,
+                      1.0
+                    ]
+                  }
+                ]
+              },
+              "decision_changes_at_native_threshold": 80
+            },
+            {
+              "gain_drift_db": 1,
+              "runtime_calibrated": {
+                "calibration": {
+                  "threshold": 0.5234375000000001,
+                  "frames": 400,
+                  "order_rank": 388,
+                  "target_pfa": 0.05,
+                  "confidence_level": 0.95
+                },
+                "auc": 0.8524444444444444,
+                "h0": {
+                  "false_alarms": 6,
+                  "frames": 300,
+                  "pfa": 0.02,
+                  "interval": [
+                    0.007374162001611381,
+                    0.0430210826736224
+                  ]
+                },
+                "h1_by_snr": [
+                  {
+                    "snr_db": -10.0,
+                    "detections": 10,
+                    "frames": 100,
+                    "pd": 0.1,
+                    "interval": [
+                      0.049004689221485945,
+                      0.17622259774017535
+                    ]
+                  },
+                  {
+                    "snr_db": 0.0,
+                    "detections": 98,
+                    "frames": 100,
+                    "pd": 0.98,
+                    "interval": [
+                      0.9296160675289299,
+                      0.9975686631760752
+                    ]
+                  },
+                  {
+                    "snr_db": 10.0,
+                    "detections": 100,
+                    "frames": 100,
+                    "pd": 1.0,
+                    "interval": [
+                      0.9637833073548094,
+                      1.0
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "limits": [
+      "No retraining or threshold selection on test frames",
+      "All calibration uses nominal gain only",
+      "Gain scales both signal and noise, retaining the input SNR",
+      "Synthetic fixture results do not reproduce the paper",
+      "Counts/intervals are marginal; no significance claim across comparisons"
+    ],
+    "energy_detector": [
+      {
+        "gain_drift_db": -1,
+        "metrics": {
+          "calibration": {
+            "threshold": 1.0598257182525688,
+            "frames": 400,
+            "order_rank": 388,
+            "target_pfa": 0.05,
+            "confidence_level": 0.95
+          },
+          "auc": 0.9962111111111112,
+          "h0": {
+            "false_alarms": 0,
+            "frames": 300,
+            "pfa": 0.0,
+            "interval": [
+              0.0,
+              0.01222097469429642
+            ]
+          },
+          "h1_by_snr": [
+            {
+              "snr_db": -10.0,
+              "detections": 0,
+              "frames": 100,
+              "pd": 0.0,
+              "interval": [
+                0.0,
+                0.03621669264519054
+              ]
+            },
+            {
+              "snr_db": 0.0,
+              "detections": 100,
+              "frames": 100,
+              "pd": 1.0,
+              "interval": [
+                0.9637833073548094,
+                1.0
+              ]
+            },
+            {
+              "snr_db": 10.0,
+              "detections": 100,
+              "frames": 100,
+              "pd": 1.0,
+              "interval": [
+                0.9637833073548094,
+                1.0
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "gain_drift_db": 0,
+        "metrics": {
+          "calibration": {
+            "threshold": 1.0598257182525688,
+            "frames": 400,
+            "order_rank": 388,
+            "target_pfa": 0.05,
+            "confidence_level": 0.95
+          },
+          "auc": 0.9962111111111112,
+          "h0": {
+            "false_alarms": 11,
+            "frames": 300,
+            "pfa": 0.03666666666666667,
+            "interval": [
+              0.01844346081245978,
+              0.06465851819636823
+            ]
+          },
+          "h1_by_snr": [
+            {
+              "snr_db": -10.0,
+              "detections": 90,
+              "frames": 100,
+              "pd": 0.9,
+              "interval": [
+                0.8237774022598248,
+                0.9509953107785141
+              ]
+            },
+            {
+              "snr_db": 0.0,
+              "detections": 100,
+              "frames": 100,
+              "pd": 1.0,
+              "interval": [
+                0.9637833073548094,
+                1.0
+              ]
+            },
+            {
+              "snr_db": 10.0,
+              "detections": 100,
+              "frames": 100,
+              "pd": 1.0,
+              "interval": [
+                0.9637833073548094,
+                1.0
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "gain_drift_db": 1,
+        "metrics": {
+          "calibration": {
+            "threshold": 1.0598257182525688,
+            "frames": 400,
+            "order_rank": 388,
+            "target_pfa": 0.05,
+            "confidence_level": 0.95
+          },
+          "auc": 0.9962111111111112,
+          "h0": {
+            "false_alarms": 300,
+            "frames": 300,
+            "pfa": 1.0,
+            "interval": [
+              0.9877790253057036,
+              1.0
+            ]
+          },
+          "h1_by_snr": [
+            {
+              "snr_db": -10.0,
+              "detections": 100,
+              "frames": 100,
+              "pd": 1.0,
+              "interval": [
+                0.9637833073548094,
+                1.0
+              ]
+            },
+            {
+              "snr_db": 0.0,
+              "detections": 100,
+              "frames": 100,
+              "pd": 1.0,
+              "interval": [
+                0.9637833073548094,
+                1.0
+              ]
+            },
+            {
+              "snr_db": 10.0,
+              "detections": 100,
+              "frames": 100,
+              "pd": 1.0,
+              "interval": [
+                0.9637833073548094,
+                1.0
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "date": "6 November 2026"
+}

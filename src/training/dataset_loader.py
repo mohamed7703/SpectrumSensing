@@ -3,7 +3,7 @@ r"""RadioML 2018.01A Dataset Ingestion and Preprocessing Pipeline.
 Provides memory-efficient ingestion for the RadioML 2018.01A dataset
 (2,555,904 frames of shape (1024, 2) across 24 modulation classes and 26 SNR levels),
 binary hypothesis mapping ($\mathcal{H}_0$ Noise vs $\mathcal{H}_1$ Signal),
-SNR filtering ($-8\text{ dB}$ to $+30\text{ dB}$), and high-fidelity synthetic fallback.
+SNR filtering and an explicitly limited synthetic pulse-signal fixture generator.
 
 Mathematical Notation:
     The binary hypothesis for cognitive radio sensing is:
@@ -65,8 +65,8 @@ class RadioMLDataset:
     def filter_by_snr(self, min_snr_db: float = -8.0, max_snr_db: float = 30.0) -> RadioMLDataset:
         """Filter dataset to include only frames within specified SNR window.
 
-        Per the paper, filtering SNR >= -8 dB removes the region below the
-        fundamental SNR wall where detection becomes statistically impossible.
+        This is an experimental selection policy, not a universal detectability
+        limit. A robust energy-detector wall depends on the uncertainty model.
 
         Args:
             min_snr_db: Minimum SNR in dB (inclusive).
@@ -91,7 +91,11 @@ class RadioMLDataset:
         test_ratio: float = 0.15,
         random_seed: Optional[int] = 42,
     ) -> Tuple[RadioMLDataset, RadioMLDataset, RadioMLDataset]:
-        """Split dataset into stratified train, validation, and test subsets.
+        """Randomly split frames for local smoke tests; this is not grouped or stratified.
+
+        Use capture/session groups and four independent train/validation/
+        calibration/test partitions for scientific evaluation. This helper
+        cannot establish independence between adjacent or common-source frames.
 
         Args:
             train_ratio: Fraction for training (e.g. 0.70).
@@ -102,6 +106,9 @@ class RadioMLDataset:
         Returns:
             Tuple of (train_dataset, val_dataset, test_dataset).
         """
+        ratios = np.array([train_ratio, val_ratio, test_ratio], dtype=float)
+        if not np.all(np.isfinite(ratios)) or np.any(ratios < 0) or not np.isclose(ratios.sum(), 1):
+            raise ValueError("split ratios must be finite, nonnegative and sum to one")
         total = len(self)
         rng = np.random.default_rng(random_seed)
         indices = rng.permutation(total)
@@ -147,10 +154,12 @@ class RadioMLDataset:
 
 
 class SyntheticRadioMLGenerator:
-    """High-fidelity synthetic dataset generator reproducing RadioML 2018.01A schema.
+    """Synthetic rectangular-pulse fixtures using a RadioML-like tensor schema.
 
     Allows complete unit testing, training pipeline validation, and benchmarking
-    without requiring the external 21.5 GB HDF5 file download.
+    without the external HDF5. These are not a reproduction of RadioML waveforms,
+    channel impairments, or modulation coverage. Noise power is fixed at one;
+    SNR scales signal power. Both hypotheses retain raw received frame energy.
     """
 
     def __init__(self, random_seed: Optional[int] = 42) -> None:
@@ -172,7 +181,10 @@ class SyntheticRadioMLGenerator:
         Returns:
             np.ndarray of shape (num_samples, 2) float32.
         """
-        if modulation.upper() in ("NOISE", "H0"):
+        if not np.isfinite(snr_db) or num_samples < 1 or int(num_samples) != num_samples:
+            raise ValueError("finite SNR and positive integer sample count required")
+        modulation = modulation.upper()
+        if modulation in ("NOISE", "H0"):
             # H0: Pure complex circular AWGN
             noise = (self.rng.normal(0.0, 1.0 / np.sqrt(2.0), num_samples) +
                      1j * self.rng.normal(0.0, 1.0 / np.sqrt(2.0), num_samples))
@@ -182,32 +194,31 @@ class SyntheticRadioMLGenerator:
         sps = 8
         n_symbols = int(np.ceil(num_samples / sps)) + 2
 
-        if "BPSK" in modulation:
+        if modulation == "OOK":
+            syms = self.rng.choice(np.array([0., np.sqrt(2.)]), size=n_symbols)
+        elif modulation in ("4ASK", "8ASK"):
+            order = int(modulation[:-3])
+            const = np.arange(1-order, order, 2, dtype=float)
+            syms = self.rng.choice(const / np.sqrt(np.mean(const**2)), size=n_symbols)
+        elif modulation == "BPSK":
             const = np.array([-1.0, 1.0])
             syms = self.rng.choice(const, size=n_symbols)
-        elif "QPSK" in modulation or "4ASK" in modulation:
+        elif modulation == "QPSK":
             const = np.array([1+1j, -1+1j, -1-1j, 1-1j]) / np.sqrt(2.0)
             syms = self.rng.choice(const, size=n_symbols)
-        elif "8PSK" in modulation or "8ASK" in modulation:
-            angles = np.linspace(0, 2 * np.pi, 8, endpoint=False)
+        elif modulation in ("8PSK", "16PSK", "32PSK"):
+            angles = np.linspace(0, 2 * np.pi, int(modulation[:-3]), endpoint=False)
             const = np.exp(1j * angles)
             syms = self.rng.choice(const, size=n_symbols)
-        elif "QAM" in modulation or "APSK" in modulation:
-            # 16-QAM constellation
-            grid = np.array([-3, -1, 1, 3]) / np.sqrt(10.0)
+        elif modulation in ("16QAM", "64QAM", "256QAM"):
+            width = int(np.sqrt(int(modulation[:-3])))
+            grid = np.arange(1-width, width, 2, dtype=float)
+            grid /= np.sqrt(2 * np.mean(grid**2))
             i_syms = self.rng.choice(grid, size=n_symbols)
             q_syms = self.rng.choice(grid, size=n_symbols)
             syms = i_syms + 1j * q_syms
-        elif "FM" in modulation or "AM" in modulation:
-            # Continuous analog modulation approximation
-            t = np.linspace(0, 10, num_samples)
-            m_t = np.sin(2 * np.pi * 0.05 * t)
-            sig = np.exp(1j * 2 * np.pi * (0.1 * t + 0.3 * m_t))
-            syms = None
         else:
-            # Default PSK-like carrier
-            const = np.array([1+1j, -1+1j, -1-1j, 1-1j]) / np.sqrt(2.0)
-            syms = self.rng.choice(const, size=n_symbols)
+            raise ValueError(f"modulation {modulation!r} is not supported by this limited synthetic generator")
 
         if syms is not None:
             pulses = np.repeat(syms, sps)[:num_samples]
@@ -223,15 +234,10 @@ class SyntheticRadioMLGenerator:
 
         # Add calibrated AWGN
         snr_linear = 10.0 ** (snr_db / 10.0)
-        noise_var = 1.0 / snr_linear
+        noise_var = 1.0
         noise = (self.rng.normal(0.0, np.sqrt(noise_var / 2.0), num_samples) +
                  1j * self.rng.normal(0.0, np.sqrt(noise_var / 2.0), num_samples))
-        rx = sig + noise
-
-        # Normalize overall frame power to target 1.0
-        tot_rms = np.sqrt(np.mean(np.abs(rx) ** 2))
-        if tot_rms > 0:
-            rx = rx / tot_rms
+        rx = np.sqrt(snr_linear) * sig + noise
 
         return np.stack([rx.real, rx.imag], axis=-1).astype(np.float32)
 
@@ -246,14 +252,16 @@ class SyntheticRadioMLGenerator:
 
         Args:
             frames_per_class: Number of frames per (modulation, SNR) combination.
-            modulations: Subset of modulation classes (defaults to standard 24).
-            snrs: Subset of SNR levels (defaults to standard 26).
+            modulations: Supported subset; defaults to first eight digital classes.
+            snrs: SNR levels; defaults to [-8,-4,0,4,8,12,16,20].
             h0_ratio: Fraction of H0 (idle noise) frames to include for balanced sensing.
 
         Returns:
             RadioMLDataset with shape (N, 1024, 2).
         """
-        mods = modulations or MODULATION_CLASSES[:8]  # Default to 8 common modulations for efficiency
+        if not 0 <= h0_ratio < 1 or frames_per_class < 1 or int(frames_per_class) != frames_per_class:
+            raise ValueError("require 0 <= h0_ratio < 1 and positive integer frames_per_class")
+        mods = modulations or MODULATION_CLASSES[:8]
         snr_list = snrs or [-8, -4, 0, 4, 8, 12, 16, 20]
 
         x_list = []
@@ -301,8 +309,9 @@ class DatasetLoader:
         max_snr_db: float = 30.0,
         num_synthetic_frames: int = 500,
         random_seed: int = 42,
+        allow_synthetic_fallback: bool = False,
     ) -> RadioMLDataset:
-        """Load dataset from HDF5 if file exists; otherwise generate synthetic data.
+        """Load an explicitly supplied HDF5, or explicitly request synthetic fixtures.
 
         Args:
             hdf5_path: Path to RadioML HDF5 file (e.g. data/GOLD_XYZ_OSC.0001_1024.hdf5).
@@ -310,16 +319,20 @@ class DatasetLoader:
             max_snr_db: Max SNR threshold.
             num_synthetic_frames: Number of synthetic frames if generating.
             random_seed: RNG seed for synthetic generator.
+            allow_synthetic_fallback: Opt in to replacing a missing explicit path
+                with synthetic fixtures. Omitted hdf5_path requests fixtures.
 
         Returns:
             RadioMLDataset ready for training or evaluation.
         """
         if hdf5_path is not None:
             p = Path(hdf5_path)
-            if p.exists() and HAS_H5PY:
+            if p.exists():
                 return cls.load_from_hdf5(p, min_snr_db, max_snr_db)
+            if not allow_synthetic_fallback:
+                raise FileNotFoundError(f"Requested HDF5 file does not exist: {p}")
 
-        # Fallback to high-fidelity synthetic generator
+        # Explicitly requested synthetic fixtures, never substitute invisibly.
         gen = SyntheticRadioMLGenerator(random_seed=random_seed)
         frames_per = max(2, num_synthetic_frames // (8 * 8))
         ds = gen.generate_dataset(frames_per_class=frames_per)
@@ -333,7 +346,11 @@ class DatasetLoader:
         max_snr_db: float = 30.0,
         max_samples: Optional[int] = None,
     ) -> RadioMLDataset:
-        """Read frames from real RadioML 2018.01A HDF5 file using memory mapping.
+        """Load a bounded selected subset, filtering metadata before reading I/Q.
+
+        This convenience function returns an in-memory array. It is not memory
+        mapping or an out-of-core training loader. A 512 MiB I/Q guard requires
+        callers to cap large selections. All RadioML rows remain H1.
 
         Args:
             hdf5_path: Path to .hdf5 file.
@@ -353,11 +370,28 @@ class DatasetLoader:
             y_ds = f["Y"]
             z_ds = f["Z"]
 
-            n = len(x_ds) if max_samples is None else min(len(x_ds), max_samples)
-
-            x = np.array(x_ds[:n], dtype=np.float32)
-            y_onehot = np.array(y_ds[:n])
-            snr = np.array(z_ds[:n], dtype=np.float32).flatten()
+            if not np.isfinite(min_snr_db) or not np.isfinite(max_snr_db) or min_snr_db > max_snr_db:
+                raise ValueError("SNR bounds must be finite and ordered")
+            if max_samples is not None and (max_samples < 1 or int(max_samples) != max_samples):
+                raise ValueError("max_samples must be a positive integer")
+            if (x_ds.ndim != 3 or x_ds.shape[-1] != 2 or y_ds.shape != (len(x_ds), 24)
+                    or z_ds.size != len(x_ds)):
+                raise ValueError("invalid RadioML X/Y/Z schema or inconsistent lengths")
+            # Z is small metadata; avoid reading X before selecting its indices.
+            snr_all = np.asarray(z_ds[:], dtype=np.float32).reshape(-1)
+            if not np.all(np.isfinite(snr_all)):
+                raise ValueError("nonfinite SNR metadata")
+            indices = np.flatnonzero((snr_all >= min_snr_db) & (snr_all <= max_snr_db))
+            if max_samples is not None:
+                indices = indices[:int(max_samples)]
+            n = len(indices)
+            if n * np.prod(x_ds.shape[1:]) * np.dtype(np.float32).itemsize > 512 * 1024**2:
+                raise MemoryError("selection exceeds 512 MiB; specify max_samples or use bounded batch ingestion")
+            x = np.asarray(x_ds[indices], dtype=np.float32)
+            y_onehot = np.asarray(y_ds[indices])
+            snr = snr_all[indices]
+            if not np.all(np.isfinite(x)) or not np.all((y_onehot == 0) | (y_onehot == 1)) or not np.all(y_onehot.sum(axis=-1) == 1):
+                raise ValueError("invalid I/Q samples or one-hot modulation labels")
 
             # Map one-hot to class names and binary labels
             # In RadioML, all 24 classes are active signals (H1). Pure noise frames can be added or filtered.

@@ -1,0 +1,5 @@
+scope: fixed_checkpoint_synthetic_runtime_calibration_and_receiver_gain_drift
+receiver_gain_drift_db: [-1, 0, 1]
+runtime_modes: [native, int8]
+intra_op_threads: 2
+inter_op_threads: 1

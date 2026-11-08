@@ -23,6 +23,7 @@ import numpy as np
 from src.ns3_simulation.sim_engine import SimulationEngine
 from src.ns3_simulation.topology_builder import SecondaryUser, PrimaryUser
 from src.ns3_simulation.traffic_generator import Packet
+from src.ns3_simulation.transmission_tracker import TransmissionTracker
 
 
 class PureAlohaMAC:
@@ -56,8 +57,7 @@ class PureAlohaMAC:
 
         # Active transmissions tracking: {packet_id: (su_node_id, start_time, end_time, packet)}
         self.active_transmissions: Dict[int, Tuple[int, float, float, Packet]] = {}
-        # Collision flags for active packets: {packet_id: bool}
-        self.packet_collided: Dict[int, bool] = {}
+        self.transmission_tracker = TransmissionTracker(engine)
 
         # Global statistics
         self.packets_transmitted: int = 0
@@ -95,23 +95,8 @@ class PureAlohaMAC:
             details=f"pure_aloha_tx pkt_id={packet.packet_id} dur={t_duration*1e3:.2f}ms",
         )
 
-        has_collision = False
-
-        # 1. Check collision with active Secondary Users
-        for active_pid, (other_node, other_start, other_end, other_pkt) in list(self.active_transmissions.items()):
-            # Any overlap in transmission windows corrupts both packets
-            has_collision = True
-            self.packet_collided[active_pid] = True
-
-        # 2. Check collision with Primary Users (if active)
-        if primary_users:
-            for pu in primary_users:
-                if pu.is_active:
-                    has_collision = True
-                    self.pu_collisions += 1
-
+        self.transmission_tracker.start(packet.packet_id, t_duration, primary_users or [])
         self.active_transmissions[packet.packet_id] = (su.node_id, t_start, t_end, packet)
-        self.packet_collided[packet.packet_id] = has_collision
 
         # Schedule end of packet transmission
         self.engine.schedule(
@@ -132,7 +117,9 @@ class PureAlohaMAC:
         if packet.packet_id in self.active_transmissions:
             del self.active_transmissions[packet.packet_id]
 
-        collided = self.packet_collided.pop(packet.packet_id, False)
+        attempt = self.transmission_tracker.finish(packet.packet_id)
+        collided = attempt.collided
+        self.pu_collisions += int(attempt.pu_overlap_s > 0)
 
         if not collided:
             # Successful transmission

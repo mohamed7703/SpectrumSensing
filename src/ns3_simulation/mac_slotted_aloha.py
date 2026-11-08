@@ -23,6 +23,7 @@ import numpy as np
 from src.ns3_simulation.sim_engine import SimulationEngine
 from src.ns3_simulation.topology_builder import SecondaryUser, PrimaryUser
 from src.ns3_simulation.traffic_generator import Packet
+from src.ns3_simulation.transmission_tracker import TransmissionTracker
 
 
 class SlottedAlohaMAC:
@@ -59,6 +60,8 @@ class SlottedAlohaMAC:
 
         # Slot occupancy map: {slot_index: [(su_node, packet)]}
         self.slot_reservations: Dict[int, List[Tuple[SecondaryUser, Packet]]] = {}
+        self._primary_users_by_packet: Dict[int, List[PrimaryUser]] = {}
+        self.transmission_tracker = TransmissionTracker(engine)
 
         # Global statistics
         self.packets_transmitted: int = 0
@@ -93,6 +96,9 @@ class SlottedAlohaMAC:
             packet: Packet to send.
             primary_users: Optional list of PUs for primary collision tracking.
         """
+        if packet.size_bytes * 8 / self.data_rate_bps > self.slot_duration_s:
+            raise ValueError("packet airtime exceeds the configured slot duration")
+        self._primary_users_by_packet[packet.packet_id] = list(primary_users or [])
         slot_idx, slot_time = self.get_next_slot_boundary(self.engine.now)
 
         if slot_idx not in self.slot_reservations:
@@ -121,24 +127,27 @@ class SlottedAlohaMAC:
 
         self.packets_transmitted += num_transmissions
 
-        # Check if PU is active during this slot
-        pu_active = False
-        if primary_users:
-            for pu in primary_users:
-                if pu.is_active:
-                    pu_active = True
-                    self.pu_collisions += num_transmissions
-                    break
-
-        if num_transmissions == 1 and not pu_active:
-            # Exactly one transmission in this slot and no PU -> SUCCESS
-            su, packet = transmissions[0]
+        # Each attempt occupies the full slot, including padding/guard time.
+        # Success or retry is decided only at completion, using interval overlap.
+        for su, packet in transmissions:
             packet.send_time = self.engine.now
-            packet.receive_time = self.engine.now + self.slot_duration_s
+            pus = self._primary_users_by_packet[packet.packet_id]
+            self.transmission_tracker.start(packet.packet_id, self.slot_duration_s, pus)
+            self.engine.log_trace("-", su.node_id, f"slotted_aloha_tx pkt_id={packet.packet_id} size={packet.size_bytes}B slot={slot_index}")
+            self.engine.schedule(self.slot_duration_s, self._finish_packet,
+                                 su=su, packet=packet, slot_index=slot_index)
+
+    def _finish_packet(self, su: SecondaryUser, packet: Packet, slot_index: int) -> None:
+        """Resolve one specified packet at the end of its reserved slot."""
+        attempt = self.transmission_tracker.finish(packet.packet_id)
+        self.pu_collisions += int(attempt.pu_overlap_s > 0)
+        if not attempt.collided:
+            packet.receive_time = self.engine.now
             su.packets_sent += 1
             su.total_delay_s += (packet.receive_time - packet.creation_time)
             su.has_packet = False
             self.packets_successful += 1
+            self._primary_users_by_packet.pop(packet.packet_id, None)
 
             self.engine.log_trace(
                 action="r",
@@ -146,40 +155,25 @@ class SlottedAlohaMAC:
                 details=f"slotted_aloha_ack pkt_id={packet.packet_id} slot={slot_index}",
             )
         else:
-            # Collision: multiple SUs or overlap with active PU
-            for su, packet in transmissions:
-                self.packets_collided_count += 1
-                su.packets_collided += 1
-
-                if packet.retransmissions < self.max_retransmissions:
-                    packet.retransmissions += 1
-                    max_win = min(self.backoff_max_slots, self.backoff_min_slots * (2 ** packet.retransmissions))
-                    backoff_slots = int(self.rng.integers(self.backoff_min_slots, max_win + 1))
-                    target_slot = slot_index + 1 + backoff_slots
-                    target_time = target_slot * self.slot_duration_s
-                    delay = target_time - self.engine.now
-
-                    if target_slot not in self.slot_reservations:
-                        self.slot_reservations[target_slot] = []
-                        self.engine.schedule(
-                            delay=delay,
-                            callback=self._execute_slot,
-                            slot_index=target_slot,
-                            primary_users=primary_users,
-                        )
-                    self.slot_reservations[target_slot].append((su, packet))
-                else:
-                    # Max retries reached -> drop
-                    packet.dropped = True
-                    su.packets_dropped += 1
-                    su.has_packet = False
-                    self.packets_dropped_count += 1
-
-                    self.engine.log_trace(
-                        action="d",
-                        node_id=su.node_id,
-                        details=f"slotted_aloha_drop pkt_id={packet.packet_id} max_retries_reached",
-                    )
+            self.packets_collided_count += 1
+            su.packets_collided += 1
+            if packet.retransmissions < self.max_retransmissions:
+                packet.retransmissions += 1
+                max_win = min(self.backoff_max_slots, self.backoff_min_slots * (2 ** packet.retransmissions))
+                backoff_slots = int(self.rng.integers(self.backoff_min_slots, max_win + 1))
+                target_slot = slot_index + 1 + backoff_slots
+                target_time = target_slot * self.slot_duration_s
+                if target_slot not in self.slot_reservations:
+                    self.slot_reservations[target_slot] = []
+                    self.engine.schedule_at(target_time, self._execute_slot, slot_index=target_slot)
+                self.slot_reservations[target_slot].append((su, packet))
+            else:
+                packet.dropped = True
+                su.packets_dropped += 1
+                su.has_packet = False
+                self.packets_dropped_count += 1
+                self._primary_users_by_packet.pop(packet.packet_id, None)
+                self.engine.log_trace("d", su.node_id, f"slotted_aloha_drop pkt_id={packet.packet_id} max_retries_reached")
 
     @staticmethod
     def theoretical_throughput(g: float) -> float:

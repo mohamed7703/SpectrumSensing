@@ -35,7 +35,8 @@ class HypothesisConfig:
     Attributes:
         num_samples: Number of samples per sensing observation window (L).
         noise_variance: Total noise power variance :math:`\\sigma_w^2`.
-        snr_db: Signal-to-Noise Ratio in decibels :math:`\\text{SNR}_{\\text{dB}}`.
+        snr_db: Reference transmit-to-noise power ratio in decibels, before h.
+            Received SNR is |h|**2 * 10**(snr_db/10); fading is not compensated.
         modulation: Modulation scheme for the Primary User signal.
         complex_signal: Whether samples are complex baseband :math:`I + jQ` (True) or real (False).
     """
@@ -137,8 +138,9 @@ def generate_pu_signal(
         scale = amplitude / np.sqrt(2.0)
         if complex_signal:
             return scale * (symbols_i + 1j * symbols_q)
-        # Real projection
-        return scale * symbols_i.astype(float)
+        # Real mode retains the requested real-signal power. It is a binary
+        # real-valued representation, not a half-power projection of complex QPSK.
+        return amplitude * symbols_i.astype(float)
 
     elif modulation == "sinusoid":
         n = np.arange(num_samples)
@@ -174,10 +176,10 @@ def simulate_received_signal(
     .. math::
         r(n) = h \\cdot s(n) + w(n)
 
-    Where :math:`s(n)` power is scaled so that:
-    .. math::
-        \\text{SNR} = 10^{\\text{snr\_db} / 10} = \\frac{|h|^2 P_s}{\\sigma_w^2}
-        \\implies P_s = \\frac{\\sigma_w^2 \\cdot 10^{\\text{snr\_db} / 10}}{|h|^2}
+    Transmit signal power is noise_variance * 10**(config.snr_db/10).
+    This is the reference SNR before h; received SNR additionally includes
+    |h| squared. Deep fades therefore reduce received SNR rather than causing
+    a compensating increase in transmitter power.
 
     Args:
         hypothesis: 0 for idle spectrum (:math:`\mathcal{H}_0`), 1 for active PU (:math:`\mathcal{H}_1`).
@@ -205,7 +207,7 @@ def simulate_received_signal(
     if hypothesis == 0:
         return noise
 
-    # Calculate required PU signal power to achieve requested SNR after channel gain
+    # Fixed transmit power from reference SNR; do not undo channel fading.
     snr_linear = 10.0 ** (config.snr_db / 10.0)
     target_signal_power = config.noise_variance * snr_linear
 
@@ -292,7 +294,7 @@ class HypothesisTestingSimulator:
             - `var_h1`: Expected variance under :math:`\mathcal{H}_1` (:math:`|h|^2 P_s + \sigma_w^2`)
             - `snr_linear`: Linear SNR ratio
         """
-        snr_linear = 10.0 ** (self.config.snr_db / 10.0)
+        snr_linear = abs(channel_gain) ** 2 * 10.0 ** (self.config.snr_db / 10.0)
         var_h0 = self.config.noise_variance
         var_h1 = var_h0 * (1.0 + snr_linear)
 
@@ -300,5 +302,5 @@ class HypothesisTestingSimulator:
             "var_h0": float(var_h0),
             "var_h1": float(var_h1),
             "snr_linear": float(snr_linear),
-            "snr_db": float(self.config.snr_db),
+            "snr_db": float(10.0 * np.log10(snr_linear)) if snr_linear > 0 else float("-inf"),
         }

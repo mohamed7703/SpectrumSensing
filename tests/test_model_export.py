@@ -75,30 +75,25 @@ class TestModelExporter:
         assert meta["param_counts"]["total_params"] == 14881
 
     def test_export_tflite_formats(self, exporter: ModelExporter) -> None:
-        """Verify TFLite export across FP32, FP16, and INT8 quantization modes."""
+        """Architecture wrappers are rejected; actual conversions use native graph tests."""
         model = BatchNormCNN()
         for mode in ["none", "fp16", "int8"]:
-            out_path = exporter.export_tflite(model, quantization=mode)
-            assert os.path.exists(out_path)
-            assert out_path.endswith(".tflite")
-            assert os.path.getsize(out_path) > 0
+            with pytest.raises(TypeError, match="native"):
+                exporter.export_tflite(model, quantization=mode)
 
     def test_export_onnx(self, exporter: ModelExporter) -> None:
-        """Verify ONNX export and graph signature metadata."""
+        """A wrapper cannot become a neural ONNX model through random reconstruction."""
         model = BiGRUModel()
-        out_path = exporter.export_onnx(model)
-        assert os.path.exists(out_path)
-        assert out_path.endswith(".onnx")
-        assert os.path.getsize(out_path) > 0
+        with pytest.raises(TypeError, match="native"):
+            exporter.export_onnx(model)
 
     def test_profile_edge_inference(self, exporter: ModelExporter) -> None:
-        """Verify edge inference profiling and real-time compliance (< 2.3 ms)."""
+        """Host feature timing is labelled and reports the actual executed head size."""
         model = GAPCNN()
         report = exporter.profile_edge_inference(model, num_iterations=50)
         assert isinstance(report, EdgeBenchmarkReport)
         assert report.mean_latency_us > 0.0
         assert report.p95_latency_us >= report.mean_latency_us
         assert report.throughput_fps > 0.0
-        # Latency must satisfy 2.3 ms SDR real-time limit
-        assert report.realtime_compliant is True
-        assert report.mean_latency_us < 2300.0
+        assert report.target_format == "Host NumPy four-feature logistic classifier"
+        assert report.model_size_kb == 20 / 1024

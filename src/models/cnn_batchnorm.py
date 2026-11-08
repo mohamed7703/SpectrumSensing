@@ -16,7 +16,9 @@ Architecture:
     → Flatten → Dense(1, sigmoid)
 
 Exact Parameter Count:
-    Total Parameters: 23,009 (Trainable: 22,817, Non-trainable: 192)
+    Executed valid-padding graph: 23,073 (22,881 trainable, 192 state).
+    This differs from the supplied paper's 23,201; it is not an exact Table 3
+    reproduction. The historical metadata used an inconsistent pool length.
 """
 
 from __future__ import annotations
@@ -37,7 +39,7 @@ class BatchNormCNN(BaseSpectrumClassifier):
         super().__init__(name="BatchNorm 1D-CNN", input_shape=input_shape)
 
     def _build_architecture(self) -> None:
-        """Define exact layer shapes and parameter counts matching Table 3 of paper."""
+        """Describe the implemented valid-padding graph, including its paper deviation."""
         l_in, c_in = self.input_shape
 
         # Layer 1: Conv1D (32 filters, kernel 3)
@@ -72,18 +74,18 @@ class BatchNormCNN(BaseSpectrumClassifier):
         self._layers.append(LayerSpec("activation_2", "ReLU", (l_c2, c_c2), (l_c2, c_c2)))
 
         # Layer 9: MaxPooling1D (pool 2)
-        l_p2 = 253  # Output length 253 per Table 3
+        l_p2 = l_c2 // 2  # Valid pool: floor(509 / 2) = 254
         self._layers.append(LayerSpec("max_pooling1d_2", "MaxPooling1D", (l_c2, c_c2), (l_p2, c_c2)))
 
         # Layer 10: Dropout (25%)
         self._layers.append(LayerSpec("dropout_2", "Dropout", (l_p2, c_c2), (l_p2, c_c2)))
 
         # Layer 11: Flatten
-        flat_dim = l_p2 * c_c2  # 253 * 64 = 16,192
+        flat_dim = l_p2 * c_c2  # 254 * 64 = 16,256
         self._layers.append(LayerSpec("flatten", "Flatten", (l_p2, c_c2), (flat_dim,)))
 
         # Layer 12: Dense (1 unit, Sigmoid output)
-        p_dense = (flat_dim * 1) + 1  # 16,193
+        p_dense = (flat_dim * 1) + 1  # 16,257
         self._layers.append(LayerSpec("dense_output", "Dense", (flat_dim,), (1,), trainable_params=p_dense))
 
     def predict_proba(self, x: np.ndarray) -> np.ndarray:
@@ -109,7 +111,7 @@ class BatchNormCNN(BaseSpectrumClassifier):
                 layers.Dropout(rate=0.25, name="dropout_2"),
                 layers.Flatten(name="flatten"),
                 layers.Dense(units=1, activation="sigmoid", name="dense_output"),
-            ], name=self.name)
+            ], name=self.name.replace(" ", "_"))
             return model
         except ImportError:
             raise ImportError("TensorFlow is required to build Keras model object.")

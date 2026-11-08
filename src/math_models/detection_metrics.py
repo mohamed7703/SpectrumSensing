@@ -25,8 +25,83 @@ from dataclasses import dataclass
 from typing import Tuple
 import numpy as np
 from scipy import integrate
+from scipy import stats
 
 from .energy_detection import analytical_pd
+
+
+def validate_binary_inputs(
+    values: np.ndarray,
+    ground_truth: np.ndarray,
+    *,
+    binary_values: bool = False,
+    probabilities: bool = False,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Validate paired real vectors before casting labels or calculating rates.
+
+    Args:
+        values: Finite scores, probabilities, or binary decisions, as a vector
+            or a single-column array. Matrix inputs are rejected.
+        ground_truth: Corresponding nonempty labels containing only 0 and 1.
+        binary_values: Require values to be binary decisions.
+        probabilities: Require values to lie in [0, 1].
+
+    Returns:
+        Flattened float64 values and int64 labels, retaining original labels
+        until their validity has been checked. A single class is allowed for
+        confusion counts; ROC callers must require both classes separately.
+    """
+    vectors = []
+    for name, raw in (("values", values), ("ground_truth", ground_truth)):
+        array = np.asarray(raw)
+        if array.ndim != 1 and not (array.ndim == 2 and array.shape[1] == 1):
+            raise ValueError(f"{name} must be a vector or a single-column array")
+        if array.dtype.kind not in "biuf" or not np.all(np.isfinite(array)):
+            raise ValueError(f"{name} must contain finite real numbers")
+        vectors.append(array.reshape(-1))
+    scores, labels = vectors
+    if len(labels) == 0 or len(scores) != len(labels):
+        raise ValueError("values and ground_truth must be nonempty and have equal length")
+    if not np.all((labels == 0) | (labels == 1)):
+        raise ValueError("ground_truth must contain only labels 0 and 1")
+    if binary_values and not np.all((scores == 0) | (scores == 1)):
+        raise ValueError("predictions must contain only binary decisions 0 and 1")
+    if probabilities and not np.all((scores >= 0) & (scores <= 1)):
+        raise ValueError("probabilities must lie in [0, 1]")
+    return scores.astype(np.float64), labels.astype(np.int64)
+
+
+def binomial_rate_interval(
+    successes: int,
+    trials: int,
+    confidence_level: float = 0.95,
+    alternative: str = "two-sided",
+) -> Tuple[float, float]:
+    """Return an exact Clopper-Pearson interval for independent Bernoulli trials.
+
+    Args:
+        successes: Number of observed events, between zero and trials.
+        trials: Positive integer number of independent opportunities.
+        confidence_level: Confidence level strictly between zero and one.
+        alternative: 'two-sided', 'greater' (lower bound), or 'less' (upper bound).
+
+    Returns:
+        Lower and upper probability bounds. This interval does not account for
+        dependence between radio frames or variation between trained models.
+    """
+    if (isinstance(successes, (bool, np.bool_)) or isinstance(trials, (bool, np.bool_))
+            or not isinstance(successes, (int, np.integer))
+            or not isinstance(trials, (int, np.integer)) or trials <= 0
+            or not 0 <= successes <= trials):
+        raise ValueError("successes and trials must be integers with 0 <= successes <= trials and trials > 0")
+    if not np.isfinite(confidence_level) or not 0 < confidence_level < 1:
+        raise ValueError("confidence_level must be strictly between zero and one")
+    if alternative not in ("two-sided", "less", "greater"):
+        raise ValueError("alternative must be 'two-sided', 'less', or 'greater'")
+    interval = stats.binomtest(int(successes), int(trials), alternative=alternative).proportion_ci(
+        confidence_level=confidence_level, method="exact"
+    )
+    return float(interval.low), float(interval.high)
 
 
 @dataclass
@@ -92,7 +167,7 @@ class ROCCurveResult:
         pfa: 1D array of False Alarm probabilities, monotonically increasing in [0, 1].
         pd: 1D array of Detection probabilities corresponding to each Pfa entry.
         thresholds: 1D array of threshold values associated with each (Pfa, Pd) coordinate.
-        auc: Area Under the ROC Curve :math:`\\in [0.5, 1.0]`.
+        auc: Area Under the ROC Curve in [0, 1]; reversed rankings may be below 0.5.
     """
 
     pfa: np.ndarray
@@ -114,13 +189,7 @@ def compute_confusion_matrix(
     Returns:
         ConfusionMatrix dataclass instance.
     """
-    if len(predictions) != len(ground_truth):
-        raise ValueError(
-            f"Length mismatch: predictions ({len(predictions)}) != ground_truth ({len(ground_truth)})"
-        )
-
-    preds = predictions.astype(int)
-    truth = ground_truth.astype(int)
+    preds, truth = validate_binary_inputs(predictions, ground_truth, binary_values=True)
 
     tn = int(np.sum((preds == 0) & (truth == 0)))
     fp = int(np.sum((preds == 1) & (truth == 0)))
@@ -155,8 +224,8 @@ def compute_detection_metrics(
     """
     cm = compute_confusion_matrix(predictions, ground_truth)
 
-    pd = cm.true_positives / cm.total_h1 if cm.total_h1 > 0 else 0.0
-    pfa = cm.false_positives / cm.total_h0 if cm.total_h0 > 0 else 0.0
+    pd = cm.true_positives / cm.total_h1 if cm.total_h1 > 0 else float("nan")
+    pfa = cm.false_positives / cm.total_h0 if cm.total_h0 > 0 else float("nan")
     pm = 1.0 - pd
 
     accuracy = (cm.true_positives + cm.true_negatives) / cm.total_samples if cm.total_samples > 0 else 0.0
@@ -184,82 +253,42 @@ def compute_empirical_roc(
 ) -> ROCCurveResult:
     r"""Generate empirical Receiver Operating Characteristic (ROC) curve from scores.
 
-    Sweeps decision threshold :math:`\gamma` from below minimum score to above maximum score.
-    Computes :math:`(P_{\text{FA}}(\gamma), P_d(\gamma))` at each point.
+    Traverses every distinct score in descending order, accepting each tied
+    block together. The first threshold is positive infinity (all negative).
+    Trapezoidal integration then agrees with pairwise ranking and half-credit
+    for tied positive/negative scores, without resampling or FPR-only sorting.
 
     Args:
         decision_scores: 1D array of continuous decision statistics (e.g. Energy or Soft outputs).
         ground_truth: 1D array of ground truth labels (0 for H0, 1 for H1).
-        num_thresholds: Number of discrete evaluation thresholds across score dynamic range.
+        num_thresholds: Retained compatibility argument (integer >= 2). All
+            distinct thresholds are returned regardless of this value so a
+            plotting resolution cannot change the scientific metric.
 
     Returns:
         ROCCurveResult containing monotonic Pfa, Pd, thresholds, and trapezoidal AUC.
     """
-    if len(decision_scores) != len(ground_truth):
-        raise ValueError("decision_scores and ground_truth must have equal length")
-
-    scores = np.asarray(decision_scores, dtype=float)
-    labels = np.asarray(ground_truth, dtype=int)
-
-    h0_scores = scores[labels == 0]
-    h1_scores = scores[labels == 1]
-
-    if len(h0_scores) == 0 or len(h1_scores) == 0:
+    scores, labels = validate_binary_inputs(decision_scores, ground_truth)
+    if (isinstance(num_thresholds, (bool, np.bool_))
+            or not isinstance(num_thresholds, (int, np.integer)) or num_thresholds < 2):
+        raise ValueError("num_thresholds must be an integer >= 2")
+    n_h1 = int(np.sum(labels == 1))
+    n_h0 = len(labels) - n_h1
+    if n_h0 == 0 or n_h1 == 0:
         raise ValueError("ground_truth must contain at least one sample of both class 0 and class 1")
-
-    # Generate thresholds spanning dynamic range
-    min_score = np.min(scores)
-    max_score = np.max(scores)
-    margin = (max_score - min_score) * 0.02
-    thresholds = np.linspace(min_score - margin, max_score + margin, num_thresholds)
-
-    # Sort thresholds in descending order so that Pfa increases from 0 to 1
-    sorted_thresh = np.sort(thresholds)[::-1]
-
-    pfa_list = []
-    pd_list = []
-
-    n_h0 = float(len(h0_scores))
-    n_h1 = float(len(h1_scores))
-
-    for th in sorted_thresh:
-        pfa_val = np.sum(h0_scores >= th) / n_h0
-        pd_val = np.sum(h1_scores >= th) / n_h1
-        pfa_list.append(pfa_val)
-        pd_list.append(pd_val)
-
-    pfa_arr = np.array(pfa_list)
-    pd_arr = np.array(pd_list)
-
-    # Ensure strictly bounded in [0, 1] and monotonic
-    pfa_clean = np.clip(pfa_arr, 0.0, 1.0)
-    pd_clean = np.clip(pd_arr, 0.0, 1.0)
-
-    # Prepend (0,0) and append (1,1) if not already present
-    if pfa_clean[0] > 0.0 or pd_clean[0] > 0.0:
-        pfa_clean = np.insert(pfa_clean, 0, 0.0)
-        pd_clean = np.insert(pd_clean, 0, 0.0)
-        sorted_thresh = np.insert(sorted_thresh, 0, sorted_thresh[0] + margin)
-
-    if pfa_clean[-1] < 1.0 or pd_clean[-1] < 1.0:
-        pfa_clean = np.append(pfa_clean, 1.0)
-        pd_clean = np.append(pd_clean, 1.0)
-        sorted_thresh = np.append(sorted_thresh, sorted_thresh[-1] - margin)
-
-    # Sort by Pfa ascending for integration
-    sort_idx = np.argsort(pfa_clean)
-    pfa_sorted = pfa_clean[sort_idx]
-    pd_sorted = pd_clean[sort_idx]
-    thresh_sorted = sorted_thresh[sort_idx]
-
-    # Compute AUC using trapezoidal rule
-    auc = float(integrate.trapezoid(pd_sorted, pfa_sorted))
-
+    order = np.argsort(-scores, kind="stable")
+    ordered_scores = scores[order]
+    positive = labels[order] == 1
+    block_ends = np.r_[np.flatnonzero(ordered_scores[1:] != ordered_scores[:-1]), len(scores) - 1]
+    tp = np.cumsum(positive, dtype=np.int64)[block_ends]
+    fp = (block_ends + 1) - tp
+    pfa = np.r_[0.0, fp / n_h0]
+    pd = np.r_[0.0, tp / n_h1]
     return ROCCurveResult(
-        pfa=pfa_sorted,
-        pd=pd_sorted,
-        thresholds=thresh_sorted,
-        auc=auc,
+        pfa=pfa,
+        pd=pd,
+        thresholds=np.r_[np.inf, ordered_scores[block_ends]],
+        auc=float(integrate.trapezoid(pd, pfa)),
     )
 
 

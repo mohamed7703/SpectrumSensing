@@ -16,6 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Callable, Optional, List, Dict, Any
 import heapq
+import math
 
 
 @dataclass(order=True)
@@ -51,12 +52,24 @@ class SimulationEngine:
         Args:
             max_time: Maximum simulation duration in seconds.
         """
+        if not math.isfinite(max_time) or max_time < 0:
+            raise ValueError("max_time must be finite and nonnegative")
         self.max_time = max_time
         self.now: float = 0.0
         self._event_queue: List[Event] = []
         self._event_counter: int = 0
         self._trace_log: List[str] = []
         self.stats: Dict[str, Any] = {}
+        self._time_observers: List[Callable[[float], None]] = []
+
+    def add_time_observer(self, observer: Callable[[float], None]) -> None:
+        """Register an integrator called before state changes at each event time.
+
+        Args:
+            observer: Callable accepting the new absolute time. It must integrate
+                the state on the preceding interval, without changing that state.
+        """
+        self._time_observers.append(observer)
 
     def schedule(
         self,
@@ -76,6 +89,8 @@ class SimulationEngine:
         Returns:
             The scheduled Event object (can be cancelled).
         """
+        if not math.isfinite(delay) or delay < 0:
+            raise ValueError("delay must be finite and nonnegative")
         evt = Event(
             time=self.now + delay,
             priority=priority,
@@ -105,6 +120,8 @@ class SimulationEngine:
         Returns:
             The scheduled Event object.
         """
+        if not math.isfinite(abs_time) or abs_time < self.now:
+            raise ValueError("absolute time must be finite and cannot precede now")
         evt = Event(
             time=abs_time,
             priority=priority,
@@ -127,9 +144,18 @@ class SimulationEngine:
             if evt.cancelled:
                 continue
             if evt.time > self.max_time:
+                heapq.heappush(self._event_queue, evt)
                 break
             self.now = evt.time
+            for observer in self._time_observers:
+                observer(self.now)
             evt.callback(**evt.kwargs)
+        # Integrate unfinished transmissions to the declared horizon. Events
+        # beyond it remain queued; no future receive event is credited early.
+        if self.now < self.max_time:
+            self.now = self.max_time
+            for observer in self._time_observers:
+                observer(self.now)
 
     def log_trace(self, action: str, node_id: int, details: str) -> None:
         """Append an NS-3-style ASCII trace entry.
@@ -155,3 +181,4 @@ class SimulationEngine:
         self._event_counter = 0
         self._trace_log.clear()
         self.stats.clear()
+        self._time_observers.clear()

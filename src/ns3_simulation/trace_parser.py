@@ -143,24 +143,37 @@ class TraceParser:
             for line in f:
                 self.parse_line(line)
 
-    def compute_metrics(self) -> Dict[str, Any]:
+    def compute_metrics(self, observation_duration_s: Optional[float] = None) -> Dict[str, Any]:
         """Calculate comprehensive end-to-end network performance metrics.
+
+        Args:
+            observation_duration_s: Full observation interval [0, duration].
+                Omission retains the legacy first-to-last-event span; that
+                inferred span is labelled explicitly and may bias throughput.
 
         Returns:
             Dictionary with PDR, delay statistics, jitter, and throughput.
         """
+        if observation_duration_s is not None:
+            if not np.isfinite(observation_duration_s) or observation_duration_s <= 0:
+                raise ValueError("observation duration must be positive and finite")
+            if any(e["time"] > observation_duration_s for e in self.raw_events):
+                raise ValueError("trace contains events beyond the observation interval")
         total_packets = len(self.packets)
         if total_packets == 0:
             return {
                 "total_packets": 0,
                 "delivered_packets": 0,
                 "dropped_packets": 0,
+                "pending_packets": 0,
                 "pdr_percent": 0.0,
                 "drop_rate_percent": 0.0,
             }
 
         delivered = [p for p in self.packets.values() if p.is_delivered]
         dropped = [p for p in self.packets.values() if p.dropped]
+        pending = [p for p in self.packets.values() if not p.is_delivered and not p.dropped]
+        delivered.sort(key=lambda p: (p.rx_time, p.packet_id))
 
         pdr = (len(delivered) / total_packets) * 100.0
         drop_rate = (len(dropped) / total_packets) * 100.0
@@ -186,7 +199,9 @@ class TraceParser:
             mean_delay = median_delay = p95_delay = p99_delay = min_delay = max_delay = std_delay = jitter_ms = 0.0
 
         # Simulation duration
-        if self.raw_events:
+        if observation_duration_s is not None:
+            sim_duration_s = observation_duration_s
+        elif self.raw_events:
             sim_duration_s = max(e["time"] for e in self.raw_events) - min(e["time"] for e in self.raw_events)
             sim_duration_s = max(sim_duration_s, 0.001)
         else:
@@ -200,6 +215,8 @@ class TraceParser:
             "total_packets": total_packets,
             "delivered_packets": len(delivered),
             "dropped_packets": len(dropped),
+            "pending_packets": len(pending),
+            "pending_rate_percent": 100.0 * len(pending) / total_packets,
             "pdr_percent": float(pdr),
             "drop_rate_percent": float(drop_rate),
             "mean_delay_ms": mean_delay,
@@ -212,6 +229,7 @@ class TraceParser:
             "jitter_ms": jitter_ms,
             "throughput_kbps": float(throughput_kbps),
             "simulation_duration_s": float(sim_duration_s),
+            "duration_source": "declared_observation_interval" if observation_duration_s is not None else "inferred_event_span",
         }
 
     def reset(self) -> None:

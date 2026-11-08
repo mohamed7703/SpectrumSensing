@@ -102,13 +102,14 @@ class TestDatasetLoader:
     """Test unified loader and fallback behavior."""
 
     def test_load_or_generate_synthetic_fallback(self) -> None:
-        """When HDF5 file does not exist, loader must transparently generate synthetic data."""
+        """A caller can explicitly opt in to synthetic fallback for local fixtures."""
         ds = DatasetLoader.load_or_generate(
             hdf5_path="non_existent_file.hdf5",
             min_snr_db=-8.0,
             max_snr_db=30.0,
             num_synthetic_frames=128,
             random_seed=42,
+            allow_synthetic_fallback=True,
         )
 
         assert isinstance(ds, RadioMLDataset)

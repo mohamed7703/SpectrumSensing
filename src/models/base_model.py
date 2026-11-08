@@ -1,8 +1,9 @@
 r"""Base Classifier and Layer Inspection Framework for Spectrum Sensing Models.
 
-Defines the polymorphic contract for all deep learning spectrum sensing
-architectures (1D-CNNs, Bi-GRU, Attention) with layer-by-layer parameter accounting,
-shape propagation, and pure-NumPy inference capability.
+Historical architecture descriptions and a shared four-feature logistic head.
+The NumPy prediction path DOES NOT execute the declared neural layers. Parameter
+counts describe the architecture, not the executed feature head. Actual neural
+training must use a native Keras graph and the validated native training path.
 
 Mathematical Notation:
     The binary sensing prediction $\hat{y} \in [0, 1]$ estimates posterior:
@@ -57,6 +58,7 @@ class BaseSpectrumClassifier(ABC):
             input_shape: Temporal signal dimension (sequence_length, channels).
         """
         self.name = name
+        self.inference_backend = "numpy_four_feature_logistic"
         self.input_shape = input_shape
         self._layers: List[LayerSpec] = []
         # Trainable decision head weights: [power, kurtosis, lag1_corr, spectral_papr]
@@ -75,7 +77,7 @@ class BaseSpectrumClassifier(ABC):
         return self._layers
 
     def count_parameters(self) -> Dict[str, int]:
-        """Return total, trainable, and non-trainable parameter counts."""
+        """Return declared neural architecture counts, not NumPy head size."""
         trainable = sum(layer.trainable_params for layer in self._layers)
         non_trainable = sum(layer.non_trainable_params for layer in self._layers)
         return {
@@ -104,7 +106,7 @@ class BaseSpectrumClassifier(ABC):
         return "\n".join(lines)
 
     def extract_features(self, x: np.ndarray) -> np.ndarray:
-        """Extract multi-dimensional temporal, statistical and spectral features.
+        r"""Extract multi-dimensional temporal, statistical and spectral features.
 
         Features:
             1. Total frame power: $\frac{1}{N} \sum (I^2 + Q^2)$
@@ -142,7 +144,7 @@ class BaseSpectrumClassifier(ABC):
         return np.stack([pows, kurt, autocorr, papr], axis=-1)
 
     def predict_proba(self, x: np.ndarray) -> np.ndarray:
-        """Compute forward inference prediction probabilities on I/Q frames.
+        """Compute the historical four-feature logistic probabilities (not CNN/GRU).
 
         Args:
             x: Input array of shape (B, 1024, 2) or (1024, 2).

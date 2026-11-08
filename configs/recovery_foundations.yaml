@@ -1,0 +1,29 @@
+scope: synthetic_and_discrete_event_implementation_validation
+physical:
+  sample_rate: 2400000
+  adc_bits: 12
+  gain: 50
+  snr_db: 10
+  frame_length: 1024
+  acquisition_chunk: 4096
+  calibration_frames: 400
+  h0_test_frames: 3000
+  h1_test_frames: 300
+  calibration_seed: 1729
+  h0_test_seed: 1730
+  h1_test_seed: 42
+  target_pfa: 0.05
+  target_pd: 0.90
+  confidence_level: 0.95
+sample_bound:
+  snrs_db: [-3, -2, 0, 5]
+  uncertainty_db: 1
+  target_pfa: 0.05
+  target_pd: 0.90
+network:
+  random_seed: 1
+  horizon_s: 0.1
+  slot_duration_s: 0.01
+  pulse_on_s: 0.002
+  pulse_off_s: 0.004
+  short_horizon_s: 0.015

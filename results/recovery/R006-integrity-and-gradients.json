@@ -1,0 +1,470 @@
+{
+  "verified_at_utc": "2026-11-05T22:30:39.254116+00:00",
+  "script_sha256": "59505ec774e10489401aacc2a04b5e3ffebf83b65b0cc8569b3d936cd5790301",
+  "preserved_historical_files": [
+    "S:\\Projects\\SpectrumSensing\\scripts\\build_verification_report_package.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_bigru.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_channel_fading.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_cnn_architectures.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_crn_topology.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_dataset_loader.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_detection_metrics.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_dsp_transforms.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_energy_detection.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_evaluation.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_hypothesis_testing.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_iq_preprocessing.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_mac_protocols.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_model_export.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_nash_equilibrium.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_noise_models.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_sdr_abstraction.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_streaming_latency.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_trace_delay_analysis.py",
+    "S:\\Projects\\SpectrumSensing\\scripts\\verify_trainer.py",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-001-hypothesis-testing.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-002-energy-detection.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-003-detection-metrics.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-004-channel-fading.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-005-noise-models.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-006-dsp-transforms.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-007-iq-preprocessing.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-008-sdr-abstraction.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-009-streaming-latency.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-010-crn-topology.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-011-mac-protocols.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-012-trace-delay-analysis.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-013-nash-equilibrium.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-014-dataset-loader.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-015-cnn-architectures.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-016-bigru-architecture.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-017-training-pipeline.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-018-benchmark-evaluation.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\EXP-019-model-edge-export.md",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\p3_003_sample_trace.tr",
+    "S:\\Projects\\SpectrumSensing\\results\\logs\\TEMPLATE.md",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p1_001_hypothesis_testing.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p1_002_energy_detection.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p1_003_roc_curves.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p1_004_channel_fading.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p1_005_snr_wall.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p2_001_dsp_transforms.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p2_002_iq_preprocessing.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p2_003_sdr_abstraction.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p2_004_streaming_latency.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p3_001_crn_topology.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p3_002_mac_protocols.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p3_003_trace_delay_analysis.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p3_004_nash_equilibrium.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p4_001_dataset_loader.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p4_002_cnn_architectures.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p4_003_bigru_architecture.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p4_004_training_pipeline.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p4_005_benchmark_evaluation.png",
+    "S:\\Projects\\SpectrumSensing\\results\\plots\\p4_006_model_edge_export.png",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\.gitkeep",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_1.txt",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_10.txt",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_11.txt",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_12.txt",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_2.txt",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_3.txt",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_4.txt",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_5.txt",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_6.txt",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_7.txt",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_8.txt",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\checkpoints\\batchnorm_cnn_best_epoch_9.txt",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\.gitkeep",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\baseline_1d-cnn.onnx",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\baseline_1d-cnn.tflite",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\baseline_1d-cnn_fp16.tflite",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\baseline_1d-cnn_int8.tflite",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\baseline_1d-cnn_weights.npz",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\batchnorm_1d-cnn.onnx",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\batchnorm_1d-cnn.tflite",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\batchnorm_1d-cnn_fp16.tflite",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\batchnorm_1d-cnn_int8.tflite",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\batchnorm_1d-cnn_weights.npz",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\bi-gru_temporal.onnx",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\bi-gru_temporal.tflite",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\bi-gru_temporal_fp16.tflite",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\bi-gru_temporal_int8.tflite",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\bi-gru_temporal_weights.npz",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\gap_1d-cnn.onnx",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\gap_1d-cnn.tflite",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\gap_1d-cnn_fp16.tflite",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\gap_1d-cnn_int8.tflite",
+    "S:\\Projects\\SpectrumSensing\\saved_models\\exported\\gap_1d-cnn_weights.npz",
+    "C:\\Users\\aamah\\OneDrive\\Desktop\\COMPREHENSIVE_VERIFICATION_REPORT.md",
+    "S:\\M folder\\semster 9\\sensors-24-07907.pdf",
+    "S:\\Projects\\SpectrumSensing\\docs\\COMPREHENSIVE_VERIFICATION_REPORT.md"
+  ],
+  "preserved_local_assets": [
+    "S:\\M folder\\semster 9\\grad. project\\find_correct_model.ipynb",
+    "S:\\M folder\\semster 9\\grad. project\\quick_ab_test.ipynb",
+    "S:\\M folder\\semster 9\\grad. project\\train_improved.ipynb",
+    "S:\\M folder\\semster 9\\grad. project\\train_v3(\u0627\u062e\u0631 \u0646\u0633\u062e\u0629 \u0634\u063a\u0627\u0644\u0629 \u0645\u0646\u0647)_colab.ipynb",
+    "S:\\M folder\\semster 9\\grad. project\\train_v3_colab.ipynb",
+    "S:\\M folder\\semster 9\\grad. project\\train_v4_colab.ipynb",
+    "S:\\M folder\\semster 9\\grad. project\\GAP_v4_best.h5",
+    "S:\\M folder\\semster 9\\grad. project\\model_epoch_32.h5",
+    "S:\\M folder\\semster 9\\grad. project\\usrppp_noise.dat"
+  ],
+  "tests": {
+    "file": "S:\\Projects\\SpectrumSensing-audit-2026-11-05\\recovery-local-full-suite.xml",
+    "sha256": "ed67a2a150634f09f97cd8721fc96dadd5279f1d140a331cdb548a44fe42aa0b",
+    "cases": 325,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0
+  },
+  "native_bce_gradients": {
+    "baseline": {
+      "checkpoint_sha256": "963b7623471bd9bbaaa560ede72e6d0941dc05a28da9bfae80d97a241b816cfa",
+      "parameters": 2087457,
+      "optimizer_iterations": 12,
+      "variables": [
+        {
+          "variable": "conv1d_1/kernel",
+          "shape": [
+            3,
+            2,
+            32
+          ],
+          "bce_gradient_l2": 0.15871530771255493
+        },
+        {
+          "variable": "conv1d_1/bias",
+          "shape": [
+            32
+          ],
+          "bce_gradient_l2": 0.07960128039121628
+        },
+        {
+          "variable": "conv1d_2/kernel",
+          "shape": [
+            3,
+            32,
+            64
+          ],
+          "bce_gradient_l2": 0.21769820153713226
+        },
+        {
+          "variable": "conv1d_2/bias",
+          "shape": [
+            64
+          ],
+          "bce_gradient_l2": 0.09840723127126694
+        },
+        {
+          "variable": "dense_1/kernel",
+          "shape": [
+            16256,
+            128
+          ],
+          "bce_gradient_l2": 1.7143890857696533
+        },
+        {
+          "variable": "dense_1/bias",
+          "shape": [
+            128
+          ],
+          "bce_gradient_l2": 0.07787780463695526
+        },
+        {
+          "variable": "dense_2/kernel",
+          "shape": [
+            128,
+            1
+          ],
+          "bce_gradient_l2": 0.13460750877857208
+        },
+        {
+          "variable": "dense_2/bias",
+          "shape": [
+            1
+          ],
+          "bce_gradient_l2": 0.07791785895824432
+        }
+      ],
+      "scope": "BCE graph connectivity with dropout disabled; no generalization or RNG-resume claim"
+    },
+    "batchnorm": {
+      "checkpoint_sha256": "ee311b390318ca191621b19a21dd949cc8cc449827e2938d9137477391c0d269",
+      "parameters": 23073,
+      "optimizer_iterations": 12,
+      "variables": [
+        {
+          "variable": "conv1d_1/kernel",
+          "shape": [
+            3,
+            2,
+            32
+          ],
+          "bce_gradient_l2": 0.15568546950817108
+        },
+        {
+          "variable": "conv1d_1/bias",
+          "shape": [
+            32
+          ],
+          "bce_gradient_l2": 0.163158118724823
+        },
+        {
+          "variable": "batch_norm_1/gamma",
+          "shape": [
+            32
+          ],
+          "bce_gradient_l2": 0.018749983981251717
+        },
+        {
+          "variable": "batch_norm_1/beta",
+          "shape": [
+            32
+          ],
+          "bce_gradient_l2": 0.1554337590932846
+        },
+        {
+          "variable": "conv1d_2/kernel",
+          "shape": [
+            3,
+            32,
+            64
+          ],
+          "bce_gradient_l2": 0.26059433817863464
+        },
+        {
+          "variable": "conv1d_2/bias",
+          "shape": [
+            64
+          ],
+          "bce_gradient_l2": 0.20487430691719055
+        },
+        {
+          "variable": "batch_norm_2/gamma",
+          "shape": [
+            64
+          ],
+          "bce_gradient_l2": 0.01901423931121826
+        },
+        {
+          "variable": "batch_norm_2/beta",
+          "shape": [
+            64
+          ],
+          "bce_gradient_l2": 0.1991155445575714
+        },
+        {
+          "variable": "dense_output/kernel",
+          "shape": [
+            16256,
+            1
+          ],
+          "bce_gradient_l2": 1.3857402801513672
+        },
+        {
+          "variable": "dense_output/bias",
+          "shape": [
+            1
+          ],
+          "bce_gradient_l2": 0.14304956793785095
+        }
+      ],
+      "scope": "BCE graph connectivity with dropout disabled; no generalization or RNG-resume claim"
+    },
+    "gap": {
+      "checkpoint_sha256": "c7dee31bb9bdea8667f1c2fdd8f70c77d00d4890ef48bf2aec1b0f9850e094ea",
+      "parameters": 14881,
+      "optimizer_iterations": 12,
+      "variables": [
+        {
+          "variable": "conv1d_1/kernel",
+          "shape": [
+            3,
+            2,
+            32
+          ],
+          "bce_gradient_l2": 0.06911961734294891
+        },
+        {
+          "variable": "conv1d_1/bias",
+          "shape": [
+            32
+          ],
+          "bce_gradient_l2": 0.02699737809598446
+        },
+        {
+          "variable": "conv1d_2/kernel",
+          "shape": [
+            3,
+            32,
+            64
+          ],
+          "bce_gradient_l2": 0.1417628675699234
+        },
+        {
+          "variable": "conv1d_2/bias",
+          "shape": [
+            64
+          ],
+          "bce_gradient_l2": 0.02939577028155327
+        },
+        {
+          "variable": "dense_1/kernel",
+          "shape": [
+            64,
+            128
+          ],
+          "bce_gradient_l2": 0.17519919574260712
+        },
+        {
+          "variable": "dense_1/bias",
+          "shape": [
+            128
+          ],
+          "bce_gradient_l2": 0.04183709993958473
+        },
+        {
+          "variable": "dense_output/kernel",
+          "shape": [
+            128,
+            1
+          ],
+          "bce_gradient_l2": 0.12701921164989471
+        },
+        {
+          "variable": "dense_output/bias",
+          "shape": [
+            1
+          ],
+          "bce_gradient_l2": 0.02713070809841156
+        }
+      ],
+      "scope": "BCE graph connectivity with dropout disabled; no generalization or RNG-resume claim"
+    }
+  },
+  "verified_exports": [
+    {
+      "model": "baseline",
+      "mode": "none",
+      "sha256": "b5a6d07e5aa4d0aeb5bb540bc51052430738d550ac6f9fda75c11b1bac8555f0",
+      "bytes": 8353244
+    },
+    {
+      "model": "baseline",
+      "mode": "fp16",
+      "sha256": "077841118b1fcf324394cdada5657f04de8ccada4cfd160b5413e5412a1cfe1c",
+      "bytes": 4179272
+    },
+    {
+      "model": "baseline",
+      "mode": "int8",
+      "sha256": "61f607acbb09ff03e7036f7f6500fe5b00fe045e1f898667459e6ba3afcabdb3",
+      "bytes": 2097488
+    },
+    {
+      "model": "batchnorm",
+      "mode": "none",
+      "sha256": "8573c772966ccb5607f4fc0bcb400e30c3a90be08c353796715a729fdfc08334",
+      "bytes": 94216
+    },
+    {
+      "model": "batchnorm",
+      "mode": "fp16",
+      "sha256": "0d0bfba18d919bea8a9e1e1859e54bd82ab1b05de52da0c759d2aff941a213fa",
+      "bytes": 49568
+    },
+    {
+      "model": "batchnorm",
+      "mode": "int8",
+      "sha256": "bca7d2b0a65409f2cc744ec7c3a9523e71b501a653fe5a044e042231c5dbd900",
+      "bytes": 29216
+    },
+    {
+      "model": "gap",
+      "mode": "none",
+      "sha256": "9ec27a01fbdfebfad92848df29146f4f04b4efe790be70c12fb2684685982777",
+      "bytes": 63136
+    },
+    {
+      "model": "gap",
+      "mode": "fp16",
+      "sha256": "3f7de5d3ad0c8bebd5a9946d3483b065f9fb82e7b0eac691126cfdb2add51b3e",
+      "bytes": 34328
+    },
+    {
+      "model": "gap",
+      "mode": "int8",
+      "sha256": "30b22ba4b252236fd269158c18a9e7e76adad46b8bf9384d2d3c9be7234a45d9",
+      "bytes": 25136
+    }
+  ],
+  "packages": {
+    "Markdown": "3.10.3",
+    "MarkupSafe": "3.0.4",
+    "PyYAML": "6.0.3",
+    "Pygments": "2.21.0",
+    "Werkzeug": "3.1.9",
+    "absl-py": "2.5.1",
+    "astunparse": "1.6.3",
+    "certifi": "2026.10.23",
+    "charset-normalizer": "3.5.2",
+    "cloudpickle": "3.1.2",
+    "colorama": "0.4.6",
+    "contourpy": "1.3.2",
+    "cycler": "0.12.1",
+    "exceptiongroup": "1.3.1",
+    "flatbuffers": "25.12.19",
+    "fonttools": "4.65.0",
+    "gast": "0.7.0",
+    "google-pasta": "0.2.0",
+    "grpcio": "1.85.1",
+    "h5py": "3.16.0",
+    "idna": "3.20",
+    "iniconfig": "2.3.1",
+    "joblib": "1.6.0",
+    "keras": "3.12.4",
+    "kiwisolver": "1.5.1",
+    "libclang": "18.1.1",
+    "markdown-it-py": "4.2.0",
+    "matplotlib": "3.10.9",
+    "mdurl": "0.1.2",
+    "ml_dtypes": "0.6.0",
+    "namex": "0.1.0",
+    "numpy": "2.2.6",
+    "opt_einsum": "3.4.0",
+    "optree": "0.20.0",
+    "packaging": "26.3",
+    "pillow": "12.3.0",
+    "pip": "23.0.1",
+    "pluggy": "1.7.0",
+    "protobuf": "7.36.2",
+    "pymupdf": "1.28.2",
+    "pyparsing": "3.3.3",
+    "pytest": "9.2.0",
+    "python-dateutil": "3.0.0",
+    "requests": "2.34.2",
+    "rich": "15.0.0",
+    "scikit-learn": "1.7.2",
+    "scipy": "1.15.3",
+    "setuptools": "65.5.0",
+    "six": "1.17.0",
+    "tensorboard": "2.20.0",
+    "tensorboard-data-server": "0.7.2",
+    "tensorflow": "2.20.0",
+    "termcolor": "3.3.0",
+    "threadpoolctl": "3.8.0",
+    "tomli": "2.5.0",
+    "typing_extensions": "4.16.0",
+    "tzdata": "2026.6",
+    "urllib3": "2.8.0",
+    "wheel": "0.48.0",
+    "wrapt": "2.5.2"
+  },
+  "limits": [
+    "Does not validate original scientific conclusions",
+    "No RadioML dataset download or full evaluation",
+    "Historical reports remain evidence of the baseline, not corrected-run certificates"
+  ]
+}

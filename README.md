@@ -1,9 +1,13 @@
 # AI-Driven Cognitive Radio Spectrum Sensing
 
+> **Scientific validation update (6 November 2026).** Local recovery has 325 passing software checks, native CNN/checkpoint execution and real TFLite exports. INT8 threshold transfer and gain-drift tests expose failures; paper reproduction and hardware claims remain unverified. Read the [recovery report and next steps](docs/recovery/RECOVERY_PROGRESS.md), [claim ledger](docs/recovery/CLAIM_LEDGER.md) and [measurement contract](docs/recovery/MEASUREMENT_CONTRACT.md). Historical completion claims and benchmark tables below describe the pre-audit implementation; original reports and results are preserved.
+
+The [eight-slide progress presentation](docs/presentations/research-validation-progress/README.md) includes offline HTML, editable React/Framer Motion source and SVG block diagrams. The [initial technical audit](docs/recovery/baseline-audit/TECHNICAL_AUDIT.md), [per-test audit](docs/recovery/baseline-audit/TEST_BY_TEST_AUDIT.md), and [recovery plan](docs/recovery/baseline-audit/RECOVERY_AND_VALIDATION_PLAN.md) preserve the pre-correction assessment. Install `requirements-recovery.txt` to reproduce the Python environment; the 325-case suite passed again on 8 November 2026.
+
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests: 205 Passed](https://img.shields.io/badge/Tests-205%20Passed-brightgreen.svg)]()
-[![Status: Complete](https://img.shields.io/badge/Phases-1--4%20Complete%20(100%25)-success.svg)]()
+[![Local software tests: 325 Passed](https://img.shields.io/badge/Local%20software%20tests-325%20Passed-brightgreen.svg)]()
+[![Scientific validation: Incomplete](https://img.shields.io/badge/Scientific%20validation-Incomplete-orange.svg)]()
 [![GitHub: mohamed7703/SpectrumSensing](https://img.shields.io/badge/GitHub-mohamed7703%2FSpectrumSensing-181717.svg?logo=github)](https://github.com/mohamed7703/SpectrumSensing)
 
 An end-to-end AI-driven Cognitive Radio Network (CRN) framework for dynamic spectrum sensing, based on the methodology from:

@@ -1,0 +1,1356 @@
+{
+  "scope": "fixed_checkpoint_synthetic_runtime_calibration_and_receiver_gain_drift",
+  "config": {
+    "scope": "fixed_checkpoint_synthetic_runtime_calibration_and_receiver_gain_drift",
+    "receiver_gain_drift_db": [
+      -1,
+      0,
+      1
+    ],
+    "runtime_modes": [
+      "native",
+      "int8"
+    ],
+    "intra_op_threads": 2,
+    "inter_op_threads": 1
+  },
+  "source_record_sha256": "8b628343b31bd9e626fa79451767a5f2b058427e9348a93028041e9e4e5df747",
+  "config_sha256": "57f775b98f25a3c4f41cf226cdd2bf780c4c77fab7b38c92a432be5424b46348",
+  "models": {
+    "baseline": {
+      "native": {
+        "calibration_distinct_scores": 400,
+        "conditions": [
+          {
+            "gain_drift_db": -1,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.6075893044471742,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.6966555555555556,
+              "h0": {
+                "false_alarms": 3,
+                "frames": 300,
+                "pfa": 0.01,
+                "interval": [
+                  0.002067007235092314,
+                  0.028944511255692685
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 0,
+                  "frames": 100,
+                  "pd": 0.0,
+                  "interval": [
+                    0.0,
+                    0.03621669264519054
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 13,
+                  "frames": 100,
+                  "pd": 0.13,
+                  "interval": [
+                    0.07107304618545972,
+                    0.2120406770874498
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 77,
+                  "frames": 100,
+                  "pd": 0.77,
+                  "interval": [
+                    0.6751412672248969,
+                    0.8482683886985327
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "gain_drift_db": 0,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.6075893044471742,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.6966444444444444,
+              "h0": {
+                "false_alarms": 11,
+                "frames": 300,
+                "pfa": 0.03666666666666667,
+                "interval": [
+                  0.01844346081245978,
+                  0.06465851819636823
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 7,
+                  "frames": 100,
+                  "pd": 0.07,
+                  "interval": [
+                    0.02860528890741859,
+                    0.13891972845586656
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 18,
+                  "frames": 100,
+                  "pd": 0.18,
+                  "interval": [
+                    0.11031122915371105,
+                    0.2694770859669013
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 81,
+                  "frames": 100,
+                  "pd": 0.81,
+                  "interval": [
+                    0.7193020420263277,
+                    0.881556803867574
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "gain_drift_db": 1,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.6075893044471742,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.6966111111111111,
+              "h0": {
+                "false_alarms": 37,
+                "frames": 300,
+                "pfa": 0.12333333333333334,
+                "interval": [
+                  0.08834419456105247,
+                  0.16597270217334206
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 11,
+                  "frames": 100,
+                  "pd": 0.11,
+                  "interval": [
+                    0.056207020285487456,
+                    0.18830113219644257
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 33,
+                  "frames": 100,
+                  "pd": 0.33,
+                  "interval": [
+                    0.23919853462260193,
+                    0.4311727507775711
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 82,
+                  "frames": 100,
+                  "pd": 0.82,
+                  "interval": [
+                    0.7305229140330989,
+                    0.889688770846289
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "int8": {
+        "calibration_distinct_scores": 34,
+        "conditions": [
+          {
+            "gain_drift_db": -1,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.6093750000000001,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.6964777777777778,
+              "h0": {
+                "false_alarms": 0,
+                "frames": 300,
+                "pfa": 0.0,
+                "interval": [
+                  0.0,
+                  0.01222097469429642
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 0,
+                  "frames": 100,
+                  "pd": 0.0,
+                  "interval": [
+                    0.0,
+                    0.03621669264519054
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 10,
+                  "frames": 100,
+                  "pd": 0.1,
+                  "interval": [
+                    0.049004689221485945,
+                    0.17622259774017535
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 76,
+                  "frames": 100,
+                  "pd": 0.76,
+                  "interval": [
+                    0.6642645107292549,
+                    0.8397753868285532
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "gain_drift_db": 0,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.6093750000000001,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.699888888888889,
+              "h0": {
+                "false_alarms": 8,
+                "frames": 300,
+                "pfa": 0.02666666666666667,
+                "interval": [
+                  0.011581567754335203,
+                  0.051865811961082406
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 4,
+                  "frames": 100,
+                  "pd": 0.04,
+                  "interval": [
+                    0.011004493986188203,
+                    0.09925715671265994
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 17,
+                  "frames": 100,
+                  "pd": 0.17,
+                  "interval": [
+                    0.10226491003552808,
+                    0.2581754106321507
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 78,
+                  "frames": 100,
+                  "pd": 0.78,
+                  "interval": [
+                    0.686080346213682,
+                    0.8566964232501946
+                  ]
+                }
+              ]
+            },
+            "native_threshold_transferred": {
+              "calibration": {
+                "threshold": 0.6075893044471742,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.699888888888889,
+              "h0": {
+                "false_alarms": 9,
+                "frames": 300,
+                "pfa": 0.03,
+                "interval": [
+                  0.013807819555525978,
+                  0.05618354824169662
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 6,
+                  "frames": 100,
+                  "pd": 0.06,
+                  "interval": [
+                    0.02233488607131637,
+                    0.12602993458082282
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 18,
+                  "frames": 100,
+                  "pd": 0.18,
+                  "interval": [
+                    0.11031122915371105,
+                    0.2694770859669013
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 81,
+                  "frames": 100,
+                  "pd": 0.81,
+                  "interval": [
+                    0.7193020420263277,
+                    0.881556803867574
+                  ]
+                }
+              ]
+            },
+            "decision_changes_at_native_threshold": 3
+          },
+          {
+            "gain_drift_db": 1,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.6093750000000001,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.6949444444444445,
+              "h0": {
+                "false_alarms": 19,
+                "frames": 300,
+                "pfa": 0.06333333333333334,
+                "interval": [
+                  0.0385580198283766,
+                  0.09713819660714995
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 8,
+                  "frames": 100,
+                  "pd": 0.08,
+                  "interval": [
+                    0.035171562517808085,
+                    0.15155763586442092
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 26,
+                  "frames": 100,
+                  "pd": 0.26,
+                  "interval": [
+                    0.17739443786765255,
+                    0.35731206310010327
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 81,
+                  "frames": 100,
+                  "pd": 0.81,
+                  "interval": [
+                    0.7193020420263277,
+                    0.881556803867574
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "batchnorm": {
+      "native": {
+        "calibration_distinct_scores": 400,
+        "conditions": [
+          {
+            "gain_drift_db": -1,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.6587737202644349,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.7617666666666666,
+              "h0": {
+                "false_alarms": 2,
+                "frames": 300,
+                "pfa": 0.006666666666666667,
+                "interval": [
+                  0.0008083864124312157,
+                  0.023873497572173746
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 0,
+                  "frames": 100,
+                  "pd": 0.0,
+                  "interval": [
+                    0.0,
+                    0.03621669264519054
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 23,
+                  "frames": 100,
+                  "pd": 0.23,
+                  "interval": [
+                    0.15173161130146726,
+                    0.3248587327751033
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 90,
+                  "frames": 100,
+                  "pd": 0.9,
+                  "interval": [
+                    0.8237774022598248,
+                    0.9509953107785141
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "gain_drift_db": 0,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.6587737202644349,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.7615888888888889,
+              "h0": {
+                "false_alarms": 13,
+                "frames": 300,
+                "pfa": 0.043333333333333335,
+                "interval": [
+                  0.023271841004685986,
+                  0.0729614642202821
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 5,
+                  "frames": 100,
+                  "pd": 0.05,
+                  "interval": [
+                    0.01643187918172828,
+                    0.11283491110546288
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 44,
+                  "frames": 100,
+                  "pd": 0.44,
+                  "interval": [
+                    0.34083602372345784,
+                    0.5428125029367601
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 94,
+                  "frames": 100,
+                  "pd": 0.94,
+                  "interval": [
+                    0.8739700654191771,
+                    0.9776651139286836
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "gain_drift_db": 1,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.6587737202644349,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.7615444444444446,
+              "h0": {
+                "false_alarms": 40,
+                "frames": 300,
+                "pfa": 0.13333333333333333,
+                "interval": [
+                  0.0969922149442858,
+                  0.17710876256786875
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 13,
+                  "frames": 100,
+                  "pd": 0.13,
+                  "interval": [
+                    0.07107304618545972,
+                    0.2120406770874498
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 64,
+                  "frames": 100,
+                  "pd": 0.64,
+                  "interval": [
+                    0.5378781066724183,
+                    0.7335915772667655
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 95,
+                  "frames": 100,
+                  "pd": 0.95,
+                  "interval": [
+                    0.887165088894537,
+                    0.9835681208182717
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "int8": {
+        "calibration_distinct_scores": 42,
+        "conditions": [
+          {
+            "gain_drift_db": -1,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.6562500000000001,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.7609388888888889,
+              "h0": {
+                "false_alarms": 3,
+                "frames": 300,
+                "pfa": 0.01,
+                "interval": [
+                  0.002067007235092314,
+                  0.028944511255692685
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 0,
+                  "frames": 100,
+                  "pd": 0.0,
+                  "interval": [
+                    0.0,
+                    0.03621669264519054
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 22,
+                  "frames": 100,
+                  "pd": 0.22,
+                  "interval": [
+                    0.14330357674980537,
+                    0.31391965378631775
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 90,
+                  "frames": 100,
+                  "pd": 0.9,
+                  "interval": [
+                    0.8237774022598248,
+                    0.9509953107785141
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "gain_drift_db": 0,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.6562500000000001,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.7630666666666668,
+              "h0": {
+                "false_alarms": 13,
+                "frames": 300,
+                "pfa": 0.043333333333333335,
+                "interval": [
+                  0.023271841004685986,
+                  0.0729614642202821
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 6,
+                  "frames": 100,
+                  "pd": 0.06,
+                  "interval": [
+                    0.02233488607131637,
+                    0.12602993458082282
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 44,
+                  "frames": 100,
+                  "pd": 0.44,
+                  "interval": [
+                    0.34083602372345784,
+                    0.5428125029367601
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 94,
+                  "frames": 100,
+                  "pd": 0.94,
+                  "interval": [
+                    0.8739700654191771,
+                    0.9776651139286836
+                  ]
+                }
+              ]
+            },
+            "native_threshold_transferred": {
+              "calibration": {
+                "threshold": 0.6587737202644349,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.7630666666666668,
+              "h0": {
+                "false_alarms": 13,
+                "frames": 300,
+                "pfa": 0.043333333333333335,
+                "interval": [
+                  0.023271841004685986,
+                  0.0729614642202821
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 6,
+                  "frames": 100,
+                  "pd": 0.06,
+                  "interval": [
+                    0.02233488607131637,
+                    0.12602993458082282
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 44,
+                  "frames": 100,
+                  "pd": 0.44,
+                  "interval": [
+                    0.34083602372345784,
+                    0.5428125029367601
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 94,
+                  "frames": 100,
+                  "pd": 0.94,
+                  "interval": [
+                    0.8739700654191771,
+                    0.9776651139286836
+                  ]
+                }
+              ]
+            },
+            "decision_changes_at_native_threshold": 3
+          },
+          {
+            "gain_drift_db": 1,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.6562500000000001,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.7610222222222222,
+              "h0": {
+                "false_alarms": 40,
+                "frames": 300,
+                "pfa": 0.13333333333333333,
+                "interval": [
+                  0.0969922149442858,
+                  0.17710876256786875
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 12,
+                  "frames": 100,
+                  "pd": 0.12,
+                  "interval": [
+                    0.06356890256102586,
+                    0.2002356836200388
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 64,
+                  "frames": 100,
+                  "pd": 0.64,
+                  "interval": [
+                    0.5378781066724183,
+                    0.7335915772667655
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 95,
+                  "frames": 100,
+                  "pd": 0.95,
+                  "interval": [
+                    0.887165088894537,
+                    0.9835681208182717
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "gap": {
+      "native": {
+        "calibration_distinct_scores": 398,
+        "conditions": [
+          {
+            "gain_drift_db": -1,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.52237206697464,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.8810611111111111,
+              "h0": {
+                "false_alarms": 0,
+                "frames": 300,
+                "pfa": 0.0,
+                "interval": [
+                  0.0,
+                  0.01222097469429642
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 0,
+                  "frames": 100,
+                  "pd": 0.0,
+                  "interval": [
+                    0.0,
+                    0.03621669264519054
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 67,
+                  "frames": 100,
+                  "pd": 0.67,
+                  "interval": [
+                    0.5688272492224289,
+                    0.7608014653773981
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 100,
+                  "frames": 100,
+                  "pd": 1.0,
+                  "interval": [
+                    0.9637833073548094,
+                    1.0
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "gain_drift_db": 0,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.52237206697464,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.8809833333333332,
+              "h0": {
+                "false_alarms": 5,
+                "frames": 300,
+                "pfa": 0.016666666666666666,
+                "interval": [
+                  0.00543320531511443,
+                  0.03846374496491409
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 10,
+                  "frames": 100,
+                  "pd": 0.1,
+                  "interval": [
+                    0.049004689221485945,
+                    0.17622259774017535
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 97,
+                  "frames": 100,
+                  "pd": 0.97,
+                  "interval": [
+                    0.9148239470257197,
+                    0.9937700284616938
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 100,
+                  "frames": 100,
+                  "pd": 1.0,
+                  "interval": [
+                    0.9637833073548094,
+                    1.0
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "gain_drift_db": 1,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.52237206697464,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.8809166666666667,
+              "h0": {
+                "false_alarms": 170,
+                "frames": 300,
+                "pfa": 0.5666666666666667,
+                "interval": [
+                  0.5085004794599135,
+                  0.6235030950045907
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 76,
+                  "frames": 100,
+                  "pd": 0.76,
+                  "interval": [
+                    0.6642645107292549,
+                    0.8397753868285532
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 100,
+                  "frames": 100,
+                  "pd": 1.0,
+                  "interval": [
+                    0.9637833073548094,
+                    1.0
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 100,
+                  "frames": 100,
+                  "pd": 1.0,
+                  "interval": [
+                    0.9637833073548094,
+                    1.0
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "int8": {
+        "calibration_distinct_scores": 3,
+        "conditions": [
+          {
+            "gain_drift_db": -1,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.5234375000000001,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.8538888888888889,
+              "h0": {
+                "false_alarms": 0,
+                "frames": 300,
+                "pfa": 0.0,
+                "interval": [
+                  0.0,
+                  0.01222097469429642
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 0,
+                  "frames": 100,
+                  "pd": 0.0,
+                  "interval": [
+                    0.0,
+                    0.03621669264519054
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 14,
+                  "frames": 100,
+                  "pd": 0.14,
+                  "interval": [
+                    0.07870540492695435,
+                    0.2237279813705804
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 100,
+                  "frames": 100,
+                  "pd": 1.0,
+                  "interval": [
+                    0.9637833073548094,
+                    1.0
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "gain_drift_db": 0,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.5234375000000001,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.8441333333333334,
+              "h0": {
+                "false_alarms": 0,
+                "frames": 300,
+                "pfa": 0.0,
+                "interval": [
+                  0.0,
+                  0.01222097469429642
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 0,
+                  "frames": 100,
+                  "pd": 0.0,
+                  "interval": [
+                    0.0,
+                    0.03621669264519054
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 69,
+                  "frames": 100,
+                  "pd": 0.69,
+                  "interval": [
+                    0.5896854458397686,
+                    0.7787112078693281
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 100,
+                  "frames": 100,
+                  "pd": 1.0,
+                  "interval": [
+                    0.9637833073548094,
+                    1.0
+                  ]
+                }
+              ]
+            },
+            "native_threshold_transferred": {
+              "calibration": {
+                "threshold": 0.52237206697464,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.8441333333333334,
+              "h0": {
+                "false_alarms": 60,
+                "frames": 300,
+                "pfa": 0.2,
+                "interval": [
+                  0.15623130113659678,
+                  0.24980440153066547
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 34,
+                  "frames": 100,
+                  "pd": 0.34,
+                  "interval": [
+                    0.24822350154440878,
+                    0.4415332677509588
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 98,
+                  "frames": 100,
+                  "pd": 0.98,
+                  "interval": [
+                    0.9296160675289299,
+                    0.9975686631760752
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 100,
+                  "frames": 100,
+                  "pd": 1.0,
+                  "interval": [
+                    0.9637833073548094,
+                    1.0
+                  ]
+                }
+              ]
+            },
+            "decision_changes_at_native_threshold": 80
+          },
+          {
+            "gain_drift_db": 1,
+            "runtime_calibrated": {
+              "calibration": {
+                "threshold": 0.5234375000000001,
+                "frames": 400,
+                "order_rank": 388,
+                "target_pfa": 0.05,
+                "confidence_level": 0.95
+              },
+              "auc": 0.8524444444444444,
+              "h0": {
+                "false_alarms": 6,
+                "frames": 300,
+                "pfa": 0.02,
+                "interval": [
+                  0.007374162001611381,
+                  0.0430210826736224
+                ]
+              },
+              "h1_by_snr": [
+                {
+                  "snr_db": -10.0,
+                  "detections": 10,
+                  "frames": 100,
+                  "pd": 0.1,
+                  "interval": [
+                    0.049004689221485945,
+                    0.17622259774017535
+                  ]
+                },
+                {
+                  "snr_db": 0.0,
+                  "detections": 98,
+                  "frames": 100,
+                  "pd": 0.98,
+                  "interval": [
+                    0.9296160675289299,
+                    0.9975686631760752
+                  ]
+                },
+                {
+                  "snr_db": 10.0,
+                  "detections": 100,
+                  "frames": 100,
+                  "pd": 1.0,
+                  "interval": [
+                    0.9637833073548094,
+                    1.0
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "limits": [
+    "No retraining or threshold selection on test frames",
+    "All calibration uses nominal gain only",
+    "Gain scales both signal and noise, retaining the input SNR",
+    "Synthetic fixture results do not reproduce the paper",
+    "Counts/intervals are marginal; no significance claim across comparisons"
+  ],
+  "energy_detector": [
+    {
+      "gain_drift_db": -1,
+      "metrics": {
+        "calibration": {
+          "threshold": 1.0598257182525688,
+          "frames": 400,
+          "order_rank": 388,
+          "target_pfa": 0.05,
+          "confidence_level": 0.95
+        },
+        "auc": 0.9962111111111112,
+        "h0": {
+          "false_alarms": 0,
+          "frames": 300,
+          "pfa": 0.0,
+          "interval": [
+            0.0,
+            0.01222097469429642
+          ]
+        },
+        "h1_by_snr": [
+          {
+            "snr_db": -10.0,
+            "detections": 0,
+            "frames": 100,
+            "pd": 0.0,
+            "interval": [
+              0.0,
+              0.03621669264519054
+            ]
+          },
+          {
+            "snr_db": 0.0,
+            "detections": 100,
+            "frames": 100,
+            "pd": 1.0,
+            "interval": [
+              0.9637833073548094,
+              1.0
+            ]
+          },
+          {
+            "snr_db": 10.0,
+            "detections": 100,
+            "frames": 100,
+            "pd": 1.0,
+            "interval": [
+              0.9637833073548094,
+              1.0
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "gain_drift_db": 0,
+      "metrics": {
+        "calibration": {
+          "threshold": 1.0598257182525688,
+          "frames": 400,
+          "order_rank": 388,
+          "target_pfa": 0.05,
+          "confidence_level": 0.95
+        },
+        "auc": 0.9962111111111112,
+        "h0": {
+          "false_alarms": 11,
+          "frames": 300,
+          "pfa": 0.03666666666666667,
+          "interval": [
+            0.01844346081245978,
+            0.06465851819636823
+          ]
+        },
+        "h1_by_snr": [
+          {
+            "snr_db": -10.0,
+            "detections": 90,
+            "frames": 100,
+            "pd": 0.9,
+            "interval": [
+              0.8237774022598248,
+              0.9509953107785141
+            ]
+          },
+          {
+            "snr_db": 0.0,
+            "detections": 100,
+            "frames": 100,
+            "pd": 1.0,
+            "interval": [
+              0.9637833073548094,
+              1.0
+            ]
+          },
+          {
+            "snr_db": 10.0,
+            "detections": 100,
+            "frames": 100,
+            "pd": 1.0,
+            "interval": [
+              0.9637833073548094,
+              1.0
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "gain_drift_db": 1,
+      "metrics": {
+        "calibration": {
+          "threshold": 1.0598257182525688,
+          "frames": 400,
+          "order_rank": 388,
+          "target_pfa": 0.05,
+          "confidence_level": 0.95
+        },
+        "auc": 0.9962111111111112,
+        "h0": {
+          "false_alarms": 300,
+          "frames": 300,
+          "pfa": 1.0,
+          "interval": [
+            0.9877790253057036,
+            1.0
+          ]
+        },
+        "h1_by_snr": [
+          {
+            "snr_db": -10.0,
+            "detections": 100,
+            "frames": 100,
+            "pd": 1.0,
+            "interval": [
+              0.9637833073548094,
+              1.0
+            ]
+          },
+          {
+            "snr_db": 0.0,
+            "detections": 100,
+            "frames": 100,
+            "pd": 1.0,
+            "interval": [
+              0.9637833073548094,
+              1.0
+            ]
+          },
+          {
+            "snr_db": 10.0,
+            "detections": 100,
+            "frames": 100,
+            "pd": 1.0,
+            "interval": [
+              0.9637833073548094,
+              1.0
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

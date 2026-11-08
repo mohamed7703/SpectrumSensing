@@ -201,12 +201,12 @@ class MockSDR(BaseSDR):
                 snr_linear = 10.0 ** (self.snr_db / 10.0)
                 r = np.sqrt(snr_linear) * s + w
 
-            # Normalize to nominal receiver amplitude range [-1.0, 1.0]
-            # Scaled by gain
+            # Receiver gain is a fixed scale for both hypotheses. Never
+            # normalize each received frame: that removes the PU energy and
+            # makes noise-only/active calibration scientifically incompatible.
+            # Rail saturation is handled by quantize_samples for finite ADCs.
             gain_factor = 10.0 ** ((self.gain - 30.0) / 40.0)
-            rms = np.sqrt(np.mean(np.abs(r) ** 2))
-            if rms > 0:
-                r = (r / rms) * 0.25 * gain_factor
+            r = r * 0.25 * gain_factor
 
             # Apply ADC quantization
             r_quant = self.quantize_samples(r)

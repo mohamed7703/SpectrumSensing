@@ -25,6 +25,7 @@ from src.ns3_simulation.sim_engine import SimulationEngine
 from src.ns3_simulation.topology_builder import SecondaryUser, PrimaryUser
 from src.ns3_simulation.channel_model import ChannelModel
 from src.ns3_simulation.traffic_generator import Packet
+from src.ns3_simulation.transmission_tracker import TransmissionTracker
 
 
 class ILaCsmaMAC:
@@ -74,8 +75,9 @@ class ILaCsmaMAC:
         self.max_retransmissions = max_retransmissions
         self.rng = np.random.default_rng(random_seed)
 
-        # Active transmissions on the channel: {su_id: (packet, end_time)}
+        # Active transmissions on the channel: {packet_id: (packet, end_time)}
         self.active_transmissions: Dict[int, Tuple[Packet, float]] = {}
+        self.transmission_tracker = TransmissionTracker(engine)
 
         # Global statistics
         self.packets_transmitted: int = 0
@@ -175,25 +177,14 @@ class ILaCsmaMAC:
             details=f"ila_csma_tx pkt_id={packet.packet_id} dur={t_duration*1e3:.2f}ms",
         )
 
-        # Detect collision if another transmission is already in the air
-        is_collided = len(self.active_transmissions) > 0
-
-        # Check collision with PU
-        if primary_users:
-            for pu in primary_users:
-                if pu.is_active:
-                    is_collided = True
-                    self.pu_collisions += 1
-                    break
-
-        self.active_transmissions[su.node_id] = (packet, t_end)
+        self.transmission_tracker.start(packet.packet_id, t_duration, primary_users or [])
+        self.active_transmissions[packet.packet_id] = (packet, t_end)
 
         self.engine.schedule(
             delay=t_duration,
             callback=self._on_transmission_finish,
             su=su,
             packet=packet,
-            is_collided=is_collided,
             primary_users=primary_users,
         )
 
@@ -201,12 +192,13 @@ class ILaCsmaMAC:
         self,
         su: SecondaryUser,
         packet: Packet,
-        is_collided: bool,
         primary_users: Optional[List[PrimaryUser]] = None,
     ) -> None:
         """Handle end of transmission and ACK timeout."""
-        if su.node_id in self.active_transmissions:
-            del self.active_transmissions[su.node_id]
+        self.active_transmissions.pop(packet.packet_id, None)
+        attempt = self.transmission_tracker.finish(packet.packet_id)
+        is_collided = attempt.collided
+        self.pu_collisions += int(attempt.pu_overlap_s > 0)
 
         if not is_collided:
             # Successful reception

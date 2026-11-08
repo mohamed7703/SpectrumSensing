@@ -34,6 +34,8 @@ class CircularRingBuffer:
             dtype: Data type (default complex64).
         """
         self.capacity = int(capacity)
+        if self.capacity <= 0 or self.capacity != capacity:
+            raise ValueError("capacity must be a positive integer")
         self.dtype = np.dtype(dtype)
         self.buffer = np.zeros(self.capacity, dtype=self.dtype)
 
@@ -72,14 +74,29 @@ class CircularRingBuffer:
             data: 1D numpy array of samples.
 
         Returns:
-            Number of samples accepted.
+            Number of incoming samples processed, including samples immediately
+            dropped when a chunk is larger than capacity. total_written counts
+            all incoming samples; dropped_samples counts all discarded samples.
         """
         data = np.asarray(data, dtype=self.dtype)
+        if data.ndim != 1:
+            raise ValueError("ring-buffer writes must be one-dimensional")
         n = len(data)
         if n == 0:
             return 0
 
         with self._lock:
+            if n >= self.capacity:
+                overflow = self._available + n - self.capacity
+                if overflow:
+                    self.overrun_count += 1
+                    self.dropped_samples += overflow
+                self.buffer[:] = data[-self.capacity:]
+                self._head = self._tail = 0
+                self._available = self.capacity
+                self.total_written += n
+                self._not_empty.notify_all()
+                return n
             space = self.capacity - self._available
             if n > space:
                 # Buffer overrun: drop oldest unread samples
@@ -119,6 +136,9 @@ class CircularRingBuffer:
         Raises:
             TimeoutError: If timeout expires before enough samples arrive.
         """
+        if (isinstance(num_samples, (bool, np.bool_))
+                or not isinstance(num_samples, (int, np.integer)) or num_samples < 0):
+            raise ValueError("num_samples must be a nonnegative integer")
         if num_samples > self.capacity:
             raise ValueError(f"Requested {num_samples} exceeds buffer capacity {self.capacity}")
 

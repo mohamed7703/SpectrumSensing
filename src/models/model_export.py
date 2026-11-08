@@ -67,10 +67,14 @@ def quantize_affine_int8(weights: np.ndarray) -> Tuple[np.ndarray, QuantizationS
         Tuple of (quantized_uint8_array, QuantizationSummary).
     """
     w = np.asarray(weights, dtype=np.float32)
-    w_min = float(np.min(w))
-    w_max = float(np.max(w))
+    if w.size == 0 or not np.all(np.isfinite(w)):
+        raise ValueError("weights must be nonempty and finite")
+    # The representable affine range must include zero before rounding/clipping
+    # the zero point; otherwise one-sided/constant arrays saturate incorrectly.
+    w_min = min(0.0, float(np.min(w)))
+    w_max = max(0.0, float(np.max(w)))
 
-    if np.isclose(w_min, w_max):
+    if w_min == w_max:
         scale = 1.0
         zero_point = 0
         q = np.zeros_like(w, dtype=np.uint8)
@@ -163,6 +167,8 @@ class ModelExporter:
         # Collect metadata
         metadata = {
             "name": model.name,
+            "inference_backend": model.inference_backend,
+            "exported_state": "four-feature logistic head only; neural architecture is metadata",
             "input_shape": list(model.input_shape),
             "param_counts": model.count_parameters(),
             "layers": [
@@ -188,67 +194,76 @@ class ModelExporter:
 
     def export_tflite(
         self,
-        model: BaseSpectrumClassifier,
+        model: Any,
         quantization: str = "none",
         filename: Optional[str] = None,
+        representative_data: Optional[np.ndarray] = None,
     ) -> str:
         """Export model to TensorFlow Lite FlatBuffer format (.tflite).
 
         Args:
-            model: Spectrum sensing classifier.
+            model: Existing native Keras graph whose current weights are exported.
             quantization: Quantization mode ('none', 'fp16', 'int8').
             filename: Target filename.
+            representative_data: Training-only float32 I/Q calibration frames,
+                required for full integer input/operations/output quantization.
 
         Returns:
             Path to exported .tflite file.
         """
+        if isinstance(model, BaseSpectrumClassifier):
+            raise TypeError("a native trained Keras graph is required; feature wrappers cannot be exported as neural models")
+        import tensorflow as tf
+        if not isinstance(model, tf.keras.Model):
+            raise TypeError("native tf.keras.Model required")
+        quantization = quantization.lower()
+        if quantization not in ("none", "fp16", "int8"):
+            raise ValueError("quantization must be none, fp16 or int8")
         os.makedirs(self.output_dir, exist_ok=True)
         suffix = f"_{quantization.lower()}" if quantization != "none" else ""
         base_name = filename or f"{model.name.lower().replace(' ', '_')}{suffix}.tflite"
         out_path = os.path.join(self.output_dir, base_name)
 
-        try:
-            import tensorflow as tf
-            keras_model = model.to_keras()
-            converter = tf.lite.TFLiteConverter.from_keras_model(keras_model)
-
-            if quantization.lower() == "fp16":
-                converter.optimizations = [tf.lite.Optimize.DEFAULT]
-                converter.target_spec.supported_types = [tf.float16]
-            elif quantization.lower() == "int8":
-                converter.optimizations = [tf.lite.Optimize.DEFAULT]
-
-            tflite_model = converter.convert()
-            with open(out_path, "wb") as f:
-                f.write(tflite_model)
-        except (ImportError, Exception):
-            # Deterministic, self-contained FlatBuffer metadata export fallback
-            # Ensures standalone execution without requiring binary TF builds
-            counts = model.count_parameters()
-            n_params = counts["total_params"]
-            multiplier = 4 if quantization == "none" else (2 if quantization == "fp16" else 1)
-            payload_size = n_params * multiplier
-
-            header = {
-                "format": "TFLITE_SPEC",
-                "model_name": model.name,
-                "quantization": quantization.upper(),
-                "input_shape": list(model.input_shape),
-                "total_params": n_params,
-                "payload_bytes": payload_size,
-            }
-            with open(out_path, "wb") as f:
-                header_bytes = json.dumps(header).encode("utf-8")
-                f.write(len(header_bytes).to_bytes(4, byteorder="little"))
-                f.write(header_bytes)
-                # Write simulated quantized payload
-                f.write(b"\x00" * min(payload_size, 1024))
-
+        if os.path.exists(out_path):
+            raise FileExistsError(out_path)
+        # Trace the existing trained state through the public ConcreteFunction
+        # API. This avoids the legacy _get_save_spec path in some Keras/TF pairs.
+        module = tf.Module()
+        module.model = model
+        @tf.function(input_signature=[tf.TensorSpec([1, *model.input_shape[1:]], tf.float32, name="iq_input")])
+        def inference(x: Any) -> Any:
+            """Execute this trained graph in inference mode for TFLite conversion."""
+            return module.model(x, training=False)
+        module.inference = inference
+        converter = tf.lite.TFLiteConverter.from_concrete_functions([inference.get_concrete_function()], module)
+        if quantization == "fp16":
+            converter.optimizations = [tf.lite.Optimize.DEFAULT]
+            converter.target_spec.supported_types = [tf.float16]
+        elif quantization == "int8":
+            if representative_data is None:
+                raise ValueError("full INT8 export requires representative training data")
+            representative_data = np.asarray(representative_data, dtype=np.float32)
+            if (len(representative_data) == 0 or representative_data.shape[1:] != model.input_shape[1:]
+                    or not np.all(np.isfinite(representative_data))):
+                raise ValueError("invalid representative I/Q frames")
+            converter.optimizations = [tf.lite.Optimize.DEFAULT]
+            converter.representative_dataset = lambda: ([frame[None]] for frame in representative_data)
+            converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
+            converter.inference_input_type = tf.int8
+            converter.inference_output_type = tf.int8
+        tflite_model = converter.convert()
+        interpreter = tf.lite.Interpreter(model_content=tflite_model)
+        interpreter.allocate_tensors()
+        if quantization == "int8" and (interpreter.get_input_details()[0]["dtype"] != np.int8
+                                       or interpreter.get_output_details()[0]["dtype"] != np.int8):
+            raise ValueError("converter did not produce integer input/output")
+        with open(out_path, "xb") as stream:
+            stream.write(tflite_model)
         return out_path
 
     def export_onnx(
         self,
-        model: BaseSpectrumClassifier,
+        model: Any,
         filename: Optional[str] = None,
     ) -> str:
         """Export model to Open Neural Network Exchange (ONNX) format (.onnx).
@@ -260,34 +275,28 @@ class ModelExporter:
         Returns:
             Path to exported .onnx file.
         """
+        if isinstance(model, BaseSpectrumClassifier):
+            raise TypeError("a native trained Keras graph is required; feature wrappers cannot be exported as neural models")
+        import tensorflow as tf
+        if not isinstance(model, tf.keras.Model):
+            raise TypeError("native tf.keras.Model required")
+        import tf2onnx
+        import onnx
         os.makedirs(self.output_dir, exist_ok=True)
         base_name = filename or f"{model.name.lower().replace(' ', '_')}.onnx"
         out_path = os.path.join(self.output_dir, base_name)
 
-        try:
-            import tf2onnx
-            keras_model = model.to_keras()
-            spec = (None, *model.input_shape)
-            model_proto, _ = tf2onnx.convert.from_keras(keras_model, input_signature=[spec])
-            with open(out_path, "wb") as f:
-                f.write(model_proto.SerializeToString())
-        except (ImportError, Exception):
-            # ONNX specification container fallback
-            counts = model.count_parameters()
-            onnx_meta = {
-                "ir_version": 8,
-                "producer_name": "SpectrumSensingExporter",
-                "model_name": model.name,
-                "input_signature": {"name": "iq_input", "shape": ["batch", *model.input_shape], "dtype": "float32"},
-                "output_signature": {"name": "prob_h1", "shape": ["batch", 1], "dtype": "float32"},
-                "total_params": counts["total_params"],
-            }
-            with open(out_path, "wb") as f:
-                meta_bytes = json.dumps(onnx_meta).encode("utf-8")
-                f.write(b"ONNX")
-                f.write(len(meta_bytes).to_bytes(4, byteorder="little"))
-                f.write(meta_bytes)
-
+        if os.path.exists(out_path):
+            raise FileExistsError(out_path)
+        signature = [tf.TensorSpec([None, *model.input_shape[1:]], tf.float32, name="iq_input")]
+        @tf.function(input_signature=signature)
+        def inference(x: Any) -> Any:
+            """Execute the supplied graph in inference mode for ONNX tracing."""
+            return model(x, training=False)
+        model_proto, _ = tf2onnx.convert.from_function(inference, input_signature=signature)
+        onnx.checker.check_model(model_proto)
+        with open(out_path, "xb") as stream:
+            stream.write(model_proto.SerializeToString())
         return out_path
 
     def profile_edge_inference(
@@ -295,7 +304,7 @@ class ModelExporter:
         model: BaseSpectrumClassifier,
         num_iterations: int = 150,
     ) -> EdgeBenchmarkReport:
-        """Profile edge forward inference latency, P95 jitter, and memory on target hardware.
+        """Profile the host four-feature NumPy path, not an SDR or neural edge runtime.
 
         Args:
             model: Spectrum sensing classifier.
@@ -323,12 +332,11 @@ class ModelExporter:
         min_lat = float(np.min(lat_arr))
         fps = float(1e6 / max(mean_lat, 1e-6))
 
-        counts = model.count_parameters()
-        size_kb = (counts["total_params"] * 4) / 1024.0
+        size_kb = (model.weights.nbytes + np.dtype(np.float32).itemsize) / 1024.0
 
         return EdgeBenchmarkReport(
             model_name=model.name,
-            target_format="Edge NumPy/C++ Engine",
+            target_format="Host NumPy four-feature logistic classifier",
             mean_latency_us=mean_lat,
             p95_latency_us=p95_lat,
             min_latency_us=min_lat,

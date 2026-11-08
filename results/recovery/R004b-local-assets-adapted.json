@@ -1,0 +1,562 @@
+{
+  "scope": "local artifact/code inspection only; no notebook execution or dataset download",
+  "source_directory": "S:\\M folder\\semster 9\\grad. project",
+  "tensorflow": "2.20.0",
+  "notebooks": [
+    {
+      "path": "S:\\M folder\\semster 9\\grad. project\\find_correct_model.ipynb",
+      "bytes": 9718,
+      "sha256": "8362263369cdeb9dfb06ca1ae0117f819d70828e3eb4f71aeb606aba8648bc5c",
+      "code_cells": [
+        {
+          "cell_index_zero_based": 1,
+          "source": "from google.colab import drive\ndrive.mount('/content/drive')\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 3,
+          "source": "import os\n\n# Search entire Drive for .h5 files\ndrive_root = \"/content/drive/MyDrive\"\nh5_files = []\n\nprint(\"\ud83d\udd0d Scanning Google Drive for .h5 files...\")\nprint(\"   (this may take a minute)\\n\")\n\nfor root, dirs, files in os.walk(drive_root):\n    for f in files:\n        if f.endswith('.h5') or f.endswith('.hdf5') and 'GOLD_XYZ' not in f:\n            full_path = os.path.join(root, f)\n            # Skip the RadioML dataset itself (it's huge)\n            if 'GOLD_XYZ' in f:\n                continue\n            size_mb = os.path.getsize(full_path) / (1024 * 1024)\n            h5_files.append((full_path, size_mb))\n\nh5_files.sort(key=lambda x: x[0])\n\nprint(f\"Found {len(h5_files)} model files:\\n\")\nprint(f\"{'#':<4} {'Size':>8}   Path\")\nprint(f\"{'-'*4} {'-'*8}   {'-'*60}\")\nfor i, (path, size) in enumerate(h5_files):\n    short_path = path.replace(drive_root, \"MyDrive\")\n    print(f\"{i:<4} {size:>7.1f}MB   {short_path}\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 5,
+          "source": "import tensorflow as tf\nimport numpy as np\nos.environ[\"TF_CPP_MIN_LOG_LEVEL\"] = \"3\"\n\nresults = []\n\nprint(\"=\" * 70)\nprint(\"  SCANNING ALL MODEL FILES\")\nprint(\"=\" * 70)\n\nfor i, (path, size) in enumerate(h5_files):\n    short = path.replace(drive_root, \"MyDrive\")\n    print(f\"\\n{'\u2500' * 70}\")\n    print(f\"[{i+1}/{len(h5_files)}] {short} ({size:.1f} MB)\")\n    print(f\"{'\u2500' * 70}\")\n    \n    try:\n        model = tf.keras.models.load_model(path, compile=False)\n        model_name = model.name\n        total_params = model.count_params()\n        \n        # Check architecture\n        layer_types = [type(l).__name__ for l in model.layers]\n        has_gap = \"GlobalAveragePooling1D\" in layer_types\n        has_flatten = \"Flatten\" in layer_types\n        has_batchnorm = \"BatchNormalization\" in layer_types\n        \n        # Get layer details\n        conv_filters = []\n        for l in model.layers:\n            if \"Conv1D\" in type(l).__name__:\n                conv_filters.append(l.filters)\n        \n        # Check input/output shape\n        input_shape = model.input_shape\n        output_shape = model.output_shape\n        \n        # Determine if this is the correct GAP model\n        is_gap_model = has_gap and not has_flatten\n        is_binary = output_shape[-1] == 1\n        \n        status = \"\u2705 CORRECT\" if is_gap_model and is_binary else \"\u274c WRONG\"\n        \n        print(f\"  Model name   : {model_name}\")\n        print(f\"  Input shape  : {input_shape}\")\n        print(f\"  Output shape : {output_shape}\")\n        print(f\"  Parameters   : {total_params:,}\")\n        print(f\"  Conv filters : {conv_filters}\")\n        print(f\"  Has GAP      : {has_gap}\")\n        print(f\"  Has Flatten  : {has_flatten}\")\n        print(f\"  Has BatchNorm: {has_batchnorm}\")\n        print(f\"  Status       : {status}\")\n        \n        # Quick test: predict on random noise\n        test_input = np.random.normal(0, 0.708, (5,) + input_shape[1:]).astype(np.float32)\n        try:\n            preds = model.predict(test_input, verbose=0).flatten()\n            avg_pred = np.mean(preds)\n            print(f\"  Noise test   : avg prediction = {avg_pred:.4f} ({'\u26a0\ufe0f always 1.0' if avg_pred > 0.99 else '\u2705 varies' if avg_pred < 0.5 else '\ud83d\udd36 high'})\")\n        except Exception as e:\n            print(f\"  Noise test   : failed ({e})\")\n            avg_pred = None\n        \n        results.append({\n            'index': i,\n            'path': path,\n            'short': short,\n            'size': size,\n            'name': model_name,\n            'params': total_params,\n            'conv_filters': conv_filters,\n            'has_gap': has_gap,\n            'has_flatten': has_flatten,\n            'is_correct': is_gap_model and is_binary,\n            'avg_noise_pred': avg_pred,\n            'status': status,\n        })\n        \n        # Free memory\n        del model\n        tf.keras.backend.clear_session()\n        \n    except Exception as e:\n        print(f\"  \u26a0\ufe0f Could not load: {e}\")\n        results.append({\n            'index': i,\n            'path': path,\n            'short': short,\n            'size': size,\n            'name': 'ERROR',\n            'status': '\u26a0\ufe0f FAILED',\n            'is_correct': False,\n            'avg_noise_pred': None,\n        })\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 7,
+          "source": "print(\"=\" * 75)\nprint(\"  RESULTS SUMMARY\")\nprint(\"=\" * 75)\nprint(f\"\")\nprint(f\"  {'#':<4} {'Status':<12} {'Name':<20} {'Params':>10} {'Noise Pred':>12}   Path\")\nprint(f\"  {'-'*4} {'-'*12} {'-'*20} {'-'*10} {'-'*12}   {'-'*40}\")\n\ncorrect_models = []\n\nfor r in results:\n    name = r.get('name', '?')[:20]\n    params = f\"{r.get('params', 0):,}\" if r.get('params') else \"?\"\n    noise = f\"{r['avg_noise_pred']:.4f}\" if r.get('avg_noise_pred') is not None else \"?\"\n    print(f\"  {r['index']:<4} {r['status']:<12} {name:<20} {params:>10} {noise:>12}   {r['short']}\")\n    \n    if r.get('is_correct'):\n        correct_models.append(r)\n\nprint(f\"\")\nprint(f\"{'\u2500' * 75}\")\n\nif correct_models:\n    print(f\"\")\n    print(f\"  \u2705 Found {len(correct_models)} correct GAP model(s):\")\n    print(f\"\")\n    for r in correct_models:\n        print(f\"     \ud83d\udcc1 {r['path']}\")\n        noise_str = f\"{r['avg_noise_pred']:.4f}\" if r.get('avg_noise_pred') is not None else \"?\"\n        print(f\"        Noise prediction: {noise_str}\")\n        if r.get('avg_noise_pred') is not None and r['avg_noise_pred'] < 0.5:\n            print(f\"        \ud83c\udfaf THIS ONE WORKS \u2014 noise correctly classified!\")\n        print(f\"\")\n    \n    best = min(correct_models, key=lambda r: r.get('avg_noise_pred', 999))\n    print(f\"  \u27a1\ufe0f  Best candidate:\")\n    print(f\"     {best['path']}\")\n    print(f\"\")\n    print(f\"  Copy this path into your inference script as MODEL_PATH\")\nelse:\n    print(f\"\")\n    print(f\"  \u274c No correct GAP model found on Drive.\")\n    print(f\"\")\n    print(f\"  This means you need to retrain from scratch using the\")\n    print(f\"  training notebook (evaluate_results.ipynb or train_improved.py).\")\n    print(f\"  The model file you've been using has a different architecture.\")\nprint(f\"\")\nprint(\"=\" * 75)\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        }
+      ]
+    },
+    {
+      "path": "S:\\M folder\\semster 9\\grad. project\\quick_ab_test.ipynb",
+      "bytes": 16215,
+      "sha256": "806599886ab952686d314cc1f0474e29ab6dd45f319967308d33dc4126bcc2f5",
+      "code_cells": [
+        {
+          "cell_index_zero_based": 1,
+          "source": "import os\nos.environ[\"TF_CPP_MIN_LOG_LEVEL\"] = \"3\"\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom tensorflow.keras.models import load_model\n\n# =========================\n# Configuration\n# =========================\nMODEL_PATH = \"model_epoch_32.h5\"\nWINDOW_SIZE = 1024\nN_FRAMES = 500          # number of test frames\nAWGN_STD = 0.708        # same as training\nTHRESHOLD = 0.5\nSAVE_DIR = \"quick_test_results\"\n\nos.makedirs(SAVE_DIR, exist_ok=True)\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 3,
+          "source": "model = load_model(MODEL_PATH, compile=False)\nmodel.summary()\nprint(\"\\n\u2705 Model loaded successfully\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 5,
+          "source": "def generate_noise_frames(n_frames):\n    \"\"\"Generate pure AWGN noise \u2014 same as training generator.\"\"\"\n    noise = np.random.normal(0, AWGN_STD, (n_frames, WINDOW_SIZE, 2)).astype(np.float32)\n    return noise\n\n\ndef generate_signal_frames(n_frames):\n    \"\"\"Generate simple QPSK-like signal for comparison.\"\"\"\n    frames = np.zeros((n_frames, WINDOW_SIZE, 2), dtype=np.float32)\n    for f in range(n_frames):\n        symbols = np.random.choice([0, 1, 2, 3], size=WINDOW_SIZE // 16)\n        phase_map = [np.pi/4, 3*np.pi/4, 5*np.pi/4, 7*np.pi/4]\n        signal_i = np.zeros(WINDOW_SIZE, dtype=np.float32)\n        signal_q = np.zeros(WINDOW_SIZE, dtype=np.float32)\n        for s_idx, sym in enumerate(symbols):\n            start = s_idx * 16\n            end = start + 16\n            phase = phase_map[sym]\n            signal_i[start:end] = 0.7 * np.cos(phase)\n            signal_q[start:end] = 0.7 * np.sin(phase)\n        signal_i += np.random.normal(0, 0.1, WINDOW_SIZE).astype(np.float32)\n        signal_q += np.random.normal(0, 0.1, WINDOW_SIZE).astype(np.float32)\n        frames[f, :, 0] = signal_i\n        frames[f, :, 1] = signal_q\n    return frames\n\n\n# Generate\nnoise_frames = generate_noise_frames(N_FRAMES)\nsignal_frames = generate_signal_frames(N_FRAMES)\n\nprint(f\"\u2705 Generated {N_FRAMES} noise frames (AWGN, std={AWGN_STD})\")\nprint(f\"\u2705 Generated {N_FRAMES} signal frames (QPSK-like)\")\nprint(f\"\\nNoise shape:  {noise_frames.shape}\")\nprint(f\"Signal shape: {signal_frames.shape}\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 7,
+          "source": "def normalize_mean(X):\n    \"\"\"Global mean normalization \u2014 what the old inference script does.\"\"\"\n    scale = np.mean(np.abs(X)) + 1e-6\n    return X / scale\n\n\ndef normalize_raw(X):\n    \"\"\"No normalization \u2014 matches training pipeline.\"\"\"\n    return X.copy()\n\n\ndef predict(model, X):\n    \"\"\"Run model predictions in batches.\"\"\"\n    preds = model.predict(X, verbose=0, batch_size=256).reshape(-1)\n    return preds\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 9,
+          "source": "noise_mean = normalize_mean(noise_frames)\nsignal_mean = normalize_mean(signal_frames)\n\npreds_noise_mean = predict(model, noise_mean)\npreds_signal_mean = predict(model, signal_mean)\n\nn_signal_noise_mean = int(np.sum(preds_noise_mean > THRESHOLD))\nn_signal_signal_mean = int(np.sum(preds_signal_mean > THRESHOLD))\n\nprint(\"=\" * 55)\nprint(\"  TEST 1: NORMALIZATION = 'mean' (original inference)\")\nprint(\"=\" * 55)\nprint(f\"  Noise  \u2192 avg pred: {np.mean(preds_noise_mean):.4f} | \"\n      f\"signal frames: {n_signal_noise_mean}/{N_FRAMES}\")\nprint(f\"  Signal \u2192 avg pred: {np.mean(preds_signal_mean):.4f} | \"\n      f\"signal frames: {n_signal_signal_mean}/{N_FRAMES}\")\n\nif n_signal_noise_mean > N_FRAMES * 0.1:\n    print(f\"\\n  \u274c BUG CONFIRMED: {n_signal_noise_mean}/{N_FRAMES} noise frames misclassified as signal!\")\nelse:\n    print(f\"\\n  \u2705 Noise correctly classified\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 11,
+          "source": "noise_raw = normalize_raw(noise_frames)\nsignal_raw = normalize_raw(signal_frames)\n\npreds_noise_raw = predict(model, noise_raw)\npreds_signal_raw = predict(model, signal_raw)\n\nn_signal_noise_raw = int(np.sum(preds_noise_raw > THRESHOLD))\nn_signal_signal_raw = int(np.sum(preds_signal_raw > THRESHOLD))\n\nprint(\"=\" * 55)\nprint(\"  TEST 2: NORMALIZATION = 'raw' (matches training)\")\nprint(\"=\" * 55)\nprint(f\"  Noise  \u2192 avg pred: {np.mean(preds_noise_raw):.4f} | \"\n      f\"signal frames: {n_signal_noise_raw}/{N_FRAMES}\")\nprint(f\"  Signal \u2192 avg pred: {np.mean(preds_signal_raw):.4f} | \"\n      f\"signal frames: {n_signal_signal_raw}/{N_FRAMES}\")\n\nif n_signal_noise_raw < N_FRAMES * 0.1:\n    print(f\"\\n  \u2705 FIX WORKS: Only {n_signal_noise_raw}/{N_FRAMES} noise frames classified as signal\")\nelse:\n    print(f\"\\n  \u26a0\ufe0f  Noise still misclassified \u2014 domain gap may be the deeper issue\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 13,
+          "source": "fig, axes = plt.subplots(2, 2, figsize=(14, 8))\nfig.suptitle(\"Normalization Fix: Mean vs Raw\", fontsize=16, fontweight=\"bold\")\n\n# Top-left: Noise with mean norm\nax = axes[0, 0]\nax.plot(preds_noise_mean[:100], color=\"#E24B4A\", linewidth=1.2, alpha=0.8)\nax.axhline(y=0.5, color=\"gray\", linestyle=\"--\", linewidth=0.8, alpha=0.5)\nax.set_title(\"Noise + Mean Norm (BUG)\", fontsize=12, color=\"#E24B4A\")\nax.set_ylabel(\"Prediction\")\nax.set_ylim(-0.05, 1.05)\nax.set_xlabel(\"Frame\")\navg_val = np.mean(preds_noise_mean)\nax.text(50, 0.15, f\"Avg: {avg_val:.4f}\", ha=\"center\", fontsize=11,\n        bbox=dict(boxstyle=\"round,pad=0.3\", facecolor=\"#FCEBEB\", edgecolor=\"#E24B4A\"))\n\n# Top-right: Noise with raw norm\nax = axes[0, 1]\nax.plot(preds_noise_raw[:100], color=\"#639922\", linewidth=1.2, alpha=0.8)\nax.axhline(y=0.5, color=\"gray\", linestyle=\"--\", linewidth=0.8, alpha=0.5)\nax.set_title(\"Noise + Raw Norm (FIX)\", fontsize=12, color=\"#639922\")\nax.set_ylabel(\"Prediction\")\nax.set_ylim(-0.05, 1.05)\nax.set_xlabel(\"Frame\")\navg_val = np.mean(preds_noise_raw)\nax.text(50, 0.85, f\"Avg: {avg_val:.4f}\", ha=\"center\", fontsize=11,\n        bbox=dict(boxstyle=\"round,pad=0.3\", facecolor=\"#EAF3DE\", edgecolor=\"#639922\"))\n\n# Bottom-left: Signal with mean norm\nax = axes[1, 0]\nax.plot(preds_signal_mean[:100], color=\"#378ADD\", linewidth=1.2, alpha=0.8)\nax.axhline(y=0.5, color=\"gray\", linestyle=\"--\", linewidth=0.8, alpha=0.5)\nax.set_title(\"Signal + Mean Norm\", fontsize=12, color=\"#378ADD\")\nax.set_ylabel(\"Prediction\")\nax.set_ylim(-0.05, 1.05)\nax.set_xlabel(\"Frame\")\navg_val = np.mean(preds_signal_mean)\nax.text(50, 0.15, f\"Avg: {avg_val:.4f}\", ha=\"center\", fontsize=11,\n        bbox=dict(boxstyle=\"round,pad=0.3\", facecolor=\"#E6F1FB\", edgecolor=\"#378ADD\"))\n\n# Bottom-right: Signal with raw norm\nax = axes[1, 1]\nax.plot(preds_signal_raw[:100], color=\"#378ADD\", linewidth=1.2, alpha=0.8)\nax.axhline(y=0.5, color=\"gray\", linestyle=\"--\", linewidth=0.8, alpha=0.5)\nax.set_title(\"Signal + Raw Norm\", fontsize=12, color=\"#378ADD\")\nax.set_ylabel(\"Prediction\")\nax.set_ylim(-0.05, 1.05)\nax.set_xlabel(\"Frame\")\navg_val = np.mean(preds_signal_raw)\nax.text(50, 0.15, f\"Avg: {avg_val:.4f}\", ha=\"center\", fontsize=11,\n        bbox=dict(boxstyle=\"round,pad=0.3\", facecolor=\"#E6F1FB\", edgecolor=\"#378ADD\"))\n\nplt.tight_layout()\nplt.savefig(os.path.join(SAVE_DIR, \"normalization_AB_test.png\"), dpi=150, bbox_inches=\"tight\")\nplt.show()\nprint(\"\u2705 Saved: quick_test_results/normalization_AB_test.png\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 15,
+          "source": "fig, ax = plt.subplots(figsize=(10, 5))\n\nlabels = [\"Noise\\n(mean norm)\", \"Noise\\n(raw norm)\", \"Signal\\n(mean norm)\", \"Signal\\n(raw norm)\"]\navgs = [np.mean(preds_noise_mean), np.mean(preds_noise_raw),\n        np.mean(preds_signal_mean), np.mean(preds_signal_raw)]\ncolors = [\"#E24B4A\", \"#639922\", \"#378ADD\", \"#378ADD\"]\n\nbars = ax.bar(labels, avgs, color=colors, width=0.5, edgecolor=\"white\", linewidth=1.5)\nax.axhline(y=0.5, color=\"gray\", linestyle=\"--\", linewidth=1, alpha=0.5, label=\"Threshold (0.5)\")\nax.set_ylabel(\"Average Prediction\", fontsize=12)\nax.set_title(\"Summary: Average Model Output per Condition\", fontsize=14, fontweight=\"bold\")\nax.set_ylim(0, 1.15)\nax.legend()\n\nfor bar, val in zip(bars, avgs):\n    ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.03,\n            f\"{val:.4f}\", ha=\"center\", fontsize=11, fontweight=\"bold\")\n\nplt.tight_layout()\nplt.savefig(os.path.join(SAVE_DIR, \"summary_bar_chart.png\"), dpi=150, bbox_inches=\"tight\")\nplt.show()\nprint(\"\u2705 Saved: quick_test_results/summary_bar_chart.png\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 17,
+          "source": "fig, axes = plt.subplots(1, 2, figsize=(14, 5))\n\n# Mean norm distributions\nax = axes[0]\nax.hist(preds_noise_mean, bins=50, alpha=0.7, color=\"#E24B4A\", label=\"Noise\", density=True)\nax.hist(preds_signal_mean, bins=50, alpha=0.7, color=\"#378ADD\", label=\"Signal\", density=True)\nax.axvline(x=0.5, color=\"gray\", linestyle=\"--\", linewidth=1)\nax.set_title(\"Mean Normalization (BUG)\", fontsize=12)\nax.set_xlabel(\"Prediction\")\nax.set_ylabel(\"Density\")\nax.legend()\nax.set_xlim(-0.05, 1.05)\n\n# Raw norm distributions\nax = axes[1]\nax.hist(preds_noise_raw, bins=50, alpha=0.7, color=\"#639922\", label=\"Noise\", density=True)\nax.hist(preds_signal_raw, bins=50, alpha=0.7, color=\"#378ADD\", label=\"Signal\", density=True)\nax.axvline(x=0.5, color=\"gray\", linestyle=\"--\", linewidth=1)\nax.set_title(\"Raw Normalization (FIX)\", fontsize=12)\nax.set_xlabel(\"Prediction\")\nax.set_ylabel(\"Density\")\nax.legend()\nax.set_xlim(-0.05, 1.05)\n\nplt.tight_layout()\nplt.savefig(os.path.join(SAVE_DIR, \"prediction_histograms.png\"), dpi=150, bbox_inches=\"tight\")\nplt.show()\nprint(\"\u2705 Saved: quick_test_results/prediction_histograms.png\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 19,
+          "source": "print(\"=\" * 60)\nprint(\"  FINAL SUMMARY\")\nprint(\"=\" * 60)\nprint(f\"\")\nprint(f\"  {'Condition':<28} {'Avg Pred':>10} {'Verdict':>16}\")\nprint(f\"  {'-'*54}\")\nprint(f\"  {'Noise + mean norm':<28} {np.mean(preds_noise_mean):>10.4f} {'\u274c False alarm':>16}\")  if np.mean(preds_noise_mean) > 0.5 else None\nprint(f\"  {'Noise + raw norm':<28} {np.mean(preds_noise_raw):>10.4f} {'\u2705 Correct':>16}\") if np.mean(preds_noise_raw) < 0.5 else None\nprint(f\"  {'Signal + mean norm':<28} {np.mean(preds_signal_mean):>10.4f} {'\u2705 Detected':>16}\") if np.mean(preds_signal_mean) > 0.5 else None\nprint(f\"  {'Signal + raw norm':<28} {np.mean(preds_signal_raw):>10.4f} {'\u2705 Detected':>16}\") if np.mean(preds_signal_raw) > 0.5 else None\nprint(f\"  {'-'*54}\")\nprint(f\"\")\nprint(f\"  Conclusion:\")\nif np.mean(preds_noise_mean) > 0.5 and np.mean(preds_noise_raw) < 0.5:\n    print(f\"  \u2705 Normalization mismatch CONFIRMED as root cause.\")\n    print(f\"  \u2705 Switching to raw normalization fixes simulated noise classification.\")\n    print(f\"\")\n    print(f\"  Next step: test with USRP noise data using raw normalization.\")\n    print(f\"  If USRP noise still fails \u2192 domain gap (Problem 2) \u2192 retrain with augmented noise.\")\nelse:\n    print(f\"  \u26a0\ufe0f  Results inconclusive \u2014 inspect the plots above for details.\")\nprint(f\"\")\nprint(\"=\" * 60)\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        }
+      ]
+    },
+    {
+      "path": "S:\\M folder\\semster 9\\grad. project\\train_improved.ipynb",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "parse_error": "JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "path": "S:\\M folder\\semster 9\\grad. project\\train_v3(\u0627\u062e\u0631 \u0646\u0633\u062e\u0629 \u0634\u063a\u0627\u0644\u0629 \u0645\u0646\u0647)_colab.ipynb",
+      "bytes": 329496,
+      "sha256": "213b9710effafa280211b96117a7b84ffe74934a548590585b27958579979227",
+      "code_cells": [
+        {
+          "cell_index_zero_based": 2,
+          "source": "from google.colab import drive\ndrive.mount('/content/drive')\n",
+          "execution_count": 11,
+          "stored_outputs": 1
+        },
+        {
+          "cell_index_zero_based": 4,
+          "source": "import os\nos.environ[\"TF_CPP_MIN_LOG_LEVEL\"] = \"3\"\n\nimport numpy as np\nimport h5py\nimport tensorflow as tf\nimport matplotlib.pyplot as plt\nfrom tensorflow.keras import layers, models, optimizers\nfrom tensorflow.keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, EarlyStopping\nfrom tensorflow.keras.utils import Sequence\nfrom sklearn.model_selection import train_test_split\n\n# =========================\n# PATHS \u2014 UPDATE THESE\n# =========================\n\n# RadioML 2018 dataset (the big HDF5 file with all modulation signals)\nDATA_PATH = \"/content/drive/MyDrive/DeepSig Dataset: RadioML 2018.01A/GOLD_XYZ_OSC.0001_1024.hdf5\"\n\n# Checkpoints and plots will be saved here on your Drive\nCHECKPOINT_DIR = \"/content/drive/MyDrive/checkpoints_v4\"\nPLOT_DIR = \"/content/drive/MyDrive/plots_v4\"\n\n# Optional: path to real USRP noise recording (.dat file, complex64)\n# Set to None if you don't have one yet \u2014 synthetic augmentation will still work\nUSRP_NOISE_PATH = \"/content/drive/MyDrive/USRP/usrppp_noise.dat\"  # e.g. \"/content/drive/MyDrive/FINAL_GP/usrp_noise_only.dat\"\n\n# =========================\n# TRAINING PARAMETERS\n# =========================\nAWGN_STD = 0.708           # Noise standard deviation (same as original)\nBATCH_SIZE = 2048           # Batch size\nEPOCHS = 48                 # Max epochs (early stopping may stop earlier)\n\n# Noise augmentation ranges\nDC_OFFSET_RANGE = (-0.05, 0.05)       # Random DC bias on I and Q channels\nIQ_GAIN_IMB_RANGE = (0.93, 1.07)      # Gain mismatch between I and Q\nIQ_PHASE_IMB_RANGE = (-0.05, 0.05)    # Phase mismatch in radians\nFREQ_OFFSET_RANGE = (-0.001, 0.001)   # Residual carrier frequency offset\nFLICKER_ALPHA = 0.002                 # 1/f noise amplitude\n\n# What fraction of noise batch comes from real USRP recordings\nUSRP_NOISE_FRACTION = 0.3\n\nos.makedirs(CHECKPOINT_DIR, exist_ok=True)\nos.makedirs(PLOT_DIR, exist_ok=True)\n\nprint(\"\u2705 Configuration loaded\")\nprint(f\"   Dataset:     {DATA_PATH}\")\nprint(f\"   Checkpoints: {CHECKPOINT_DIR}\")\nprint(f\"   Plots:       {PLOT_DIR}\")\nprint(f\"   USRP noise:  {USRP_NOISE_PATH or 'Not provided (synthetic only)'}\")\n",
+          "execution_count": 12,
+          "stored_outputs": 1
+        },
+        {
+          "cell_index_zero_based": 6,
+          "source": "gpus = tf.config.list_physical_devices('GPU')\nif gpus:\n    try:\n        for gpu in gpus:\n            tf.config.experimental.set_memory_growth(gpu, True)\n        print(f\"\u2705 GPU detected: {gpus[0].name}\")\n        print(f\"   TensorFlow version: {tf.__version__}\")\n    except RuntimeError as e:\n        print(e)\nelse:\n    print(\"\u26a0\ufe0f NO GPU DETECTED!\")\n    print(\"   Go to Runtime \u2192 Change runtime type \u2192 T4 GPU\")\n    print(\"   Training on CPU will be extremely slow.\")\n",
+          "execution_count": 13,
+          "stored_outputs": 1
+        },
+        {
+          "cell_index_zero_based": 8,
+          "source": "usrp_noise_frames = None\n\nif USRP_NOISE_PATH and os.path.exists(USRP_NOISE_PATH):\n    raw = np.fromfile(USRP_NOISE_PATH, dtype=np.complex64)\n    usable = (len(raw) // 1024) * 1024\n    if usable >= 1024:\n        raw = raw[:usable].reshape(-1, 1024)\n        usrp_noise_frames = np.stack([raw.real, raw.imag], axis=-1).astype(np.float32)\n        print(f\"\u2705 Loaded {len(usrp_noise_frames)} real USRP noise frames\")\n        print(f\"   Source: {USRP_NOISE_PATH}\")\n        print(f\"   Shape:  {usrp_noise_frames.shape}\")\n        print(f\"   Amplitude range: [{usrp_noise_frames.min():.4f}, {usrp_noise_frames.max():.4f}]\")\n    else:\n        print(f\"\u26a0\ufe0f USRP noise file too short ({len(raw)} samples), need at least 1024. Skipping.\")\nelif USRP_NOISE_PATH:\n    print(f\"\u26a0\ufe0f File not found: {USRP_NOISE_PATH}\")\n    print(\"   Continuing with synthetic noise only.\")\nelse:\n    print(\"\u2139\ufe0f  No USRP noise file provided.\")\n    print(\"   Training will use augmented synthetic noise only.\")\n    print(\"   This is still a big improvement over pure AWGN.\")\n",
+          "execution_count": 14,
+          "stored_outputs": 1
+        },
+        {
+          "cell_index_zero_based": 10,
+          "source": "def add_dc_offset(noise):\n    \"\"\"\n    Add random DC offset to I and Q channels independently.\n    Real ADCs and mixers always have some DC bias that varies\n    between captures and even within a single recording.\n    \"\"\"\n    dc_i = np.random.uniform(*DC_OFFSET_RANGE)\n    dc_q = np.random.uniform(*DC_OFFSET_RANGE)\n    noise[:, :, 0] += dc_i\n    noise[:, :, 1] += dc_q\n    return noise\n\n\ndef add_iq_imbalance(noise):\n    \"\"\"\n    Apply random gain and phase imbalance between I and Q paths.\n    In real hardware, the I and Q mixers are never perfectly matched \u2014\n    there's always some gain difference and phase error.\n    \"\"\"\n    gain = np.random.uniform(*IQ_GAIN_IMB_RANGE)\n    phase = np.random.uniform(*IQ_PHASE_IMB_RANGE)\n\n    i_ch = noise[:, :, 0]\n    q_ch = noise[:, :, 1]\n\n    noise[:, :, 0] = i_ch + q_ch * np.sin(phase)\n    noise[:, :, 1] = q_ch * gain * np.cos(phase)\n    return noise\n\n\ndef add_frequency_offset(noise):\n    \"\"\"\n    Simulate residual carrier / LO frequency offset.\n    Even after tuning, there's always a small frequency error\n    that causes a slow phase rotation across the frame.\n    \"\"\"\n    f_off = np.random.uniform(*FREQ_OFFSET_RANGE)\n    n_samples = noise.shape[1]\n    t = np.arange(n_samples, dtype=np.float32)\n    phase = 2.0 * np.pi * f_off * t\n\n    cos_p = np.cos(phase)\n    sin_p = np.sin(phase)\n\n    i_ch = noise[:, :, 0]\n    q_ch = noise[:, :, 1]\n\n    noise[:, :, 0] = i_ch * cos_p - q_ch * sin_p\n    noise[:, :, 1] = i_ch * sin_p + q_ch * cos_p\n    return noise\n\n\ndef add_flicker_noise(noise):\n    \"\"\"\n    Add 1/f (pink) noise component.\n    Real analog front-ends produce noise that's stronger at\n    low frequencies \u2014 unlike AWGN which is spectrally flat.\n    This spectral coloring is a key difference the old model exploited.\n    \"\"\"\n    n_batch, n_samples, _ = noise.shape\n    freqs = np.fft.rfftfreq(n_samples)\n    freqs[0] = 1.0  # avoid division by zero\n\n    for ch in range(2):\n        white = np.random.randn(n_batch, n_samples).astype(np.float32)\n        spectrum = np.fft.rfft(white, axis=-1)\n        spectrum /= np.sqrt(freqs)  # 1/f shaping\n        pink = np.fft.irfft(spectrum, n=n_samples, axis=-1)\n        noise[:, :, ch] += FLICKER_ALPHA * pink.astype(np.float32)\n\n    return noise\n\n\ndef generate_augmented_noise(shape):\n    \"\"\"Generate synthetic AWGN with all realistic RF impairments applied.\"\"\"\n    noise = np.random.normal(0, AWGN_STD, shape).astype(np.float32)\n    noise = add_dc_offset(noise)\n    noise = add_iq_imbalance(noise)\n    noise = add_frequency_offset(noise)\n    noise = add_flicker_noise(noise)\n    return noise\n\n\ndef sample_usrp_noise(n_frames):\n    \"\"\"Sample random frames from real USRP noise captures with light augmentation.\"\"\"\n    idx = np.random.choice(len(usrp_noise_frames), size=n_frames, replace=True)\n    frames = usrp_noise_frames[idx].copy()\n    # Light random scaling so the model doesn't memorize exact amplitudes\n    scale = np.random.uniform(0.8, 1.2, size=(n_frames, 1, 1)).astype(np.float32)\n    frames *= scale\n    return frames\n\n\n# Quick visual test\ntest_clean = np.random.normal(0, AWGN_STD, (1, 1024, 2)).astype(np.float32)\ntest_augmented = generate_augmented_noise((1, 1024, 2))\n\nfig, axes = plt.subplots(2, 2, figsize=(14, 5))\nfig.suptitle(\"Clean AWGN vs Augmented Noise \u2014 I Channel\", fontsize=14, fontweight=\"bold\")\n\naxes[0, 0].plot(test_clean[0, :200, 0], color=\"#378ADD\", linewidth=0.8)\naxes[0, 0].set_title(\"Clean AWGN (old training)\", fontsize=11)\naxes[0, 0].set_ylim(-3, 3)\naxes[0, 0].set_ylabel(\"Amplitude\")\n\naxes[0, 1].plot(test_augmented[0, :200, 0], color=\"#639922\", linewidth=0.8)\naxes[0, 1].set_title(\"Augmented noise (new training)\", fontsize=11)\naxes[0, 1].set_ylim(-3, 3)\n\n# Spectrum comparison\nfrom numpy.fft import fft, fftfreq\nspec_clean = np.abs(fft(test_clean[0, :, 0]))[:512]\nspec_aug = np.abs(fft(test_augmented[0, :, 0]))[:512]\n\naxes[1, 0].plot(spec_clean, color=\"#378ADD\", linewidth=0.5)\naxes[1, 0].set_title(\"Clean AWGN \u2014 Spectrum (flat)\", fontsize=11)\naxes[1, 0].set_ylabel(\"Magnitude\")\naxes[1, 0].set_xlabel(\"Frequency bin\")\n\naxes[1, 1].plot(spec_aug, color=\"#639922\", linewidth=0.5)\naxes[1, 1].set_title(\"Augmented noise \u2014 Spectrum (colored)\", fontsize=11)\naxes[1, 1].set_xlabel(\"Frequency bin\")\n\nplt.tight_layout()\nplt.savefig(os.path.join(PLOT_DIR, \"noise_comparison.png\"), dpi=150, bbox_inches=\"tight\")\nplt.show()\nprint(\"\u2705 Noise augmentation functions ready\")\nprint(\"\u2705 Saved: noise_comparison.png\")\n",
+          "execution_count": 15,
+          "stored_outputs": 2
+        },
+        {
+          "cell_index_zero_based": 12,
+          "source": "class HDF5Generator(Sequence):\n    def __init__(self, file_path, indices, batch_size=BATCH_SIZE,\n                 shuffle=True, add_noise=True):\n        super().__init__()\n        self.file_path = file_path\n        self.indices = indices\n        self.batch_size = batch_size\n        self.shuffle = shuffle\n        self.add_noise = add_noise\n        self.on_epoch_end()\n\n    def __len__(self):\n        return int(np.ceil(len(self.indices) / self.batch_size))\n\n    def __getitem__(self, idx):\n        start = idx * self.batch_size\n        end = min((idx + 1) * self.batch_size, len(self.indices))\n        batch_indices = self.indices[start:end]\n        n = len(batch_indices)\n\n        # Load signal samples from HDF5\n        X_signals = np.zeros((n, 1024, 2), dtype='float32')\n        with h5py.File(self.file_path, 'r') as f:\n            Xh = f['X']\n            sorted_idx = np.sort(batch_indices)\n            for i, real_idx in enumerate(sorted_idx):\n                X_signals[i] = Xh[real_idx]\n\n        y_signals = np.ones(n, dtype='float32')\n\n        if self.add_noise:\n            # Decide how many frames from USRP vs synthetic\n            if usrp_noise_frames is not None:\n                n_usrp = int(n * USRP_NOISE_FRACTION)\n                n_synth = n - n_usrp\n            else:\n                n_usrp = 0\n                n_synth = n\n\n            # Build noise batch\n            noise_parts = []\n            if n_synth > 0:\n                noise_parts.append(generate_augmented_noise((n_synth, 1024, 2)))\n            if n_usrp > 0:\n                noise_parts.append(sample_usrp_noise(n_usrp))\n\n            X_noise = np.concatenate(noise_parts, axis=0)\n            y_noise = np.zeros(len(X_noise), dtype='float32')\n\n            # Combine and shuffle\n            X_batch = np.concatenate([X_signals, X_noise], axis=0)\n            y_batch = np.concatenate([y_signals, y_noise], axis=0)\n            p = np.random.permutation(len(X_batch))\n            return X_batch[p], y_batch[p]\n        else:\n            return X_signals, y_signals\n\n    def on_epoch_end(self):\n        if self.shuffle:\n            np.random.shuffle(self.indices)\n\n\nprint(\"\u2705 Data generator defined\")\n",
+          "execution_count": 16,
+          "stored_outputs": 1
+        },
+        {
+          "cell_index_zero_based": 14,
+          "source": "def create_gap_model(input_shape=(1024, 2)):\n    inp = layers.Input(shape=input_shape)\n\n    # Block 1: 32 filters, detect basic I/Q patterns\n    x = layers.Conv1D(32, 3, padding='valid', activation='relu')(inp)\n    x = layers.BatchNormalization()(x)\n    x = layers.MaxPooling1D(2)(x)\n\n    # Block 2: 64 filters, detect more complex patterns\n    x = layers.Conv1D(64, 3, padding='valid', activation='relu')(x)\n    x = layers.BatchNormalization()(x)\n    x = layers.MaxPooling1D(2)(x)\n\n    # Block 3: 128 filters, high-level signal features\n    x = layers.Conv1D(128, 3, padding='valid', activation='relu')(x)\n    x = layers.BatchNormalization()(x)\n\n    # Global Average Pooling \u2014 the key difference from the broken model\n    x = layers.GlobalAveragePooling1D()(x)\n\n    # Classification head\n    x = layers.Dense(128, activation='relu')(x)\n    x = layers.Dropout(0.4)(x)\n    x = layers.Dense(64, activation='relu')(x)\n    x = layers.Dropout(0.3)(x)\n\n    out = layers.Dense(1, activation='sigmoid')(x)\n    return models.Model(inp, out, name=\"GAP_Model_v3\")\n\n\n# Build and display\nmodel = create_gap_model()\nmodel.summary()\n\ntotal_params = model.count_params()\nprint(f\"\\n\u2705 Model built: {model.name}\")\nprint(f\"   Total parameters: {total_params:,}\")\nprint(f\"   Compare to broken model: 4,220,481 parameters (84x larger!)\")\n",
+          "execution_count": 17,
+          "stored_outputs": 6
+        },
+        {
+          "cell_index_zero_based": 16,
+          "source": "print(\"Loading dataset metadata...\")\nwith h5py.File(DATA_PATH, 'r') as f:\n    snr_vector = f['Z'][:, 0]\n    total_samples = snr_vector.shape[0]\n\nprint(f\"Total samples in dataset: {total_samples:,}\")\n\n# Filter: SNR >= -8 dB\nmask = (snr_vector >= -8)\nall_indices = np.arange(total_samples)\nfiltered_indices = all_indices[mask]\n\nprint(f\"Samples with SNR >= -8 dB: {len(filtered_indices):,}\")\n\n# Split: 80% train, 10% val, 10% test\nidx_train, idx_temp = train_test_split(\n    filtered_indices, test_size=0.2, random_state=42, shuffle=True)\nidx_val, idx_test = train_test_split(\n    idx_temp, test_size=0.5, random_state=42, shuffle=True)\n\nprint(f\"\\nSplit sizes:\")\nprint(f\"  Train: {len(idx_train):,} samples\")\nprint(f\"  Val:   {len(idx_val):,} samples\")\nprint(f\"  Test:  {len(idx_test):,} samples\")\n\n# Create generators\ntrain_gen = HDF5Generator(DATA_PATH, idx_train)\nval_gen = HDF5Generator(DATA_PATH, idx_val, shuffle=False)\n\nprint(f\"\\n\u2705 Generators ready\")\nprint(f\"   Batches per epoch: {len(train_gen)}\")\nprint(f\"   Effective samples per epoch: {len(train_gen) * BATCH_SIZE * 2:,} (signal + noise)\")\n",
+          "execution_count": 18,
+          "stored_outputs": 1
+        },
+        {
+          "cell_index_zero_based": 18,
+          "source": "# Compile\nopt = optimizers.Adam(learning_rate=0.001)\nmodel.compile(optimizer=opt, loss='binary_crossentropy', metrics=['accuracy'])\n\n# Callbacks\ncallbacks = [\n    # Save every epoch (so we can inspect any checkpoint later)\n    ModelCheckpoint(\n        filepath=os.path.join(CHECKPOINT_DIR, \"GAP_v3_epoch_{epoch:02d}.h5\"),\n        save_best_only=False,\n        save_weights_only=False,\n        monitor='val_loss'\n    ),\n    # Save best model separately\n    ModelCheckpoint(\n        filepath=os.path.join(CHECKPOINT_DIR, \"GAP_v3_best.h5\"),\n        save_best_only=True,\n        save_weights_only=False,\n        monitor='val_loss',\n        verbose=1\n    ),\n    # Reduce learning rate when validation loss plateaus\n    ReduceLROnPlateau(\n        factor=0.5,\n        patience=3,\n        verbose=1,\n        min_lr=1e-6\n    ),\n    # Stop early if no improvement\n    EarlyStopping(\n        patience=8,\n        restore_best_weights=True,\n        verbose=1\n    ),\n]\n\nprint(\"\u2705 Model compiled\")\nprint(f\"   Optimizer: Adam (lr=0.001)\")\nprint(f\"   Loss: binary_crossentropy\")\nprint(f\"   Max epochs: {EPOCHS}\")\nprint(f\"   Early stopping patience: 8\")\nprint(f\"   Checkpoints saved to: {CHECKPOINT_DIR}\")\n",
+          "execution_count": 19,
+          "stored_outputs": 1
+        },
+        {
+          "cell_index_zero_based": 20,
+          "source": "print(\"=\" * 60)\nprint(\"  STARTING TRAINING\")\nprint(\"=\" * 60)\nprint(f\"  Architecture : GAP_Model_v3 ({model.count_params():,} params)\")\nprint(f\"  Noise type   : Augmented synthetic\" + (\" + real USRP\" if usrp_noise_frames is not None else \"\"))\nprint(f\"  Epochs       : {EPOCHS} (early stopping enabled)\")\nprint(f\"  Batch size   : {BATCH_SIZE}\")\nprint(\"=\" * 60)\nprint()\n\nhistory = model.fit(\n    train_gen,\n    validation_data=val_gen,\n    epochs=EPOCHS,\n    callbacks=callbacks,\n)\n\nprint(\"\\n\u2705 Training complete!\")\nprint(f\"   Final train accuracy: {history.history['accuracy'][-1]:.4f}\")\nprint(f\"   Final val accuracy:   {history.history['val_accuracy'][-1]:.4f}\")\nprint(f\"   Best val loss:        {min(history.history['val_loss']):.4f}\")\n",
+          "execution_count": 20,
+          "stored_outputs": 2
+        },
+        {
+          "cell_index_zero_based": 22,
+          "source": "fig, axes = plt.subplots(1, 2, figsize=(14, 5))\n\n# Accuracy\nax = axes[0]\nax.plot(history.history['accuracy'], label='Train', linewidth=2, color=\"#378ADD\")\nax.plot(history.history['val_accuracy'], label='Validation', linewidth=2, color=\"#E24B4A\")\nax.set_title('Accuracy over Epochs', fontsize=14, fontweight='bold')\nax.set_xlabel('Epoch')\nax.set_ylabel('Accuracy')\nax.legend(fontsize=12)\nax.grid(True, alpha=0.3)\nax.set_ylim(0.5, 1.02)\n\n# Loss\nax = axes[1]\nax.plot(history.history['loss'], label='Train', linewidth=2, color=\"#378ADD\")\nax.plot(history.history['val_loss'], label='Validation', linewidth=2, color=\"#E24B4A\")\nax.set_title('Loss over Epochs', fontsize=14, fontweight='bold')\nax.set_xlabel('Epoch')\nax.set_ylabel('Loss')\nax.legend(fontsize=12)\nax.grid(True, alpha=0.3)\n\nplt.tight_layout()\nplt.savefig(os.path.join(PLOT_DIR, 'training_history.png'), dpi=150, bbox_inches='tight')\nplt.show()\nprint(\"\u2705 Saved: training_history.png\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 24,
+          "source": "print(\"Evaluating detection performance across SNR levels...\\n\")\n\nplot_snrs = np.arange(-20, 32, 2)\nsnr_accuracies = []\ntest_snrs = snr_vector[idx_test]\n\nfor snr in plot_snrs:\n    subset_mask = (test_snrs == snr)\n    if not np.any(subset_mask):\n        snr_accuracies.append(0)\n        continue\n    specific_indices = idx_test[subset_mask]\n    gen = HDF5Generator(DATA_PATH, specific_indices,\n                        batch_size=2048, shuffle=False, add_noise=True)\n    scores = model.evaluate(gen, verbose=0)\n    snr_accuracies.append(scores[1])\n    print(f\"  SNR {snr:>3d} dB: Accuracy = {scores[1]:.4f}\")\n\n# Plot\nplt.figure(figsize=(10, 6))\nplt.plot(plot_snrs, snr_accuracies, marker='o', linewidth=2, color=\"#378ADD\",\n         markersize=6, markerfacecolor=\"white\", markeredgewidth=2)\nplt.axhline(y=0.5, color=\"gray\", linestyle=\"--\", linewidth=0.8, alpha=0.5, label=\"Random guess\")\nplt.title('Detection Performance vs SNR', fontsize=14, fontweight='bold')\nplt.xlabel('SNR (dB)', fontsize=12)\nplt.ylabel('Detection Accuracy', fontsize=12)\nplt.grid(True, alpha=0.3)\nplt.xticks(np.arange(-20, 32, 4))\nplt.ylim(0.4, 1.05)\nplt.legend(fontsize=11)\nplt.tight_layout()\nplt.savefig(os.path.join(PLOT_DIR, 'snr_performance.png'), dpi=150, bbox_inches='tight')\nplt.show()\nprint(\"\\n\u2705 Saved: snr_performance.png\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 26,
+          "source": "print(\"=\" * 60)\nprint(\"  SANITY CHECK: Does the model reject noise?\")\nprint(\"=\" * 60)\n\n# Generate test data\nn_test = 500\ntest_noise = generate_augmented_noise((n_test, 1024, 2))\ntest_signal_indices = idx_test[:n_test]\ntest_signals = np.zeros((n_test, 1024, 2), dtype='float32')\nwith h5py.File(DATA_PATH, 'r') as f:\n    for i, real_idx in enumerate(np.sort(test_signal_indices)):\n        test_signals[i] = f['X'][real_idx]\n\n# Predict\npreds_noise = model.predict(test_noise, verbose=0, batch_size=256).flatten()\npreds_signal = model.predict(test_signals, verbose=0, batch_size=256).flatten()\n\nn_noise_correct = int(np.sum(preds_noise < 0.5))\nn_signal_correct = int(np.sum(preds_signal > 0.5))\n\nprint(f\"\")\nprint(f\"  NOISE ({n_test} frames):\")\nprint(f\"    Average prediction : {np.mean(preds_noise):.4f}\")\nprint(f\"    Correctly rejected : {n_noise_correct}/{n_test} ({n_noise_correct/n_test*100:.1f}%)\")\nprint(f\"\")\nprint(f\"  SIGNAL ({n_test} frames):\")\nprint(f\"    Average prediction : {np.mean(preds_signal):.4f}\")\nprint(f\"    Correctly detected : {n_signal_correct}/{n_test} ({n_signal_correct/n_test*100:.1f}%)\")\nprint(f\"\")\n\nif n_noise_correct > n_test * 0.8 and n_signal_correct > n_test * 0.8:\n    print(f\"  \u2705 MODEL WORKS CORRECTLY!\")\n    print(f\"     Noise is rejected. Signal is detected.\")\nelif n_noise_correct < n_test * 0.5:\n    print(f\"  \u274c Model still classifies noise as signal.\")\n    print(f\"     Check training curves for signs of collapse.\")\nelse:\n    print(f\"  \ud83d\udd36 Partial success \u2014 check the plots for details.\")\n\n# Plot\nfig, axes = plt.subplots(1, 2, figsize=(14, 4))\n\nax = axes[0]\nax.hist(preds_noise, bins=50, color=\"#639922\", alpha=0.7, label=\"Noise\")\nax.hist(preds_signal, bins=50, color=\"#378ADD\", alpha=0.7, label=\"Signal\")\nax.axvline(x=0.5, color=\"gray\", linestyle=\"--\", linewidth=1)\nax.set_title(\"Prediction Distribution\", fontsize=12, fontweight=\"bold\")\nax.set_xlabel(\"Prediction\")\nax.set_ylabel(\"Count\")\nax.legend()\n\nax = axes[1]\nax.plot(preds_noise[:100], color=\"#639922\", linewidth=1, alpha=0.8, label=\"Noise\")\nax.plot(preds_signal[:100], color=\"#378ADD\", linewidth=1, alpha=0.8, label=\"Signal\")\nax.axhline(y=0.5, color=\"gray\", linestyle=\"--\", linewidth=0.8)\nax.set_title(\"Per-Frame Predictions (first 100)\", fontsize=12, fontweight=\"bold\")\nax.set_xlabel(\"Frame\")\nax.set_ylabel(\"Prediction\")\nax.legend()\nax.set_ylim(-0.05, 1.05)\n\nplt.tight_layout()\nplt.savefig(os.path.join(PLOT_DIR, 'sanity_check.png'), dpi=150, bbox_inches='tight')\nplt.show()\nprint(\"\\n\u2705 Saved: sanity_check.png\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 28,
+          "source": "print(\"=\" * 65)\nprint(\"  TRAINING COMPLETE \u2014 SUMMARY\")\nprint(\"=\" * 65)\nprint(f\"\")\nprint(f\"  Model:          {model.name}\")\nprint(f\"  Parameters:     {model.count_params():,}\")\nprint(f\"  Epochs trained: {len(history.history['loss'])}\")\nprint(f\"  Best val loss:  {min(history.history['val_loss']):.4f}\")\nprint(f\"  Best val acc:   {max(history.history['val_accuracy']):.4f}\")\nprint(f\"\")\nprint(f\"  Noise type:     Augmented synthetic\" + (\" + real USRP\" if usrp_noise_frames is not None else \"\"))\nprint(f\"  Noise test:     {n_noise_correct}/{n_test} correctly rejected ({n_noise_correct/n_test*100:.1f}%)\")\nprint(f\"  Signal test:    {n_signal_correct}/{n_test} correctly detected ({n_signal_correct/n_test*100:.1f}%)\")\nprint(f\"\")\nprint(f\"  Files saved:\")\nprint(f\"    Best model:  {CHECKPOINT_DIR}/GAP_v3_best.h5\")\nprint(f\"    All epochs:  {CHECKPOINT_DIR}/GAP_v3_epoch_XX.h5\")\nprint(f\"    Plots:       {PLOT_DIR}/\")\nprint(f\"\")\nprint(f\"  NEXT STEPS:\")\nprint(f\"  1. Download GAP_v3_best.h5 to your Linux PC\")\nprint(f\"  2. Update inference script: MODEL_PATH = 'GAP_v3_best.h5'\")\nprint(f\"  3. Set NORMALIZATION = 'raw' (no normalization)\")\nprint(f\"  4. Test on your USRP noise-only capture\")\nprint(f\"  5. If it works \u2192 test on USRP signal capture\")\nprint(f\"  6. Screenshot both results for your report\")\nprint(\"=\" * 65)\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        }
+      ]
+    },
+    {
+      "path": "S:\\M folder\\semster 9\\grad. project\\train_v3_colab.ipynb",
+      "bytes": 39662,
+      "sha256": "de47a1cee07d1f4a79b9cff356ff2bd47007d2f7e0b50e8abd78da24bf07bb0f",
+      "code_cells": [
+        {
+          "cell_index_zero_based": 2,
+          "source": "from google.colab import drive\ndrive.mount('/content/drive')\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 4,
+          "source": "import os\nos.environ[\"TF_CPP_MIN_LOG_LEVEL\"] = \"3\"\n\nimport numpy as np\nimport h5py\nimport tensorflow as tf\nimport matplotlib.pyplot as plt\nfrom tensorflow.keras import layers, models, optimizers\nfrom tensorflow.keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, EarlyStopping\nfrom tensorflow.keras.utils import Sequence\nfrom sklearn.model_selection import train_test_split\n\n# =========================\n# PATHS \u2014 UPDATE THESE\n# =========================\n\n# RadioML 2018 dataset (the big HDF5 file with all modulation signals)\nDATA_PATH = \"/content/drive/MyDrive/FINAL_GP/GOLD_XYZ_OSC.0001_1024.hdf5\"\n\n# Checkpoints and plots will be saved here on your Drive\nCHECKPOINT_DIR = \"/content/drive/MyDrive/FINAL_GP/checkpoints_v3\"\nPLOT_DIR = \"/content/drive/MyDrive/FINAL_GP/plots_v3\"\n\n# Optional: path to real USRP noise recording (.dat file, complex64)\n# Set to None if you don't have one yet \u2014 synthetic augmentation will still work\nUSRP_NOISE_PATH = None  # e.g. \"/content/drive/MyDrive/FINAL_GP/usrp_noise_only.dat\"\n\n# =========================\n# TRAINING PARAMETERS\n# =========================\nAWGN_STD = 0.708           # Noise standard deviation (same as original)\nBATCH_SIZE = 2048           # Batch size\nEPOCHS = 48                 # Max epochs (early stopping may stop earlier)\n\n# Noise augmentation ranges\nDC_OFFSET_RANGE = (-0.05, 0.05)       # Random DC bias on I and Q channels\nIQ_GAIN_IMB_RANGE = (0.93, 1.07)      # Gain mismatch between I and Q\nIQ_PHASE_IMB_RANGE = (-0.05, 0.05)    # Phase mismatch in radians\nFREQ_OFFSET_RANGE = (-0.001, 0.001)   # Residual carrier frequency offset\nFLICKER_ALPHA = 0.002                 # 1/f noise amplitude\n\n# What fraction of noise batch comes from real USRP recordings\nUSRP_NOISE_FRACTION = 0.3\n\nos.makedirs(CHECKPOINT_DIR, exist_ok=True)\nos.makedirs(PLOT_DIR, exist_ok=True)\n\nprint(\"\u2705 Configuration loaded\")\nprint(f\"   Dataset:     {DATA_PATH}\")\nprint(f\"   Checkpoints: {CHECKPOINT_DIR}\")\nprint(f\"   Plots:       {PLOT_DIR}\")\nprint(f\"   USRP noise:  {USRP_NOISE_PATH or 'Not provided (synthetic only)'}\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 6,
+          "source": "gpus = tf.config.list_physical_devices('GPU')\nif gpus:\n    try:\n        for gpu in gpus:\n            tf.config.experimental.set_memory_growth(gpu, True)\n        print(f\"\u2705 GPU detected: {gpus[0].name}\")\n        print(f\"   TensorFlow version: {tf.__version__}\")\n    except RuntimeError as e:\n        print(e)\nelse:\n    print(\"\u26a0\ufe0f NO GPU DETECTED!\")\n    print(\"   Go to Runtime \u2192 Change runtime type \u2192 T4 GPU\")\n    print(\"   Training on CPU will be extremely slow.\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 8,
+          "source": "usrp_noise_frames = None\n\nif USRP_NOISE_PATH and os.path.exists(USRP_NOISE_PATH):\n    raw = np.fromfile(USRP_NOISE_PATH, dtype=np.complex64)\n    usable = (len(raw) // 1024) * 1024\n    if usable >= 1024:\n        raw = raw[:usable].reshape(-1, 1024)\n        usrp_noise_frames = np.stack([raw.real, raw.imag], axis=-1).astype(np.float32)\n        print(f\"\u2705 Loaded {len(usrp_noise_frames)} real USRP noise frames\")\n        print(f\"   Source: {USRP_NOISE_PATH}\")\n        print(f\"   Shape:  {usrp_noise_frames.shape}\")\n        print(f\"   Amplitude range: [{usrp_noise_frames.min():.4f}, {usrp_noise_frames.max():.4f}]\")\n    else:\n        print(f\"\u26a0\ufe0f USRP noise file too short ({len(raw)} samples), need at least 1024. Skipping.\")\nelif USRP_NOISE_PATH:\n    print(f\"\u26a0\ufe0f File not found: {USRP_NOISE_PATH}\")\n    print(\"   Continuing with synthetic noise only.\")\nelse:\n    print(\"\u2139\ufe0f  No USRP noise file provided.\")\n    print(\"   Training will use augmented synthetic noise only.\")\n    print(\"   This is still a big improvement over pure AWGN.\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 10,
+          "source": "def add_dc_offset(noise):\n    \"\"\"\n    Add random DC offset to I and Q channels independently.\n    Real ADCs and mixers always have some DC bias that varies\n    between captures and even within a single recording.\n    \"\"\"\n    dc_i = np.random.uniform(*DC_OFFSET_RANGE)\n    dc_q = np.random.uniform(*DC_OFFSET_RANGE)\n    noise[:, :, 0] += dc_i\n    noise[:, :, 1] += dc_q\n    return noise\n\n\ndef add_iq_imbalance(noise):\n    \"\"\"\n    Apply random gain and phase imbalance between I and Q paths.\n    In real hardware, the I and Q mixers are never perfectly matched \u2014\n    there's always some gain difference and phase error.\n    \"\"\"\n    gain = np.random.uniform(*IQ_GAIN_IMB_RANGE)\n    phase = np.random.uniform(*IQ_PHASE_IMB_RANGE)\n\n    i_ch = noise[:, :, 0]\n    q_ch = noise[:, :, 1]\n\n    noise[:, :, 0] = i_ch + q_ch * np.sin(phase)\n    noise[:, :, 1] = q_ch * gain * np.cos(phase)\n    return noise\n\n\ndef add_frequency_offset(noise):\n    \"\"\"\n    Simulate residual carrier / LO frequency offset.\n    Even after tuning, there's always a small frequency error\n    that causes a slow phase rotation across the frame.\n    \"\"\"\n    f_off = np.random.uniform(*FREQ_OFFSET_RANGE)\n    n_samples = noise.shape[1]\n    t = np.arange(n_samples, dtype=np.float32)\n    phase = 2.0 * np.pi * f_off * t\n\n    cos_p = np.cos(phase)\n    sin_p = np.sin(phase)\n\n    i_ch = noise[:, :, 0]\n    q_ch = noise[:, :, 1]\n\n    noise[:, :, 0] = i_ch * cos_p - q_ch * sin_p\n    noise[:, :, 1] = i_ch * sin_p + q_ch * cos_p\n    return noise\n\n\ndef add_flicker_noise(noise):\n    \"\"\"\n    Add 1/f (pink) noise component.\n    Real analog front-ends produce noise that's stronger at\n    low frequencies \u2014 unlike AWGN which is spectrally flat.\n    This spectral coloring is a key difference the old model exploited.\n    \"\"\"\n    n_batch, n_samples, _ = noise.shape\n    freqs = np.fft.rfftfreq(n_samples)\n    freqs[0] = 1.0  # avoid division by zero\n\n    for ch in range(2):\n        white = np.random.randn(n_batch, n_samples).astype(np.float32)\n        spectrum = np.fft.rfft(white, axis=-1)\n        spectrum /= np.sqrt(freqs)  # 1/f shaping\n        pink = np.fft.irfft(spectrum, n=n_samples, axis=-1)\n        noise[:, :, ch] += FLICKER_ALPHA * pink.astype(np.float32)\n\n    return noise\n\n\ndef generate_augmented_noise(shape):\n    \"\"\"Generate synthetic AWGN with all realistic RF impairments applied.\"\"\"\n    noise = np.random.normal(0, AWGN_STD, shape).astype(np.float32)\n    noise = add_dc_offset(noise)\n    noise = add_iq_imbalance(noise)\n    noise = add_frequency_offset(noise)\n    noise = add_flicker_noise(noise)\n    return noise\n\n\ndef sample_usrp_noise(n_frames):\n    \"\"\"Sample random frames from real USRP noise captures with light augmentation.\"\"\"\n    idx = np.random.choice(len(usrp_noise_frames), size=n_frames, replace=True)\n    frames = usrp_noise_frames[idx].copy()\n    # Light random scaling so the model doesn't memorize exact amplitudes\n    scale = np.random.uniform(0.8, 1.2, size=(n_frames, 1, 1)).astype(np.float32)\n    frames *= scale\n    return frames\n\n\n# Quick visual test\ntest_clean = np.random.normal(0, AWGN_STD, (1, 1024, 2)).astype(np.float32)\ntest_augmented = generate_augmented_noise((1, 1024, 2))\n\nfig, axes = plt.subplots(2, 2, figsize=(14, 5))\nfig.suptitle(\"Clean AWGN vs Augmented Noise \u2014 I Channel\", fontsize=14, fontweight=\"bold\")\n\naxes[0, 0].plot(test_clean[0, :200, 0], color=\"#378ADD\", linewidth=0.8)\naxes[0, 0].set_title(\"Clean AWGN (old training)\", fontsize=11)\naxes[0, 0].set_ylim(-3, 3)\naxes[0, 0].set_ylabel(\"Amplitude\")\n\naxes[0, 1].plot(test_augmented[0, :200, 0], color=\"#639922\", linewidth=0.8)\naxes[0, 1].set_title(\"Augmented noise (new training)\", fontsize=11)\naxes[0, 1].set_ylim(-3, 3)\n\n# Spectrum comparison\nfrom numpy.fft import fft, fftfreq\nspec_clean = np.abs(fft(test_clean[0, :, 0]))[:512]\nspec_aug = np.abs(fft(test_augmented[0, :, 0]))[:512]\n\naxes[1, 0].plot(spec_clean, color=\"#378ADD\", linewidth=0.5)\naxes[1, 0].set_title(\"Clean AWGN \u2014 Spectrum (flat)\", fontsize=11)\naxes[1, 0].set_ylabel(\"Magnitude\")\naxes[1, 0].set_xlabel(\"Frequency bin\")\n\naxes[1, 1].plot(spec_aug, color=\"#639922\", linewidth=0.5)\naxes[1, 1].set_title(\"Augmented noise \u2014 Spectrum (colored)\", fontsize=11)\naxes[1, 1].set_xlabel(\"Frequency bin\")\n\nplt.tight_layout()\nplt.savefig(os.path.join(PLOT_DIR, \"noise_comparison.png\"), dpi=150, bbox_inches=\"tight\")\nplt.show()\nprint(\"\u2705 Noise augmentation functions ready\")\nprint(\"\u2705 Saved: noise_comparison.png\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 12,
+          "source": "class HDF5Generator(Sequence):\n    def __init__(self, file_path, indices, batch_size=BATCH_SIZE,\n                 shuffle=True, add_noise=True):\n        super().__init__()\n        self.file_path = file_path\n        self.indices = indices\n        self.batch_size = batch_size\n        self.shuffle = shuffle\n        self.add_noise = add_noise\n        self.on_epoch_end()\n\n    def __len__(self):\n        return int(np.ceil(len(self.indices) / self.batch_size))\n\n    def __getitem__(self, idx):\n        start = idx * self.batch_size\n        end = min((idx + 1) * self.batch_size, len(self.indices))\n        batch_indices = self.indices[start:end]\n        n = len(batch_indices)\n\n        # Load signal samples from HDF5\n        X_signals = np.zeros((n, 1024, 2), dtype='float32')\n        with h5py.File(self.file_path, 'r') as f:\n            Xh = f['X']\n            sorted_idx = np.sort(batch_indices)\n            for i, real_idx in enumerate(sorted_idx):\n                X_signals[i] = Xh[real_idx]\n\n        y_signals = np.ones(n, dtype='float32')\n\n        if self.add_noise:\n            # Decide how many frames from USRP vs synthetic\n            if usrp_noise_frames is not None:\n                n_usrp = int(n * USRP_NOISE_FRACTION)\n                n_synth = n - n_usrp\n            else:\n                n_usrp = 0\n                n_synth = n\n\n            # Build noise batch\n            noise_parts = []\n            if n_synth > 0:\n                noise_parts.append(generate_augmented_noise((n_synth, 1024, 2)))\n            if n_usrp > 0:\n                noise_parts.append(sample_usrp_noise(n_usrp))\n\n            X_noise = np.concatenate(noise_parts, axis=0)\n            y_noise = np.zeros(len(X_noise), dtype='float32')\n\n            # Combine and shuffle\n            X_batch = np.concatenate([X_signals, X_noise], axis=0)\n            y_batch = np.concatenate([y_signals, y_noise], axis=0)\n            p = np.random.permutation(len(X_batch))\n            return X_batch[p], y_batch[p]\n        else:\n            return X_signals, y_signals\n\n    def on_epoch_end(self):\n        if self.shuffle:\n            np.random.shuffle(self.indices)\n\n\nprint(\"\u2705 Data generator defined\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 14,
+          "source": "def create_gap_model(input_shape=(1024, 2)):\n    inp = layers.Input(shape=input_shape)\n\n    # Block 1: 32 filters, detect basic I/Q patterns\n    x = layers.Conv1D(32, 3, padding='valid', activation='relu')(inp)\n    x = layers.BatchNormalization()(x)\n    x = layers.MaxPooling1D(2)(x)\n\n    # Block 2: 64 filters, detect more complex patterns\n    x = layers.Conv1D(64, 3, padding='valid', activation='relu')(x)\n    x = layers.BatchNormalization()(x)\n    x = layers.MaxPooling1D(2)(x)\n\n    # Block 3: 128 filters, high-level signal features\n    x = layers.Conv1D(128, 3, padding='valid', activation='relu')(x)\n    x = layers.BatchNormalization()(x)\n\n    # Global Average Pooling \u2014 the key difference from the broken model\n    x = layers.GlobalAveragePooling1D()(x)\n\n    # Classification head\n    x = layers.Dense(128, activation='relu')(x)\n    x = layers.Dropout(0.4)(x)\n    x = layers.Dense(64, activation='relu')(x)\n    x = layers.Dropout(0.3)(x)\n\n    out = layers.Dense(1, activation='sigmoid')(x)\n    return models.Model(inp, out, name=\"GAP_Model_v3\")\n\n\n# Build and display\nmodel = create_gap_model()\nmodel.summary()\n\ntotal_params = model.count_params()\nprint(f\"\\n\u2705 Model built: {model.name}\")\nprint(f\"   Total parameters: {total_params:,}\")\nprint(f\"   Compare to broken model: 4,220,481 parameters (84x larger!)\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 16,
+          "source": "print(\"Loading dataset metadata...\")\nwith h5py.File(DATA_PATH, 'r') as f:\n    snr_vector = f['Z'][:, 0]\n    total_samples = snr_vector.shape[0]\n\nprint(f\"Total samples in dataset: {total_samples:,}\")\n\n# Filter: SNR >= -8 dB\nmask = (snr_vector >= -8)\nall_indices = np.arange(total_samples)\nfiltered_indices = all_indices[mask]\n\nprint(f\"Samples with SNR >= -8 dB: {len(filtered_indices):,}\")\n\n# Split: 80% train, 10% val, 10% test\nidx_train, idx_temp = train_test_split(\n    filtered_indices, test_size=0.2, random_state=42, shuffle=True)\nidx_val, idx_test = train_test_split(\n    idx_temp, test_size=0.5, random_state=42, shuffle=True)\n\nprint(f\"\\nSplit sizes:\")\nprint(f\"  Train: {len(idx_train):,} samples\")\nprint(f\"  Val:   {len(idx_val):,} samples\")\nprint(f\"  Test:  {len(idx_test):,} samples\")\n\n# Create generators\ntrain_gen = HDF5Generator(DATA_PATH, idx_train)\nval_gen = HDF5Generator(DATA_PATH, idx_val, shuffle=False)\n\nprint(f\"\\n\u2705 Generators ready\")\nprint(f\"   Batches per epoch: {len(train_gen)}\")\nprint(f\"   Effective samples per epoch: {len(train_gen) * BATCH_SIZE * 2:,} (signal + noise)\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 18,
+          "source": "# Compile\nopt = optimizers.Adam(learning_rate=0.001)\nmodel.compile(optimizer=opt, loss='binary_crossentropy', metrics=['accuracy'])\n\n# Callbacks\ncallbacks = [\n    # Save every epoch (so we can inspect any checkpoint later)\n    ModelCheckpoint(\n        filepath=os.path.join(CHECKPOINT_DIR, \"GAP_v3_epoch_{epoch:02d}.h5\"),\n        save_best_only=False,\n        save_weights_only=False,\n        monitor='val_loss'\n    ),\n    # Save best model separately\n    ModelCheckpoint(\n        filepath=os.path.join(CHECKPOINT_DIR, \"GAP_v3_best.h5\"),\n        save_best_only=True,\n        save_weights_only=False,\n        monitor='val_loss',\n        verbose=1\n    ),\n    # Reduce learning rate when validation loss plateaus\n    ReduceLROnPlateau(\n        factor=0.5,\n        patience=3,\n        verbose=1,\n        min_lr=1e-6\n    ),\n    # Stop early if no improvement\n    EarlyStopping(\n        patience=8,\n        restore_best_weights=True,\n        verbose=1\n    ),\n]\n\nprint(\"\u2705 Model compiled\")\nprint(f\"   Optimizer: Adam (lr=0.001)\")\nprint(f\"   Loss: binary_crossentropy\")\nprint(f\"   Max epochs: {EPOCHS}\")\nprint(f\"   Early stopping patience: 8\")\nprint(f\"   Checkpoints saved to: {CHECKPOINT_DIR}\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 20,
+          "source": "print(\"=\" * 60)\nprint(\"  STARTING TRAINING\")\nprint(\"=\" * 60)\nprint(f\"  Architecture : GAP_Model_v3 ({model.count_params():,} params)\")\nprint(f\"  Noise type   : Augmented synthetic\" + (\" + real USRP\" if usrp_noise_frames is not None else \"\"))\nprint(f\"  Epochs       : {EPOCHS} (early stopping enabled)\")\nprint(f\"  Batch size   : {BATCH_SIZE}\")\nprint(\"=\" * 60)\nprint()\n\nhistory = model.fit(\n    train_gen,\n    validation_data=val_gen,\n    epochs=EPOCHS,\n    callbacks=callbacks,\n    workers=1,\n    use_multiprocessing=False,\n)\n\nprint(\"\\n\u2705 Training complete!\")\nprint(f\"   Final train accuracy: {history.history['accuracy'][-1]:.4f}\")\nprint(f\"   Final val accuracy:   {history.history['val_accuracy'][-1]:.4f}\")\nprint(f\"   Best val loss:        {min(history.history['val_loss']):.4f}\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 22,
+          "source": "fig, axes = plt.subplots(1, 2, figsize=(14, 5))\n\n# Accuracy\nax = axes[0]\nax.plot(history.history['accuracy'], label='Train', linewidth=2, color=\"#378ADD\")\nax.plot(history.history['val_accuracy'], label='Validation', linewidth=2, color=\"#E24B4A\")\nax.set_title('Accuracy over Epochs', fontsize=14, fontweight='bold')\nax.set_xlabel('Epoch')\nax.set_ylabel('Accuracy')\nax.legend(fontsize=12)\nax.grid(True, alpha=0.3)\nax.set_ylim(0.5, 1.02)\n\n# Loss\nax = axes[1]\nax.plot(history.history['loss'], label='Train', linewidth=2, color=\"#378ADD\")\nax.plot(history.history['val_loss'], label='Validation', linewidth=2, color=\"#E24B4A\")\nax.set_title('Loss over Epochs', fontsize=14, fontweight='bold')\nax.set_xlabel('Epoch')\nax.set_ylabel('Loss')\nax.legend(fontsize=12)\nax.grid(True, alpha=0.3)\n\nplt.tight_layout()\nplt.savefig(os.path.join(PLOT_DIR, 'training_history.png'), dpi=150, bbox_inches='tight')\nplt.show()\nprint(\"\u2705 Saved: training_history.png\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 24,
+          "source": "print(\"Evaluating detection performance across SNR levels...\\n\")\n\nplot_snrs = np.arange(-20, 32, 2)\nsnr_accuracies = []\ntest_snrs = snr_vector[idx_test]\n\nfor snr in plot_snrs:\n    subset_mask = (test_snrs == snr)\n    if not np.any(subset_mask):\n        snr_accuracies.append(0)\n        continue\n    specific_indices = idx_test[subset_mask]\n    gen = HDF5Generator(DATA_PATH, specific_indices,\n                        batch_size=2048, shuffle=False, add_noise=True)\n    scores = model.evaluate(gen, verbose=0)\n    snr_accuracies.append(scores[1])\n    print(f\"  SNR {snr:>3d} dB: Accuracy = {scores[1]:.4f}\")\n\n# Plot\nplt.figure(figsize=(10, 6))\nplt.plot(plot_snrs, snr_accuracies, marker='o', linewidth=2, color=\"#378ADD\",\n         markersize=6, markerfacecolor=\"white\", markeredgewidth=2)\nplt.axhline(y=0.5, color=\"gray\", linestyle=\"--\", linewidth=0.8, alpha=0.5, label=\"Random guess\")\nplt.title('Detection Performance vs SNR', fontsize=14, fontweight='bold')\nplt.xlabel('SNR (dB)', fontsize=12)\nplt.ylabel('Detection Accuracy', fontsize=12)\nplt.grid(True, alpha=0.3)\nplt.xticks(np.arange(-20, 32, 4))\nplt.ylim(0.4, 1.05)\nplt.legend(fontsize=11)\nplt.tight_layout()\nplt.savefig(os.path.join(PLOT_DIR, 'snr_performance.png'), dpi=150, bbox_inches='tight')\nplt.show()\nprint(\"\\n\u2705 Saved: snr_performance.png\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 26,
+          "source": "print(\"=\" * 60)\nprint(\"  SANITY CHECK: Does the model reject noise?\")\nprint(\"=\" * 60)\n\n# Generate test data\nn_test = 500\ntest_noise = generate_augmented_noise((n_test, 1024, 2))\ntest_signal_indices = idx_test[:n_test]\ntest_signals = np.zeros((n_test, 1024, 2), dtype='float32')\nwith h5py.File(DATA_PATH, 'r') as f:\n    for i, real_idx in enumerate(np.sort(test_signal_indices)):\n        test_signals[i] = f['X'][real_idx]\n\n# Predict\npreds_noise = model.predict(test_noise, verbose=0, batch_size=256).flatten()\npreds_signal = model.predict(test_signals, verbose=0, batch_size=256).flatten()\n\nn_noise_correct = int(np.sum(preds_noise < 0.5))\nn_signal_correct = int(np.sum(preds_signal > 0.5))\n\nprint(f\"\")\nprint(f\"  NOISE ({n_test} frames):\")\nprint(f\"    Average prediction : {np.mean(preds_noise):.4f}\")\nprint(f\"    Correctly rejected : {n_noise_correct}/{n_test} ({n_noise_correct/n_test*100:.1f}%)\")\nprint(f\"\")\nprint(f\"  SIGNAL ({n_test} frames):\")\nprint(f\"    Average prediction : {np.mean(preds_signal):.4f}\")\nprint(f\"    Correctly detected : {n_signal_correct}/{n_test} ({n_signal_correct/n_test*100:.1f}%)\")\nprint(f\"\")\n\nif n_noise_correct > n_test * 0.8 and n_signal_correct > n_test * 0.8:\n    print(f\"  \u2705 MODEL WORKS CORRECTLY!\")\n    print(f\"     Noise is rejected. Signal is detected.\")\nelif n_noise_correct < n_test * 0.5:\n    print(f\"  \u274c Model still classifies noise as signal.\")\n    print(f\"     Check training curves for signs of collapse.\")\nelse:\n    print(f\"  \ud83d\udd36 Partial success \u2014 check the plots for details.\")\n\n# Plot\nfig, axes = plt.subplots(1, 2, figsize=(14, 4))\n\nax = axes[0]\nax.hist(preds_noise, bins=50, color=\"#639922\", alpha=0.7, label=\"Noise\")\nax.hist(preds_signal, bins=50, color=\"#378ADD\", alpha=0.7, label=\"Signal\")\nax.axvline(x=0.5, color=\"gray\", linestyle=\"--\", linewidth=1)\nax.set_title(\"Prediction Distribution\", fontsize=12, fontweight=\"bold\")\nax.set_xlabel(\"Prediction\")\nax.set_ylabel(\"Count\")\nax.legend()\n\nax = axes[1]\nax.plot(preds_noise[:100], color=\"#639922\", linewidth=1, alpha=0.8, label=\"Noise\")\nax.plot(preds_signal[:100], color=\"#378ADD\", linewidth=1, alpha=0.8, label=\"Signal\")\nax.axhline(y=0.5, color=\"gray\", linestyle=\"--\", linewidth=0.8)\nax.set_title(\"Per-Frame Predictions (first 100)\", fontsize=12, fontweight=\"bold\")\nax.set_xlabel(\"Frame\")\nax.set_ylabel(\"Prediction\")\nax.legend()\nax.set_ylim(-0.05, 1.05)\n\nplt.tight_layout()\nplt.savefig(os.path.join(PLOT_DIR, 'sanity_check.png'), dpi=150, bbox_inches='tight')\nplt.show()\nprint(\"\\n\u2705 Saved: sanity_check.png\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 28,
+          "source": "print(\"=\" * 65)\nprint(\"  TRAINING COMPLETE \u2014 SUMMARY\")\nprint(\"=\" * 65)\nprint(f\"\")\nprint(f\"  Model:          {model.name}\")\nprint(f\"  Parameters:     {model.count_params():,}\")\nprint(f\"  Epochs trained: {len(history.history['loss'])}\")\nprint(f\"  Best val loss:  {min(history.history['val_loss']):.4f}\")\nprint(f\"  Best val acc:   {max(history.history['val_accuracy']):.4f}\")\nprint(f\"\")\nprint(f\"  Noise type:     Augmented synthetic\" + (\" + real USRP\" if usrp_noise_frames is not None else \"\"))\nprint(f\"  Noise test:     {n_noise_correct}/{n_test} correctly rejected ({n_noise_correct/n_test*100:.1f}%)\")\nprint(f\"  Signal test:    {n_signal_correct}/{n_test} correctly detected ({n_signal_correct/n_test*100:.1f}%)\")\nprint(f\"\")\nprint(f\"  Files saved:\")\nprint(f\"    Best model:  {CHECKPOINT_DIR}/GAP_v3_best.h5\")\nprint(f\"    All epochs:  {CHECKPOINT_DIR}/GAP_v3_epoch_XX.h5\")\nprint(f\"    Plots:       {PLOT_DIR}/\")\nprint(f\"\")\nprint(f\"  NEXT STEPS:\")\nprint(f\"  1. Download GAP_v3_best.h5 to your Linux PC\")\nprint(f\"  2. Update inference script: MODEL_PATH = 'GAP_v3_best.h5'\")\nprint(f\"  3. Set NORMALIZATION = 'raw' (no normalization)\")\nprint(f\"  4. Test on your USRP noise-only capture\")\nprint(f\"  5. If it works \u2192 test on USRP signal capture\")\nprint(f\"  6. Screenshot both results for your report\")\nprint(\"=\" * 65)\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        }
+      ]
+    },
+    {
+      "path": "S:\\M folder\\semster 9\\grad. project\\train_v4_colab.ipynb",
+      "bytes": 31624,
+      "sha256": "dd92d1fac3fc35877a92931832d659e5f066fa88eea64aeffb9176890c1f9a6c",
+      "code_cells": [
+        {
+          "cell_index_zero_based": 2,
+          "source": "from google.colab import drive\ndrive.mount('/content/drive')\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 4,
+          "source": "import os\nos.environ[\"TF_CPP_MIN_LOG_LEVEL\"] = \"3\"\n\nimport numpy as np\nimport h5py\nimport tensorflow as tf\nimport matplotlib.pyplot as plt\nfrom tensorflow.keras import layers, models, optimizers\nfrom tensorflow.keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, EarlyStopping\nfrom tensorflow.keras.utils import Sequence\nfrom sklearn.model_selection import train_test_split\n\n# =========================\n# PATHS \u2014 UPDATE THESE\n# =========================\nDATA_PATH = \"/content/drive/MyDrive/FINAL_GP/GOLD_XYZ_OSC.0001_1024.hdf5\"\nCHECKPOINT_DIR = \"/content/drive/MyDrive/FINAL_GP/checkpoints_v4\"\nPLOT_DIR = \"/content/drive/MyDrive/FINAL_GP/plots_v4\"\n\n# Optional: real USRP noise (.dat, complex64). Set None if unavailable.\nUSRP_NOISE_PATH = None\n\n# =========================\n# TRAINING PARAMETERS\n# =========================\nAWGN_STD = 0.708\nBATCH_SIZE = 2048\nEPOCHS = 48\n\n# Noise augmentation\nDC_OFFSET_RANGE = (-0.05, 0.05)\nIQ_GAIN_IMB_RANGE = (0.93, 1.07)\nIQ_PHASE_IMB_RANGE = (-0.05, 0.05)\nFREQ_OFFSET_RANGE = (-0.001, 0.001)\nFLICKER_ALPHA = 0.002\n\nUSRP_NOISE_FRACTION = 0.3\n\nos.makedirs(CHECKPOINT_DIR, exist_ok=True)\nos.makedirs(PLOT_DIR, exist_ok=True)\n\nprint(\"\u2705 Configuration loaded\")\nprint(f\"   Dataset:     {DATA_PATH}\")\nprint(f\"   Checkpoints: {CHECKPOINT_DIR}\")\nprint(f\"   USRP noise:  {USRP_NOISE_PATH or 'Not provided (synthetic only)'}\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 6,
+          "source": "gpus = tf.config.list_physical_devices('GPU')\nif gpus:\n    for gpu in gpus:\n        tf.config.experimental.set_memory_growth(gpu, True)\n    print(f\"\u2705 GPU detected: {gpus[0].name}\")\nelse:\n    print(\"\u26a0\ufe0f NO GPU \u2014 training will be very slow. Change runtime to T4 GPU.\")\n\nprint(f\"   TensorFlow: {tf.__version__}\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 8,
+          "source": "usrp_noise_frames = None\n\nif USRP_NOISE_PATH and os.path.exists(USRP_NOISE_PATH):\n    raw = np.fromfile(USRP_NOISE_PATH, dtype=np.complex64)\n    usable = (len(raw) // 1024) * 1024\n    if usable >= 1024:\n        raw = raw[:usable].reshape(-1, 1024)\n        usrp_noise_frames = np.stack([raw.real, raw.imag], axis=-1).astype(np.float32)\n        print(f\"\u2705 Loaded {len(usrp_noise_frames)} real USRP noise frames\")\n        print(f\"   Amplitude range: [{usrp_noise_frames.min():.4f}, {usrp_noise_frames.max():.4f}]\")\n    else:\n        print(f\"\u26a0\ufe0f USRP file too short, skipping.\")\nelse:\n    print(\"\u2139\ufe0f  No USRP noise file \u2014 using augmented synthetic noise only.\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 10,
+          "source": "def add_dc_offset(noise):\n    dc_i = np.random.uniform(*DC_OFFSET_RANGE)\n    dc_q = np.random.uniform(*DC_OFFSET_RANGE)\n    noise[:, :, 0] += dc_i\n    noise[:, :, 1] += dc_q\n    return noise\n\ndef add_iq_imbalance(noise):\n    gain = np.random.uniform(*IQ_GAIN_IMB_RANGE)\n    phase = np.random.uniform(*IQ_PHASE_IMB_RANGE)\n    i_ch = noise[:, :, 0]\n    q_ch = noise[:, :, 1]\n    noise[:, :, 0] = i_ch + q_ch * np.sin(phase)\n    noise[:, :, 1] = q_ch * gain * np.cos(phase)\n    return noise\n\ndef add_frequency_offset(noise):\n    f_off = np.random.uniform(*FREQ_OFFSET_RANGE)\n    t = np.arange(noise.shape[1], dtype=np.float32)\n    phase = 2.0 * np.pi * f_off * t\n    cos_p, sin_p = np.cos(phase), np.sin(phase)\n    i_ch, q_ch = noise[:, :, 0].copy(), noise[:, :, 1].copy()\n    noise[:, :, 0] = i_ch * cos_p - q_ch * sin_p\n    noise[:, :, 1] = i_ch * sin_p + q_ch * cos_p\n    return noise\n\ndef add_flicker_noise(noise):\n    n_batch, n_samples, _ = noise.shape\n    freqs = np.fft.rfftfreq(n_samples)\n    freqs[0] = 1.0\n    for ch in range(2):\n        white = np.random.randn(n_batch, n_samples).astype(np.float32)\n        spectrum = np.fft.rfft(white, axis=-1)\n        spectrum /= np.sqrt(freqs)\n        pink = np.fft.irfft(spectrum, n=n_samples, axis=-1)\n        noise[:, :, ch] += FLICKER_ALPHA * pink.astype(np.float32)\n    return noise\n\ndef generate_augmented_noise(shape):\n    noise = np.random.normal(0, AWGN_STD, shape).astype(np.float32)\n    noise = add_dc_offset(noise)\n    noise = add_iq_imbalance(noise)\n    noise = add_frequency_offset(noise)\n    noise = add_flicker_noise(noise)\n    return noise\n\ndef sample_usrp_noise(n_frames):\n    idx = np.random.choice(len(usrp_noise_frames), size=n_frames, replace=True)\n    frames = usrp_noise_frames[idx].copy()\n    scale = np.random.uniform(0.8, 1.2, size=(n_frames, 1, 1)).astype(np.float32)\n    return frames * scale\n\n# Visual test\nfig, axes = plt.subplots(1, 2, figsize=(14, 3))\nclean = np.random.normal(0, AWGN_STD, (1, 1024, 2)).astype(np.float32)\naugmented = generate_augmented_noise((1, 1024, 2))\n\naxes[0].plot(clean[0, :300, 0], color=\"#378ADD\", linewidth=0.7)\naxes[0].set_title(\"Old: Clean AWGN\", fontsize=11)\naxes[0].set_ylim(-3, 3)\naxes[0].set_ylabel(\"Amplitude\")\n\naxes[1].plot(augmented[0, :300, 0], color=\"#639922\", linewidth=0.7)\naxes[1].set_title(\"New: Augmented noise (DC + IQ + freq + 1/f)\", fontsize=11)\naxes[1].set_ylim(-3, 3)\n\nplt.tight_layout()\nplt.savefig(os.path.join(PLOT_DIR, \"noise_comparison.png\"), dpi=150, bbox_inches=\"tight\")\nplt.show()\nprint(\"\u2705 Noise augmentation ready\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 12,
+          "source": "class HDF5Generator(Sequence):\n    def __init__(self, file_path, indices, batch_size=BATCH_SIZE,\n                 shuffle=True, add_noise=True):\n        super().__init__()\n        self.file_path = file_path\n        self.indices = indices\n        self.batch_size = batch_size\n        self.shuffle = shuffle\n        self.add_noise = add_noise\n        self.on_epoch_end()\n\n    def __len__(self):\n        return int(np.ceil(len(self.indices) / self.batch_size))\n\n    def __getitem__(self, idx):\n        start = idx * self.batch_size\n        end = min((idx + 1) * self.batch_size, len(self.indices))\n        batch_indices = self.indices[start:end]\n        n = len(batch_indices)\n\n        X_signals = np.zeros((n, 1024, 2), dtype='float32')\n        with h5py.File(self.file_path, 'r') as f:\n            Xh = f['X']\n            sorted_idx = np.sort(batch_indices)\n            for i, real_idx in enumerate(sorted_idx):\n                X_signals[i] = Xh[real_idx]\n\n        y_signals = np.ones(n, dtype='float32')\n\n        if self.add_noise:\n            if usrp_noise_frames is not None:\n                n_usrp = int(n * USRP_NOISE_FRACTION)\n                n_synth = n - n_usrp\n            else:\n                n_usrp = 0\n                n_synth = n\n\n            noise_parts = []\n            if n_synth > 0:\n                noise_parts.append(generate_augmented_noise((n_synth, 1024, 2)))\n            if n_usrp > 0:\n                noise_parts.append(sample_usrp_noise(n_usrp))\n\n            X_noise = np.concatenate(noise_parts, axis=0)\n            y_noise = np.zeros(len(X_noise), dtype='float32')\n\n            X_batch = np.concatenate([X_signals, X_noise], axis=0)\n            y_batch = np.concatenate([y_signals, y_noise], axis=0)\n            p = np.random.permutation(len(X_batch))\n            return X_batch[p], y_batch[p]\n        else:\n            return X_signals, y_signals\n\n    def on_epoch_end(self):\n        if self.shuffle:\n            np.random.shuffle(self.indices)\n\nprint(\"\u2705 Generator defined\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 14,
+          "source": "def create_gap_model(input_shape=(1024, 2)):\n    inp = layers.Input(shape=input_shape)\n\n    # Block 1: basic I/Q patterns\n    x = layers.Conv1D(64, 3, padding='valid', activation='relu')(inp)\n    x = layers.BatchNormalization()(x)\n    x = layers.MaxPooling1D(2)(x)\n\n    # Block 2: symbol-level timing\n    x = layers.Conv1D(128, 3, padding='valid', activation='relu')(x)\n    x = layers.BatchNormalization()(x)\n    x = layers.MaxPooling1D(2)(x)\n\n    # Block 3: constellation geometry\n    x = layers.Conv1D(256, 3, padding='valid', activation='relu')(x)\n    x = layers.BatchNormalization()(x)\n    x = layers.MaxPooling1D(2)(x)\n\n    # Block 4: cross-modulation abstraction\n    x = layers.Conv1D(256, 3, padding='valid', activation='relu')(x)\n    x = layers.BatchNormalization()(x)\n\n    # Global Average Pooling \u2192 256 features\n    x = layers.GlobalAveragePooling1D()(x)\n\n    # Classification head\n    x = layers.Dense(256, activation='relu')(x)\n    x = layers.Dropout(0.4)(x)\n    x = layers.Dense(128, activation='relu')(x)\n    x = layers.Dropout(0.3)(x)\n\n    # Binary output: signal (1) vs noise (0)\n    out = layers.Dense(1, activation='sigmoid')(x)\n    return models.Model(inp, out, name=\"GAP_Model_v4\")\n\n\nmodel = create_gap_model()\nmodel.summary()\n\nprint(f\"\\n\u2705 Model: {model.name}\")\nprint(f\"   Parameters: {model.count_params():,}\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 16,
+          "source": "print(\"Loading dataset metadata...\")\nwith h5py.File(DATA_PATH, 'r') as f:\n    snr_vector = f['Z'][:, 0]\n    total_samples = snr_vector.shape[0]\n\nprint(f\"Total frames: {total_samples:,}\")\n\nmask = (snr_vector >= -8)\nfiltered_indices = np.arange(total_samples)[mask]\nprint(f\"Frames with SNR >= -8 dB: {len(filtered_indices):,}\")\n\nidx_train, idx_temp = train_test_split(filtered_indices, test_size=0.2, random_state=42, shuffle=True)\nidx_val, idx_test = train_test_split(idx_temp, test_size=0.5, random_state=42, shuffle=True)\n\nprint(f\"\\nTrain: {len(idx_train):,} | Val: {len(idx_val):,} | Test: {len(idx_test):,}\")\n\ntrain_gen = HDF5Generator(DATA_PATH, idx_train)\nval_gen = HDF5Generator(DATA_PATH, idx_val, shuffle=False)\n\nprint(f\"Batches per epoch: {len(train_gen)}\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 18,
+          "source": "opt = optimizers.Adam(learning_rate=0.001)\nmodel.compile(optimizer=opt, loss='binary_crossentropy', metrics=['accuracy'])\n\ncallbacks = [\n    ModelCheckpoint(\n        filepath=os.path.join(CHECKPOINT_DIR, \"GAP_v4_epoch_{epoch:02d}.h5\"),\n        save_best_only=False, save_weights_only=False, monitor='val_loss'\n    ),\n    ModelCheckpoint(\n        filepath=os.path.join(CHECKPOINT_DIR, \"GAP_v4_best.h5\"),\n        save_best_only=True, save_weights_only=False, monitor='val_loss', verbose=1\n    ),\n    ReduceLROnPlateau(factor=0.5, patience=3, verbose=1, min_lr=1e-6),\n    EarlyStopping(patience=8, restore_best_weights=True, verbose=1),\n]\n\nprint(\"\u2705 Compiled \u2014 Adam lr=0.001, binary_crossentropy\")\nprint(f\"   Checkpoints \u2192 {CHECKPOINT_DIR}\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 20,
+          "source": "print(\"=\" * 60)\nprint(\"  TRAINING \u2014 GAP_Model_v4\")\nprint(\"=\" * 60)\nprint(f\"  Parameters : {model.count_params():,}\")\nprint(f\"  Noise type : Augmented synthetic\" + (\" + real USRP\" if usrp_noise_frames is not None else \"\"))\nprint(f\"  Epochs     : {EPOCHS} (early stopping enabled)\")\nprint(f\"  Batch size : {BATCH_SIZE}\")\nprint(\"=\" * 60)\nprint()\n\nhistory = model.fit(\n    train_gen,\n    validation_data=val_gen,\n    epochs=EPOCHS,\n    callbacks=callbacks,\n)\n\nprint(f\"\\n\u2705 Training complete!\")\nprint(f\"   Epochs run:      {len(history.history['loss'])}\")\nprint(f\"   Best val loss:   {min(history.history['val_loss']):.4f}\")\nprint(f\"   Best val acc:    {max(history.history['val_accuracy']):.4f}\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 22,
+          "source": "fig, axes = plt.subplots(1, 2, figsize=(14, 5))\n\naxes[0].plot(history.history['accuracy'], label='Train', linewidth=2, color=\"#378ADD\")\naxes[0].plot(history.history['val_accuracy'], label='Val', linewidth=2, color=\"#E24B4A\")\naxes[0].set_title('Accuracy', fontsize=14, fontweight='bold')\naxes[0].set_xlabel('Epoch'); axes[0].set_ylabel('Accuracy')\naxes[0].legend(fontsize=12); axes[0].grid(True, alpha=0.3); axes[0].set_ylim(0.5, 1.02)\n\naxes[1].plot(history.history['loss'], label='Train', linewidth=2, color=\"#378ADD\")\naxes[1].plot(history.history['val_loss'], label='Val', linewidth=2, color=\"#E24B4A\")\naxes[1].set_title('Loss', fontsize=14, fontweight='bold')\naxes[1].set_xlabel('Epoch'); axes[1].set_ylabel('Loss')\naxes[1].legend(fontsize=12); axes[1].grid(True, alpha=0.3)\n\nplt.tight_layout()\nplt.savefig(os.path.join(PLOT_DIR, 'training_history.png'), dpi=150, bbox_inches='tight')\nplt.show()\nprint(\"\u2705 Saved: training_history.png\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 24,
+          "source": "print(\"Evaluating across SNR levels...\\n\")\n\nplot_snrs = np.arange(-20, 32, 2)\nsnr_accuracies = []\ntest_snrs = snr_vector[idx_test]\n\nfor snr in plot_snrs:\n    subset_mask = (test_snrs == snr)\n    if not np.any(subset_mask):\n        snr_accuracies.append(0)\n        continue\n    specific_indices = idx_test[subset_mask]\n    gen = HDF5Generator(DATA_PATH, specific_indices, batch_size=2048, shuffle=False, add_noise=True)\n    scores = model.evaluate(gen, verbose=0)\n    snr_accuracies.append(scores[1])\n    print(f\"  SNR {snr:>3d} dB \u2192 {scores[1]:.4f}\")\n\nplt.figure(figsize=(10, 6))\nplt.plot(plot_snrs, snr_accuracies, marker='o', linewidth=2, color=\"#378ADD\",\n         markersize=6, markerfacecolor=\"white\", markeredgewidth=2)\nplt.axhline(y=0.5, color=\"gray\", linestyle=\"--\", linewidth=0.8, alpha=0.5, label=\"Random guess\")\nplt.title('Detection Performance vs SNR', fontsize=14, fontweight='bold')\nplt.xlabel('SNR (dB)'); plt.ylabel('Detection Accuracy')\nplt.grid(True, alpha=0.3); plt.xticks(np.arange(-20, 32, 4))\nplt.ylim(0.4, 1.05); plt.legend(fontsize=11)\nplt.tight_layout()\nplt.savefig(os.path.join(PLOT_DIR, 'snr_performance.png'), dpi=150, bbox_inches='tight')\nplt.show()\nprint(\"\u2705 Saved: snr_performance.png\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 26,
+          "source": "print(\"=\" * 60)\nprint(\"  SANITY CHECK: Signal vs Noise Classification\")\nprint(\"=\" * 60)\n\nn_test = 500\n\n# Noise\ntest_noise = generate_augmented_noise((n_test, 1024, 2))\n\n# Signals from RadioML\ntest_signal_indices = idx_test[:n_test]\ntest_signals = np.zeros((n_test, 1024, 2), dtype='float32')\nwith h5py.File(DATA_PATH, 'r') as f:\n    for i, real_idx in enumerate(np.sort(test_signal_indices)):\n        test_signals[i] = f['X'][real_idx]\n\npreds_noise = model.predict(test_noise, verbose=0, batch_size=256).flatten()\npreds_signal = model.predict(test_signals, verbose=0, batch_size=256).flatten()\n\nn_noise_ok = int(np.sum(preds_noise < 0.5))\nn_signal_ok = int(np.sum(preds_signal > 0.5))\n\nprint(f\"\")\nprint(f\"  NOISE ({n_test} frames):\")\nprint(f\"    Avg prediction    : {np.mean(preds_noise):.4f}\")\nprint(f\"    Correctly rejected: {n_noise_ok}/{n_test} ({n_noise_ok/n_test*100:.1f}%)\")\nprint(f\"\")\nprint(f\"  SIGNAL ({n_test} frames):\")\nprint(f\"    Avg prediction    : {np.mean(preds_signal):.4f}\")\nprint(f\"    Correctly detected: {n_signal_ok}/{n_test} ({n_signal_ok/n_test*100:.1f}%)\")\nprint(f\"\")\n\nif n_noise_ok > n_test * 0.8 and n_signal_ok > n_test * 0.8:\n    print(\"  \u2705 MODEL WORKS \u2014 noise rejected, signal detected!\")\nelif n_noise_ok < n_test * 0.5:\n    print(\"  \u274c Model still classifies noise as signal \u2014 needs investigation.\")\nelse:\n    print(\"  \ud83d\udd36 Partial success \u2014 check plots for details.\")\n\n# Plots\nfig, axes = plt.subplots(1, 2, figsize=(14, 4))\n\naxes[0].hist(preds_noise, bins=50, alpha=0.7, color=\"#639922\", label=\"Noise\", density=True)\naxes[0].hist(preds_signal, bins=50, alpha=0.7, color=\"#378ADD\", label=\"Signal\", density=True)\naxes[0].axvline(x=0.5, color=\"gray\", linestyle=\"--\")\naxes[0].set_title(\"Prediction Distribution\", fontsize=12, fontweight=\"bold\")\naxes[0].set_xlabel(\"Prediction\"); axes[0].set_ylabel(\"Density\"); axes[0].legend()\n\naxes[1].plot(preds_noise[:100], color=\"#639922\", linewidth=1, alpha=0.8, label=\"Noise\")\naxes[1].plot(preds_signal[:100], color=\"#378ADD\", linewidth=1, alpha=0.8, label=\"Signal\")\naxes[1].axhline(y=0.5, color=\"gray\", linestyle=\"--\", linewidth=0.8)\naxes[1].set_title(\"Per-Frame Predictions\", fontsize=12, fontweight=\"bold\")\naxes[1].set_xlabel(\"Frame\"); axes[1].set_ylabel(\"Prediction\")\naxes[1].legend(); axes[1].set_ylim(-0.05, 1.05)\n\nplt.tight_layout()\nplt.savefig(os.path.join(PLOT_DIR, 'sanity_check.png'), dpi=150, bbox_inches='tight')\nplt.show()\nprint(\"\u2705 Saved: sanity_check.png\")\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        },
+        {
+          "cell_index_zero_based": 28,
+          "source": "print(\"=\" * 65)\nprint(\"  TRAINING COMPLETE \u2014 GAP_Model_v4\")\nprint(\"=\" * 65)\nprint(f\"\")\nprint(f\"  Model:          {model.name}\")\nprint(f\"  Parameters:     {model.count_params():,}\")\nprint(f\"  Epochs trained: {len(history.history['loss'])}\")\nprint(f\"  Best val loss:  {min(history.history['val_loss']):.4f}\")\nprint(f\"  Best val acc:   {max(history.history['val_accuracy']):.4f}\")\nprint(f\"\")\nprint(f\"  Noise rejection: {n_noise_ok}/{n_test} ({n_noise_ok/n_test*100:.1f}%)\")\nprint(f\"  Signal detection: {n_signal_ok}/{n_test} ({n_signal_ok/n_test*100:.1f}%)\")\nprint(f\"\")\nprint(f\"  Files saved:\")\nprint(f\"    Best model \u2192 {CHECKPOINT_DIR}/GAP_v4_best.h5\")\nprint(f\"    All epochs \u2192 {CHECKPOINT_DIR}/GAP_v4_epoch_XX.h5\")\nprint(f\"    Plots      \u2192 {PLOT_DIR}/\")\nprint(f\"\")\nprint(f\"  NEXT STEPS:\")\nprint(f\"  1. Copy GAP_v4_best.h5 to your Linux PC\")\nprint(f\"  2. Update inference script:\")\nprint(f\"       MODEL_PATH = 'GAP_v4_best.h5'\")\nprint(f\"       NORMALIZATION = 'raw'\")\nprint(f\"  3. Test on USRP noise-only capture \u2192 should say NOISE\")\nprint(f\"  4. Test on USRP QPSK capture \u2192 should say SIGNAL\")\nprint(f\"  5. Screenshot both for your report\")\nprint(\"=\" * 65)\n",
+          "execution_count": null,
+          "stored_outputs": 0
+        }
+      ]
+    }
+  ],
+  "models": [
+    {
+      "path": "S:\\M folder\\semster 9\\grad. project\\GAP_v4_best.h5",
+      "bytes": 5150496,
+      "sha256": "9970ee7bbd2a43cea6f2ab787203d7ed208db862911e2ca91ec79b900f859061",
+      "saved_keras_version": "3.13.2",
+      "layers": [
+        "InputLayer",
+        "Conv1D",
+        "BatchNormalization",
+        "MaxPooling1D",
+        "Conv1D",
+        "BatchNormalization",
+        "MaxPooling1D",
+        "Conv1D",
+        "BatchNormalization",
+        "MaxPooling1D",
+        "Conv1D",
+        "BatchNormalization",
+        "GlobalAveragePooling1D",
+        "Dense",
+        "Dropout",
+        "Dense",
+        "Dropout",
+        "Dense"
+      ],
+      "saved_training_config": {
+        "loss": "binary_crossentropy",
+        "loss_weights": null,
+        "metrics": [
+          "accuracy"
+        ],
+        "weighted_metrics": null,
+        "run_eagerly": false,
+        "steps_per_execution": 1,
+        "jit_compile": true,
+        "optimizer_config": {
+          "class_name": "Adam",
+          "config": {
+            "name": "adam",
+            "learning_rate": 0.0005000000237487257,
+            "weight_decay": null,
+            "clipnorm": null,
+            "global_clipnorm": null,
+            "clipvalue": null,
+            "use_ema": false,
+            "ema_momentum": 0.99,
+            "ema_overwrite_frequency": null,
+            "loss_scale_factor": null,
+            "gradient_accumulation_steps": null,
+            "beta_1": 0.9,
+            "beta_2": 0.999,
+            "epsilon": 1e-07,
+            "amsgrad": false
+          }
+        }
+      },
+      "native_probe": {
+        "status": "failed",
+        "reason": "TypeError: Error when deserializing class 'Dense' using config={'name': 'dense', 'trainable': True, 'dtype': 'float32', 'units': 256, 'activation': 'relu', 'use_bias': True, 'kernel_initializer': {'module': 'keras.initializers', 'class_name': 'GlorotUniform', 'config': {'seed': None}, 'registered_name': None}, 'bias_initializer': {'module': 'keras.initializers', 'class_name': 'Zeros', 'config': {}, 'registered_name': None}, 'kernel_regularizer': None, 'bias_regularizer': None, 'kernel_constraint': None, 'bias_constraint': None, 'quantization_config': None}.\n\nException encountered: Unrecognized keyword arguments passed to Dense: {'quantization_config': None}"
+      },
+      "adapted_probe": {
+        "status": "executed_with_explicit_metadata_adaptation",
+        "removed_only_null_quantization_config_in_layers": [
+          "dense",
+          "dense_1",
+          "dense_2"
+        ],
+        "original_file_unchanged": true,
+        "bitwise_verified_weight_and_state_values": 422209,
+        "parameters": 422209,
+        "gaussian_input_scores": [
+          0.0007228610338643193,
+          0.004159551113843918,
+          0.0033945769537240267,
+          0.008615875616669655,
+          0.011192601174116135,
+          0.001766807516105473,
+          0.008780491538345814,
+          0.007183218840509653
+        ],
+        "scope": "compatibility and execution diagnostic only; no historical performance validation"
+      }
+    },
+    {
+      "path": "S:\\M folder\\semster 9\\grad. project\\model_epoch_32.h5",
+      "bytes": 50699488,
+      "sha256": "609fda237fbcf0c4859c3b1a604d96f6e74783e1948c2851464edc972b82186d",
+      "saved_keras_version": "3.12.0",
+      "layers": [
+        "InputLayer",
+        "Conv1D",
+        "BatchNormalization",
+        "MaxPooling1D",
+        "Conv1D",
+        "BatchNormalization",
+        "MaxPooling1D",
+        "Flatten",
+        "Dense",
+        "Dropout",
+        "Dense"
+      ],
+      "saved_training_config": {
+        "loss": "binary_crossentropy",
+        "loss_weights": null,
+        "metrics": [
+          "accuracy"
+        ],
+        "weighted_metrics": null,
+        "run_eagerly": false,
+        "steps_per_execution": 1,
+        "jit_compile": false,
+        "optimizer_config": {
+          "class_name": "Adam",
+          "config": {
+            "name": "adam",
+            "learning_rate": 0.0010000000474974513,
+            "weight_decay": null,
+            "clipnorm": null,
+            "global_clipnorm": null,
+            "clipvalue": null,
+            "use_ema": false,
+            "ema_momentum": 0.99,
+            "ema_overwrite_frequency": null,
+            "loss_scale_factor": null,
+            "gradient_accumulation_steps": null,
+            "beta_1": 0.9,
+            "beta_2": 0.999,
+            "epsilon": 1e-07,
+            "amsgrad": false
+          }
+        }
+      },
+      "native_probe": {
+        "status": "executed",
+        "name": "sequential_1",
+        "input_shape": [
+          null,
+          1024,
+          2
+        ],
+        "output_shape": [
+          null,
+          1
+        ],
+        "parameters": 4220481,
+        "all_weights_finite": true,
+        "gaussian_input_scores": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "seed": 1305,
+        "scope": "load/execution only; synthetic input scores are not a performance estimate"
+      }
+    }
+  ],
+  "captures": [
+    {
+      "path": "S:\\M folder\\semster 9\\grad. project\\usrppp_noise.dat",
+      "bytes": 206631216,
+      "sha256": "54f789a7c215dd0207da55e26649025a37af63c6e89bb200750efea8ba6022b7",
+      "format_assumption": "little-endian complex64, inferred from notebook; no capture metadata establishes format/RF ground truth",
+      "prefix_statistics": {
+        "inspected_samples": 400000,
+        "finite_samples": 400000,
+        "mean_real": -3.5648390621645376e-05,
+        "mean_imaginary": -6.875336111988872e-05,
+        "mean_power": 1.522648907703169e-07,
+        "complete_1024_sample_frames": 25223
+      }
+    }
+  ]
+}

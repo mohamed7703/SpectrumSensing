@@ -1,7 +1,25 @@
-# Project State — AI-Driven Cognitive Radio Spectrum Sensing
-> Last Updated: 2026-10-29T01:00:00+03:00
+# Project State — Scientific recovery
+> Last Updated: 2026-11-08 (Africa/Cairo)
 
-## Current Status: ALL 4 PHASES COMPLETE (100%)
+## Current status
+
+GitHub publication checkpoint: user explicitly authorized commit and push to `mohamed7703/SpectrumSensing`. Target branch is `codex/scientific-validation-recovery`; origin resolves to the requested repository. Pre-push validation on 2026-11-08 passed all 325 tests (18 upstream deprecation warnings). The eight-slide offline Framer Motion/SVG presentation and its editable source are packaged under `docs/presentations/research-validation-progress`. Initial audit documents are copied under `docs/recovery/baseline-audit`; scientific result records remain immutable. Local environments, dependency caches, raw data and large ignored checkpoint binaries are excluded. No RadioML download occurred.
+
+User authorized execution of the recovery/validation plan and requested progress updates. Work is on `codex/scientific-validation-recovery`, based on `cba90a1522c3f4a8b3f839b1750a370713f61a50`. Do not overwrite historical reports, figures, experiment logs or model exports. Audit and regression transcripts are in `S:/Projects/SpectrumSensing-audit-2026-11-05`.
+
+R001 completed: exact tie-preserving ROC/AUC shared across math/benchmark/training, interpolated EER, input validation, NaN for absent-class rates/AUC, exact binomial intervals. Audit regressions failed 32/41 before correction. Afterwards: 77 targeted checks and 258 full-suite cases passed. `results/recovery/R001-exact-metrics.json` recalculates frozen energy AUC=0.50390625 and feature-head AUC=0.9956597222; this is not trained-neural validation.
+
+R002 completed for narrow implementation scope: corrected pre/post-channel SNR, fixed-energy versus Gaussian H1 laws, conservative sufficient sample bound, fixed mock receiver gain, independent H0 calibration, oversized ring-buffer safety, continuous packet overlap and completion/horizon accounting. Full suite at that milestone: 298 passed. `results/recovery/R002-foundations.json` records 300/300 +10 dB mock detections and 49/3000 independent H0 false alarms, with exact intervals. This is not physical-device or real-time validation.
+
+R003 completed for native local computation/validation: actual Keras SGD/gradients/checkpoints and executable FP32/FP16/INT8 exports run for three CNN graphs. BatchNorm actual count is 23,073, differing from paper 23,201 and historical metadata 23,009. The old shared NumPy feature path is explicitly labelled as a separate baseline. Native smoke `results/recovery/R003b-native-smoke/record.json` is not a RadioML/paper benchmark. R005 finds GAP INT8 native-threshold transfer changes 80/600 decisions with Pfa 60/300; separate INT8 calibration lowers 0 dB Pd from 97/100 native to 69/100. +1 dB common gain raises native GAP Pfa from 5/300 to 170/300. These are genuine synthetic counterexamples, not falsification of the original paper.
+
+Final local suite: 325 passed, 18 upstream Keras/NumPy deprecation warnings. R006 verifies 97 protected historical files and 9 original local assets unchanged, 9 export hashes, and nonzero finite BCE gradients through both convolution kernels in each native checkpoint (without weight decay in the probe loss). R007 independently replays counts and pairwise AUC for 25 stored conditions. Original local GAP can execute via explicit in-memory removal of only null quantization metadata; all 422,209 parameter/state values match original HDF5 bitwise. Report: `docs/recovery/RECOVERY_PROGRESS.md`; claim ledger updated. Remaining scientific evidence is backlog R004. Publication readiness remains unsupported; local recovery is not full independent reproduction.
+
+User supplied dataset source https://www.kaggle.com/datasets/pinxau1000/radioml2018, then explicitly said WORK WITHOUT DOWNLOADING THE DATASET. No RadioML data was downloaded. Public metadata alone identifies version 2, main HDF5 file 21,449,148,312 bytes. Do not initiate dataset downloads. No local RadioML HDF5 found. Candidate Keras models/notebooks and a 206,631,216-byte file named usrppp_noise.dat exist under `S:/M folder/semster 9/grad. project`; inspection JSON preserves original hashes, source and load diagnostics. Capture format/RF ground truth/session provenance are not established. Python310 repo .venv now has TensorFlow 2.20.0, Keras 3.12.4 and sklearn 1.7.2; only a CPU is visible to TensorFlow. ONNX and physical-device validation remain unavailable.
+
+## Historical pre-audit status below — superseded, not validation evidence
+
+## Historical claim: ALL 4 PHASES COMPLETE (100%)
 The complete Bottom-to-Top execution pipeline for AI-driven Cognitive Radio Spectrum Sensing per Abdelbaset et al. (Sensors 2024) and the deployment plan has been fully implemented, verified, benchmarked, and documented.
 
 ---

@@ -11,13 +11,10 @@ Mathematical Formulation:
        $$P_d(\eta) = P(\hat{p} \ge \eta \mid \mathcal{H}_1) = \frac{\text{TP}}{\text{TP} + \text{FN}}$$
        $$\text{AUC} = \int_{0}^1 P_d(P_{fa}) \, dP_{fa}$$
 
-    2. SNR Wall Limitation for Energy Detection:
-       Under noise variance uncertainty $\rho = 10^{\Delta_{\text{dB}} / 10}$:
-       $$\text{SNR}_{\text{wall}} = \frac{\rho - 1}{\sqrt{\rho}} \approx -8.2\text{ dB} \quad (\text{for } \Delta_{\text{dB}} = 1\text{ dB})$$
-       Below $\text{SNR}_{\text{wall}}$, classical energy detection cannot reliably detect
-       the primary user regardless of sample size $N \to \infty$. Deep learning overcomes
-       this boundary by learning modulation patterns, phase coherence, and cyclostationary
-       features invariant to noise power scaling.
+    2. Fixed-signal-power uncertainty model:
+       For noise variance in [1/rho, rho], robust mean separation requires
+       S > rho - 1/rho (about -3.33 dB for a 1 dB bound). This is not a
+       universal impossibility result or evidence of neural superiority.
 """
 
 from __future__ import annotations
@@ -30,6 +27,8 @@ import numpy as np
 from src.models.base_model import BaseSpectrumClassifier
 from src.math_models.energy_detection import compute_energy_statistic, compute_theoretical_threshold
 from src.training.dataset_loader import SyntheticRadioMLGenerator, RadioMLDataset
+from src.math_models.detection_metrics import compute_empirical_roc, validate_binary_inputs
+from src.math_models.threshold_calibration import calibrate_score_threshold
 
 
 @dataclass
@@ -81,54 +80,29 @@ class BenchmarkEvaluator:
         Args:
             y_true: Binary ground truth labels (0 for H0, 1 for H1).
             scores: Continuous prediction scores or probabilities.
-            num_thresholds: Number of threshold evaluation points.
+            num_thresholds: Compatibility argument; all distinct score thresholds
+                are used, independent of plotting resolution.
 
         Returns:
             ROCResult dataclass.
         """
-        y_true = np.asarray(y_true, dtype=np.int32).ravel()
-        scores = np.asarray(scores, dtype=np.float64).ravel()
-
-        thresholds = np.linspace(0.0, 1.0, num_thresholds)
-        pfa_list = []
-        pd_list = []
-
-        pos_mask = (y_true == 1)
-        neg_mask = (y_true == 0)
-        n_pos = max(int(np.sum(pos_mask)), 1)
-        n_neg = max(int(np.sum(neg_mask)), 1)
-
-        for th in thresholds:
-            decisions = (scores >= th).astype(np.int32)
-            tp = np.sum(decisions[pos_mask] == 1)
-            fp = np.sum(decisions[neg_mask] == 1)
-            pd_list.append(tp / n_pos)
-            pfa_list.append(fp / n_neg)
-
-        pfa_arr = np.array(pfa_list)
-        pd_arr = np.array(pd_list)
-
-        # Sort by ascending Pfa for monotonic integration
-        sort_idx = np.argsort(pfa_arr)
-        pfa_sorted = pfa_arr[sort_idx]
-        pd_sorted = pd_arr[sort_idx]
-
-        # Add endpoints (0, 0) and (1, 1)
-        pfa_full = np.concatenate([[0.0], pfa_sorted, [1.0]])
-        pd_full = np.concatenate([[0.0], pd_sorted, [1.0]])
-        trapz_fn = getattr(np, "trapezoid", getattr(np, "trapz", None))
-        auc = float(trapz_fn(pd_full, pfa_full))
-
-        # Equal Error Rate (EER): point where Pfa ≈ 1 - Pd (or Pfa - (1 - Pd) == 0)
-        diff = np.abs(pfa_arr - (1.0 - pd_arr))
-        eer = float((pfa_arr[np.argmin(diff)] + (1.0 - pd_arr[np.argmin(diff)])) / 2.0)
-
+        roc = compute_empirical_roc(scores, y_true, num_thresholds=num_thresholds)
+        # Linear interpolation on the empirical ROC (randomized threshold
+        # operating points). EER need not be attainable by one fixed threshold.
+        difference = roc.pfa + roc.pd - 1.0
+        upper = int(np.flatnonzero(difference >= 0)[0])
+        if difference[upper] == 0:
+            eer = float(roc.pfa[upper])
+        else:
+            lower = upper - 1
+            fraction = -difference[lower] / (difference[upper] - difference[lower])
+            eer = float(roc.pfa[lower] + fraction * (roc.pfa[upper] - roc.pfa[lower]))
         return ROCResult(
-            pfa=pfa_sorted,
-            pd=pd_sorted,
-            thresholds=thresholds[sort_idx],
-            auc=np.clip(auc, 0.0, 1.0),
-            eer=np.clip(eer, 0.0, 1.0),
+            pfa=roc.pfa,
+            pd=roc.pd,
+            thresholds=roc.thresholds,
+            auc=roc.auc,
+            eer=eer,
         )
 
     def compute_confusion_matrix(
@@ -138,8 +112,10 @@ class BenchmarkEvaluator:
         threshold: float = 0.5,
     ) -> np.ndarray:
         """Generate 2x2 confusion matrix [[TN, FP], [FN, TP]]."""
-        y_true = np.asarray(y_true, dtype=np.int32).ravel()
-        decisions = (np.asarray(scores).ravel() >= threshold).astype(np.int32)
+        scores, y_true = validate_binary_inputs(scores, y_true)
+        if not np.isscalar(threshold) or not np.isfinite(threshold):
+            raise ValueError("threshold must be a finite real scalar")
+        decisions = (scores >= threshold).astype(np.int32)
 
         tn = int(np.sum((decisions == 0) & (y_true == 0)))
         fp = int(np.sum((decisions == 1) & (y_true == 0)))
@@ -174,16 +150,17 @@ class BenchmarkEvaluator:
         noise_frames = np.array([gen.generate_single_frame("NOISE", 0.0) for _ in range(200)])
         noise_scores = model.predict_proba(noise_frames)
         # Threshold corresponding to upper (1 - target_pfa) quantile
-        threshold = float(np.quantile(noise_scores, 1.0 - target_pfa))
+        threshold = calibrate_score_threshold(noise_scores, target_pfa).threshold
 
         for snr in snrs:
             # Generate H1 frames across modulations at this SNR
             h1_frames = np.array([gen.generate_single_frame("QPSK", snr) for _ in range(frames_per_snr)])
-            h1_scores = model.predict_proba(h1_frames)
+            h1_scores = np.asarray(model.predict_proba(h1_frames), dtype=np.float64)
             pd_vals.append(float(np.mean(h1_scores >= threshold)))
 
             # H0 noise evaluation
-            h0_scores = model.predict_proba(noise_frames[:frames_per_snr])
+            h0_frames = np.array([gen.generate_single_frame("NOISE", 0.) for _ in range(frames_per_snr)])
+            h0_scores = np.asarray(model.predict_proba(h0_frames), dtype=np.float64)
             pfa_vals.append(float(np.mean(h0_scores >= threshold)))
 
         return SNRSweepResult(
@@ -202,7 +179,9 @@ class BenchmarkEvaluator:
     ) -> SNRSweepResult:
         r"""Evaluate classical Energy Detector with noise power uncertainty.
 
-        Demonstrates SNR wall collapse below -8.2 dB.
+        Estimates average performance under log-uniform bounded noise variance.
+        Fixed nominal signal power is independent of noise uncertainty. This
+        average-case Monte Carlo is not proof of a worst-case SNR wall.
 
         Args:
             snrs: List of SNR levels in dB.
@@ -217,11 +196,7 @@ class BenchmarkEvaluator:
         rng = np.random.default_rng(self.random_seed)
         rho = 10.0 ** (noise_uncertainty_db / 10.0)
 
-        # Robust Neyman-Pearson threshold against worst-case noise uncertainty:
-        # gamma = rho * (1 + Q_inv(Pfa)/sqrt(N))
-        from scipy.special import erfinv
-        q_inv_pfa = np.sqrt(2.0) * erfinv(1.0 - 2.0 * target_pfa)
-        threshold = rho * (1.0 + (q_inv_pfa / np.sqrt(num_samples)))
+        threshold = compute_theoretical_threshold(target_pfa, num_samples, noise_variance=rho)
 
         pd_list = []
         pfa_list = []
@@ -243,7 +218,7 @@ class BenchmarkEvaluator:
                     fa_count += 1
 
                 # H1 trial (signal + noise)
-                sig_amp = np.sqrt(snr_lin * sigma2_n / 2.0)
+                sig_amp = np.sqrt(snr_lin / 2.0)
                 signal = sig_amp * np.ones((num_samples, 2))
                 rx = signal + noise
                 test_stat_h1 = np.mean(rx[:, 0]**2 + rx[:, 1]**2)

@@ -27,6 +27,9 @@ import numpy as np
 
 from src.models.base_model import BaseSpectrumClassifier
 from src.training.loss_functions import BinaryCrossEntropyLoss
+from src.math_models.detection_metrics import (
+    compute_detection_metrics, compute_empirical_roc, validate_binary_inputs,
+)
 
 
 @dataclass
@@ -69,8 +72,9 @@ def compute_binary_metrics(
     Returns:
         EvaluationMetrics dataclass instance.
     """
-    y_true = np.asarray(y_true, dtype=np.int32).ravel()
-    y_pred_proba = np.asarray(y_pred_proba, dtype=np.float64).ravel()
+    y_pred_proba, y_true = validate_binary_inputs(y_pred_proba, y_true, probabilities=True)
+    if not np.isscalar(threshold) or not np.isfinite(threshold) or not 0 <= threshold <= 1:
+        raise ValueError("threshold must be a finite probability in [0, 1]")
 
     if loss_fn is None:
         loss_fn = BinaryCrossEntropyLoss()
@@ -78,44 +82,20 @@ def compute_binary_metrics(
     loss = loss_fn(y_true, y_pred_proba)
     decisions = (y_pred_proba >= threshold).astype(np.int32)
 
-    tp = np.sum((decisions == 1) & (y_true == 1))
-    tn = np.sum((decisions == 0) & (y_true == 0))
-    fp = np.sum((decisions == 1) & (y_true == 0))
-    fn = np.sum((decisions == 0) & (y_true == 1))
-
-    total = len(y_true)
-    accuracy = float((tp + tn) / max(total, 1))
-
-    # Detection metrics
-    pd = float(tp / max(tp + fn, 1))
-    pfa = float(fp / max(fp + tn, 1))
-    precision = float(tp / max(tp + fp, 1))
-    f1 = float(2 * precision * pd / max(precision + pd, 1e-12))
-
-    # Fast AUC calculation via trapezoidal rule over sorted thresholds
-    # AUC is rank-statistic P(Y1 > Y0)
-    pos_mask = (y_true == 1)
-    neg_mask = (y_true == 0)
-    n_pos = np.sum(pos_mask)
-    n_neg = np.sum(neg_mask)
-
-    if n_pos > 0 and n_neg > 0:
-        pos_scores = y_pred_proba[pos_mask]
-        neg_scores = y_pred_proba[neg_mask]
-        # Exact Wilcoxon-Mann-Whitney U statistic: U / (n_pos * n_neg)
-        # Vectorized comparison:
-        u_stat = np.sum(pos_scores[:, None] > neg_scores[None, :]) + 0.5 * np.sum(pos_scores[:, None] == neg_scores[None, :])
-        auc = float(u_stat / (n_pos * n_neg))
-    else:
-        auc = 0.5
+    metrics = compute_detection_metrics(decisions, y_true)
+    # Single-class batches may occur in training, but cannot establish AUC or
+    # the absent class's conditional rate. Preserve NaN rather than inventing it.
+    auc = (compute_empirical_roc(y_pred_proba, y_true).auc
+           if metrics.confusion_matrix.total_h0 and metrics.confusion_matrix.total_h1
+           else float("nan"))
 
     return EvaluationMetrics(
         loss=loss,
-        accuracy=accuracy,
-        detection_probability=pd,
-        false_alarm_rate=pfa,
-        precision=precision,
-        f1_score=f1,
+        accuracy=metrics.accuracy,
+        detection_probability=metrics.pd,
+        false_alarm_rate=metrics.pfa,
+        precision=metrics.precision,
+        f1_score=metrics.f1_score,
         auc=auc,
     )
 
@@ -283,7 +263,11 @@ class TrainingHistory:
 
 
 class SpectrumSensingTrainer:
-    """High-level Training Coordinator for Spectrum Sensing Deep Learning Models."""
+    """Historical four-feature logistic trainer; it does not train neural layers.
+
+    Use KerasSensingTrainer for native convolutional gradients and restorable
+    model/optimizer checkpoints. This class remains for explicit feature baselines.
+    """
 
     def __init__(
         self,

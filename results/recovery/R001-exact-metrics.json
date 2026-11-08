@@ -1,0 +1,22 @@
+{
+  "scope": "Recalculation of frozen synthetic audit scores; no neural training or deployment validation",
+  "input_sha256": "82c7de3ed6d4631f44dc32f72a9c7b1917a646e7ce89b907e7d777a7be10bfdc",
+  "numpy_version": "2.2.6",
+  "source_sha256": {
+    "src\\math_models\\detection_metrics.py": "97d4b2ce97e02777716aec4d71ab9a2eff3d188a775aab0e41d76220a974153d",
+    "src\\evaluation\\evaluator.py": "6c0644367f52c2ded5e76fc5824e3722363ddfb76b8b4fe639aeb9326da5abf9"
+  },
+  "observations": 1536,
+  "results": {
+    "energy_detector": {
+      "auc": 0.50390625,
+      "independent_rank_auc": 0.50390625,
+      "eer_interpolated": 0.49609375
+    },
+    "historical_feature_classifier": {
+      "auc": 0.9956597222222222,
+      "independent_rank_auc": 0.9956597222222222,
+      "eer_interpolated": 0.033854166666666664
+    }
+  }
+}

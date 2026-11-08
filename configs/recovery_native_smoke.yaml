@@ -1,0 +1,36 @@
+scope: native_neural_and_export_smoke_only_not_radioml_or_paper_reproduction
+models: [baseline, batchnorm, gap]
+model_seed: 193
+data:
+  train_seed: 1301
+  validation_seed: 1302
+  calibration_seed: 1303
+  test_seed: 1304
+  modulations: [QPSK]
+  snrs_db: [-10, 0, 10]
+  training_frames_per_condition: 16
+  validation_frames_per_condition: 8
+  calibration_h0_frames: 400
+  test_frames_per_condition: 100
+  h0_fraction: 0.5
+training:
+  optimizer:
+    name: SGD
+    learning_rate: 0.001
+    momentum: 0.0
+    weight_decay: 0.0001
+  epochs: 2
+  batch_size: 16
+  patience: 2
+  min_delta: 0.0001
+evaluation:
+  target_pfa: 0.05
+  calibration_confidence: 0.95
+  interval_confidence: 0.95
+export:
+  modes: [none, fp16, int8]
+  representative_frames: 64
+  parity_frames: 100
+runtime:
+  intra_op_threads: 2
+  inter_op_threads: 1

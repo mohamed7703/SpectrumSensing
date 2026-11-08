@@ -11,7 +11,7 @@ Under :math:`\\mathcal{H}_0`:
     T_{\\text{norm}} = \\frac{2}{\\sigma_w^2} \\sum_{n=0}^{L-1} |r(n)|^2 \\sim \\chi^2_{2L}
     \\quad \\text{(Central } \\chi^2 \\text{ with } 2L \\text{ degrees of freedom)}
 
-Under :math:`\\mathcal{H}_1`:
+Under a fixed-energy signal in complex AWGN, conditional on signal and h:
 .. math::
     T_{\\text{norm}} \\sim \\chi'^2_{2L}(\\lambda)
     \\quad \\text{(Non-central } \\chi^2 \\text{ with non-centrality } \\lambda = 2L \\cdot \\text{SNR)}
@@ -23,6 +23,7 @@ from dataclasses import dataclass
 from typing import Literal, Tuple
 import numpy as np
 from scipy import stats, special
+from .threshold_calibration import ThresholdCalibration as EnergyCalibration, calibrate_score_threshold
 
 
 @dataclass
@@ -40,6 +41,31 @@ class EnergyDetectorConfig:
     noise_variance: float = 1.0
     pfa_target: float = 0.05
     method: Literal["exact", "clt"] = "exact"
+
+
+def calibrate_energy_threshold(
+    noise_frames: np.ndarray,
+    target_pfa: float = 0.05,
+    confidence_level: float = 0.95,
+) -> EnergyCalibration:
+    """Select a conservative upper-tolerance threshold from independent H0 frames.
+
+    Args:
+        noise_frames: Independent noise-only frames under the receiver/gain/
+            processing to be used in evaluation, shaped (B,N) complex or
+            (B,N,2) real I/Q. Must not include evaluation frames or H1.
+        target_pfa: Desired upper false-alarm probability in (0,1).
+        confidence_level: Confidence for the calibration population bound.
+
+    Returns:
+        A threshold strictly above the selected order statistic. Its
+        calibration-population Pfa is at most target_pfa with the stated
+        confidence, assuming iid stationary frames. This is not a guarantee
+        under drift or on any one finite evaluation sample. Discrete ties are
+        rejected conservatively; insufficient calibration size raises.
+    """
+    energy = np.asarray(compute_energy_statistic(np.asarray(noise_frames)), dtype=np.float64)
+    return calibrate_score_threshold(energy, target_pfa, confidence_level)
 
 
 def compute_energy_statistic(
@@ -66,8 +92,11 @@ def compute_energy_statistic(
     Returns:
         Scalar energy (for single frame) or 1D array of length :math:`N` (for batch).
     """
-    if noise_variance <= 0:
+    samples = np.asarray(samples)
+    if not np.isfinite(noise_variance) or noise_variance <= 0:
         raise ValueError(f"noise_variance must be > 0, got {noise_variance}")
+    if samples.ndim == 0 or samples.size == 0 or not np.all(np.isfinite(samples)):
+        raise ValueError("samples must be a nonempty finite array")
 
     # Handle I/Q array format (..., L, 2)
     if samples.ndim >= 2 and samples.shape[-1] == 2 and not np.iscomplexobj(samples):
@@ -77,7 +106,7 @@ def compute_energy_statistic(
         inst_power = np.abs(samples) ** 2
 
     # Average over sample window (axis -1)
-    unnormalized_energy = np.mean(inst_power, axis=-1)
+    unnormalized_energy = np.mean(inst_power, axis=-1, dtype=np.float64)
     sample_length = samples.shape[-2] if (samples.ndim >= 2 and samples.shape[-1] == 2 and not np.iscomplexobj(samples)) else samples.shape[-1]
 
     if normalize:
@@ -119,13 +148,15 @@ def compute_theoretical_threshold(
     """
     if not (0.0 < pfa_target < 1.0):
         raise ValueError(f"pfa_target must be strictly between 0 and 1, got {pfa_target}")
-    if num_samples <= 0:
+    if isinstance(num_samples, (bool, np.bool_)) or not isinstance(num_samples, (int, np.integer)) or num_samples <= 0:
         raise ValueError(f"num_samples must be > 0, got {num_samples}")
+    if not np.isfinite(noise_variance) or noise_variance <= 0:
+        raise ValueError("noise_variance must be finite and > 0")
 
     if method == "exact":
         # Degrees of freedom for complex baseband is 2L
         dof = 2 * num_samples
-        gamma_norm = stats.chi2.ppf(1.0 - pfa_target, df=dof)
+        gamma_norm = stats.chi2.isf(pfa_target, df=dof)
         return float(gamma_norm * (noise_variance / (2.0 * num_samples)))
 
     elif method == "clt":
@@ -143,6 +174,7 @@ def analytical_pd(
     num_samples: int,
     noise_variance: float = 1.0,
     method: Literal["exact", "clt"] = "exact",
+    signal_model: Literal["fixed_energy", "gaussian"] = "fixed_energy",
 ) -> float:
     r"""Compute the theoretical Probability of Detection :math:`P_d` for a given :math:`P_{\\text{FA}}` and SNR.
 
@@ -161,25 +193,37 @@ def analytical_pd(
         num_samples: Sample length :math:`L`.
         noise_variance: Noise variance :math:`\\sigma_w^2`.
         method: 'exact' or 'clt'.
+        signal_model: 'fixed_energy' conditions on a fixed signal vector of
+            power noise_variance*SNR. 'gaussian' assumes iid circular complex
+            Gaussian signal samples; its unconditional energy is scaled central
+            chi-square rather than noncentral chi-square.
 
     Returns:
         Theoretical Probability of Detection :math:`P_d \\in [0, 1]`.
     """
+    gamma = compute_theoretical_threshold(pfa, num_samples, noise_variance, method=method)
+    if not np.isfinite(snr_db):
+        raise ValueError("snr_db must be finite")
+    if signal_model not in ("fixed_energy", "gaussian"):
+        raise ValueError("signal_model must be 'fixed_energy' or 'gaussian'")
     snr_linear = 10.0 ** (snr_db / 10.0)
     dof = 2 * num_samples
 
     if method == "exact":
         # Critical value on chi2(2L)
-        crit_val = stats.chi2.ppf(1.0 - pfa, df=dof)
+        crit_val = 2 * num_samples * gamma / noise_variance
+        if signal_model == "gaussian":
+            return float(stats.chi2.sf(crit_val / (1.0 + snr_linear), df=dof))
         # Non-centrality parameter
         nc_param = 2.0 * num_samples * snr_linear
         # Survival function of non-central chi-square (1 - CDF)
         return float(stats.ncx2.sf(crit_val, df=dof, nc=nc_param))
 
     elif method == "clt":
-        gamma = compute_theoretical_threshold(pfa, num_samples, noise_variance, method="clt")
         mu_1 = noise_variance * (1.0 + snr_linear)
-        sigma_1 = mu_1 / np.sqrt(num_samples)
+        variance_factor = ((1.0 + snr_linear) ** 2 if signal_model == "gaussian"
+                           else 1.0 + 2.0 * snr_linear)
+        sigma_1 = noise_variance * np.sqrt(variance_factor / num_samples)
         z = (gamma - mu_1) / sigma_1
         # Q(z) = 0.5 * erfc(z / sqrt(2))
         return float(0.5 * special.erfc(z / np.sqrt(2.0)))
@@ -273,8 +317,8 @@ class EnergyDetector:
         false_alarms = int(np.sum((predictions == 1) & h0_mask))
         correct_detections = int(np.sum((predictions == 1) & h1_mask))
 
-        emp_pfa = false_alarms / n_h0 if n_h0 > 0 else 0.0
-        emp_pd = correct_detections / n_h1 if n_h1 > 0 else 0.0
+        emp_pfa = false_alarms / n_h0 if n_h0 > 0 else float("nan")
+        emp_pd = correct_detections / n_h1 if n_h1 > 0 else float("nan")
         accuracy = float(np.mean(predictions == ground_truth))
 
         return {

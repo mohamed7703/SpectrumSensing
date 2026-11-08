@@ -76,33 +76,45 @@ def compute_sample_complexity(
     pfa_target: float = 0.05,
     pd_target: float = 0.90,
 ) -> float:
-    r"""Calculate the minimum observation samples :math:`L` required to achieve target (Pfa, Pd).
+    r"""Return a conservative sufficient sample count for robust fixed-energy sensing.
 
-    Under noise uncertainty :math:`\\rho`:
-    .. math::
-        L \\ge \\left[ \\frac{Q^{-1}(P_{\\text{FA}}) - Q^{-1}(P_d)}{\\text{SNR} - (\\rho - 1/\\rho)} \\right]^2
-    As :math:`\\text{SNR} \\to \\text{SNR}_{\\text{wall}}^+`, :math:`L \\to \\infty`.
+    Nominal noise power is one, actual v is in [1/rho, rho], and fixed
+    transmit signal power S = 10**(snr_db/10), independent of v. Complex AWGN
+    gives Var(T|H0) <= rho**2/N and Var(T|H1) <= (rho**2+2*rho*S)/N.
+    Cantelli's one-sided inequality supplies a uniform sufficient threshold
+    rho + rho*sqrt((1-alpha)/(alpha*N)). To attain Pd >= beta it suffices that
+    sqrt(N) >= [rho*sqrt((1-alpha)/alpha) +
+    sqrt((rho**2+2*rho*S)*beta/(1-beta))] / [S-(rho-1/rho)].
+
+    This bound is conservative and is NOT the minimum required sample size.
+    The former approximation omitted variance factors and missed its targets.
+    An exact H0-CFAR threshold at v=rho is no larger than this sufficient
+    threshold, so it also attains the stated lower Pd bound. No guarantee is
+    made for correlated noise, random signal energy, or unbounded uncertainty.
 
     Args:
-        snr_db: Operating SNR in dB.
+        snr_db: Fixed signal power relative to nominal noise, before uncertainty.
         uncertainty_db: Noise uncertainty in dB.
         pfa_target: Target False Alarm rate :math:`\\alpha`.
         pd_target: Target Detection rate :math:`\\beta`.
 
     Returns:
-        Required number of samples :math:`L`, or `float('inf')` if below the SNR wall.
+        Conservative sufficient sample count, or infinity at/below the robust
+        mean-separation wall. Infinity describes this uniform guarantee, not
+        impossibility of all average-case or finite-sample discrimination.
     """
+    if (not np.isfinite(snr_db) or not np.isfinite(uncertainty_db)
+            or not 0 < pfa_target < pd_target < 1):
+        raise ValueError("finite SNR/uncertainty and 0 < pfa_target < pd_target < 1 are required")
     snr_lin = 10.0 ** (snr_db / 10.0)
     snr_wall_lin, _ = compute_snr_wall(uncertainty_db)
 
     if snr_lin <= snr_wall_lin:
         return float("inf")
 
-    # Q^-1(x) = sqrt(2) * erfinv(1 - 2x)
-    q_inv_pfa = np.sqrt(2.0) * special.erfinv(1.0 - 2.0 * pfa_target)
-    q_inv_pd = np.sqrt(2.0) * special.erfinv(1.0 - 2.0 * pd_target)
-
-    numerator = q_inv_pfa - q_inv_pd
+    rho = 10.0 ** (uncertainty_db / 10.0)
+    numerator = (rho * np.sqrt((1.0 - pfa_target) / pfa_target)
+                 + np.sqrt((rho**2 + 2.0 * rho * snr_lin) * pd_target / (1.0 - pd_target)))
     denominator = snr_lin - snr_wall_lin
 
     l_required = (numerator / denominator) ** 2

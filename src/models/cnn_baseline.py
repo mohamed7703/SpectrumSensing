@@ -107,7 +107,7 @@ class BaselineCNN(BaseSpectrumClassifier):
                 layers.Dense(units=128, activation="relu", name="dense_1"),
                 layers.Dropout(rate=0.50, name="dropout"),
                 layers.Dense(units=1, activation="sigmoid", name="dense_2"),
-            ], name=self.name)
+            ], name=self.name.replace(" ", "_"))
             return model
         except ImportError:
             raise ImportError("TensorFlow is required to build Keras model object.")
