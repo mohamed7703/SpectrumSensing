@@ -32,6 +32,9 @@ ENV/
 htmlcov/
 .tox/
 
+# New local experiment runs; reviewed evidence remains in results/recovery/.
+results/local-runs/
+
 # Temporary text dumps
 paper.txt
 plan.txt

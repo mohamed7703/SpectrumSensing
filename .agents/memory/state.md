@@ -3,6 +3,8 @@
 
 ## Current status
 
+Main-branch refresh, 2026-11-08: the user authorized replacing and changing obsolete repository files. The current recovery version and presentation are being promoted to main through normal Git history. The root README now describes supported local evidence, known stress-test failures and the actual recovery commands; the superseded README is preserved as `docs/recovery/baseline-audit/LEGACY_README.md`. Historical experimental records stay available for provenance. Future repository-wide corrections are authorized within the research task; this permission does not itself request a dataset download.
+
 GitHub publication checkpoint: user explicitly authorized commit and push to `mohamed7703/SpectrumSensing`. Target branch is `codex/scientific-validation-recovery`; origin resolves to the requested repository. Pre-push validation on 2026-11-08 passed all 325 tests (18 upstream deprecation warnings). The eight-slide offline Framer Motion/SVG presentation and its editable source are packaged under `docs/presentations/research-validation-progress`. Initial audit documents are copied under `docs/recovery/baseline-audit`; scientific result records remain immutable. Local environments, dependency caches, raw data and large ignored checkpoint binaries are excluded. No RadioML download occurred.
 
 User authorized execution of the recovery/validation plan and requested progress updates. Work is on `codex/scientific-validation-recovery`, based on `cba90a1522c3f4a8b3f839b1750a370713f61a50`. Do not overwrite historical reports, figures, experiment logs or model exports. Audit and regression transcripts are in `S:/Projects/SpectrumSensing-audit-2026-11-05`.
