@@ -1,5 +1,7 @@
 # NI USRP-2920 two-day capture and replay
 
+> **Update, 2026-11-20 (pre-USRP v2, branch `codex/pre-usrp-v2`).** `fit` and `replay` now lock and replay six methods (ordinary, linear, fixed nominal INT8, FP32, INT8 with the FP32 threshold copied, and gain-aware energy). They require `--native-model <FP32 .keras>` in addition to `--model`, and the calibration session must declare `nominal_gain_db` with at least 3x the budget of noise frames at that gain. Locks from earlier runs (format 1) cannot be replayed. The command list below shows the original two-method workflow; the v2 protocol will replace it.
+
 **Pilot question.** Does a small threshold shift admit a block of tied INT8 noise scores on this receiver, and does ordinary recalibration transfer to another day? The fresh synthetic benchmark found no improvement from the linear rule. Use this pilot to characterize the failure. The USRP acquires I/Q and inference runs on the host.
 
 ## Setup
