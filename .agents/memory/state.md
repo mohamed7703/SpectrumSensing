@@ -1,7 +1,9 @@
 # Project State — Scientific recovery
-> Last Updated: 2026-11-19 (Africa/Cairo)
+> Last Updated: 2026-11-20 (Africa/Cairo)
 
 ## Current status
+
+Pre-USRP v2 program started 2026-11-20 on branch `codex/pre-usrp-v2` (plan E0-E6; Decision 004). Repo now lives at `D:\Projects\SpectrumSensing`. E0 complete: uv Python 3.10.20 venv with TF 2.20.0 / Keras 3.12.4; 331 tests passed (18 warnings, 26 s); v1 recount verified 3,375 rows and matched `primary.json`; one v1 block (seed 19031) retrains in 33 s on CPU and reproduces the committed INT8 and energy scores bit-for-bit (FP32 within 1.2e-7) but not the file hashes. The INT8 model emits only 8 distinct score levels per test condition. Next: E1 (replay comparators) and E2 (detector v2). Push authorized for this branch only; no RadioML download. Log: `experiments/logs/pre-usrp-v2-e0.md`.
 
 Pre-USRP study completed locally. See `docs/calibration/SUPERVISOR_BRIEF.md`. The deterministic frozen GAP INT8 ceiling at nominal gain and 0 dB was 69/100 at the 5% empirical Pfa limit. In the fresh five-model, 15-session benchmark, linear and ordinary calibration both detected 2121/3600 primary signals. Linear calibration produced 902/4500 false alarms at −1 dB gain. Recommendation is to revise the rule and use the USRP-2920 handoff for characterization. The closest IEEE edge study remains abstract-only in the literature review. Real captures are pending.
 

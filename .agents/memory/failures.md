@@ -15,3 +15,7 @@
 - **2026-11-05, checkpoint test:** Independently resumed training=True calls draw different dropout masks. Verify saved optimizer variables and deterministic-gradient updates; do not claim bitwise RNG continuation or widen numeric tolerances to hide different random computations.
 - **2026-11-05, scientific audit:** 205 original tests passed despite exact ROC counterexamples, shared feature-head inference under neural model names, placeholder exports, mock miscalibration and incomplete event accounting. Passing tests do not establish the scientific claims. Preserve audit fixtures; add regressions before fixes; track claims separately.
 - **2026-11-05, R001:** audit regressions failed 32/41 before correction; fixed by exact score traversal and validation rather than widening tolerances or changing expected scientific results.
+
+- **2026-11-20, E0 reproduction:** retraining v1 seed 19031 reproduced INT8 and energy scores bit-for-bit and FP32 scores to 1.2e-7, but the `.tflite` and `.keras` file hashes differ from `benchmark-v1/manifest.json`.
+  - *Failure Reason:* Serialized files carry metadata and converter output that is not byte-stable across rebuilds, so a hash is not a proxy for score equality.
+  - *Resolution/Rule:* Verify reproduction by comparing scores, not file hashes. Ship lab models as the exact trained files with their recorded hashes; never retrain and expect the same hash.

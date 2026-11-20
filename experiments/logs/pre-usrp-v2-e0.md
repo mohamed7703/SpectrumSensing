@@ -1,0 +1,10 @@
+# Pre-USRP v2, E0: environment and baseline check
+
+Date: 2026-11-20. Plan: E0 of the pre-USRP v2 program (Decision 004). Evidence setting: software reproduction on CPU; no hardware.
+
+- **Environment.** uv-managed Python 3.10.20 venv at `.venv` from `requirements-recovery.txt`: TensorFlow 2.20.0, Keras 3.12.4. The repo was moved to `D:\Projects\SpectrumSensing`; the remote and `main` @ `d7061aa` are intact. Work branch: `codex/pre-usrp-v2`.
+- **Test suite.** `python -m pytest -q`: 331 passed, 18 upstream deprecation warnings, 26.1 s. Matches `experiments/logs/pre-usrp-v1.md`.
+- **v1 recount.** `scripts/calibration_summary.py` on a copy of `results/calibration/benchmark-v1` under `results/local-runs/v1-recount`: 3,375 rows verified against the score archives; primary detection (linear and ordinary 0.5892, fixed 0.53, fp32 0.6, energy 1.0) and `recommend_superiority_pilot: false` match the committed `primary.json`.
+- **Timing and determinism.** One v1 block (seed 19031: train 8 epochs, INT8 export, 3 sessions, all conditions) took 33.0 s wall clock on CPU with the v1 threading and op-determinism settings. Best epoch 8, same as the manifest. INT8 and energy scores in `scores_19031_0.npz` are bit-identical to the committed archive; FP32 scores differ by at most 1.2e-7. File SHA-256 values differ from the manifest for both the INT8 `.tflite` and the `.keras` checkpoint, so decisions reproduce but bytes do not.
+- **Score resolution.** The INT8 output of this model takes 8 distinct values over the 540 frames of one test condition, in both runs. This is the lattice behind the tied-score failure of the linear rule; E3 tests export variants that change it.
+- **Consequence for later steps.** Model identity is pinned by file hash, so lab models must be shipped as the exact trained files, not retrained. Tests that need a model train a fresh small one.
