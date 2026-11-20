@@ -1,0 +1,55 @@
+scope: detector v2 candidates for the USRP-2920 pilot, synthetic CPU evidence
+status: frozen  # frozen by the commit that adds this line, before any candidate trains; lr from results/local-runs/e2-lr-search (chosen 0.03), SNRs from the energy-only pilot recorded in experiments/logs/detector-v2.md
+model: gap
+snrs_db: [-10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10]
+training_frames_per_snr: 1000
+validation_frames_per_snr: 250
+h0_ratio: 0.5
+frames_per_session: 50
+epochs: 40
+patience: 6
+min_delta: 0.0
+batch_size: 128
+representative_frames: 256
+optimizer: {name: SGD, learning_rate: 0.03, weight_decay: 0.0001, momentum: 0.9}
+impairments:
+  dc_power_db: [-40.0, -25.0]
+  iq_gain_db_max: 0.5
+  iq_phase_deg_max: 3.0
+  cutoff_fraction: [0.35, 0.45]
+  filter_order: 4
+  adc_bits: 12
+  adc_full_scale: 8.0
+candidates:
+  awgn: {model_seeds: [29031, 29032, 29033, 29034, 29035], impaired_training: false}
+  impaired: {model_seeds: [39031, 39032, 39033, 39034, 39035], impaired_training: true}
+# Data seeds: candidate k (awgn 0-4, impaired 5-9) uses data_seed_base + 1000*k;
+# offsets +0 train, +1 validation, +2 train sessions, +3 validation sessions, +4 representative frames.
+data_seed_base: 1029000
+learning_rate_search:
+  grid: [0.003, 0.01, 0.03, 0.1]
+  dev_model_seeds: {awgn: 29030, impaired: 39030}
+  data_seed_base: 1028000
+  training_frames_per_snr: 500
+  validation_frames_per_snr: 250
+  epochs: 12
+  rule: smallest mean over the two classes of the best validation BCE; a run whose loss turns non-finite counts as infinite loss; ties go to the smaller learning rate
+selection_set:
+  seed_base: 1039000
+  sessions: 4
+  calibration_h0_frames: 500
+  test_h0_frames: 500
+  test_h1_frames: 300
+  h1_snrs_db: [-16, -14, -12, -10]
+  snr_choice: fixed from an energy-detector-only pilot on dev seeds 1027000+ (no neural model); on impaired frames energy Pd was 0.26, 0.50, 0.85, 0.99 at -16, -14, -12, -10 dB and 1.00 from -8 dB up, so 0 dB would saturate and ties would decide the winner
+  note_calibration: each session calibrates and tests inside one receiver draw, so drift between calibration and test sessions is not measured here
+  note_winner: the winning candidate's selection-set Pd is optimistically biased by selection; claims need the separate E4 benchmark
+  target_pfa: 0.05
+  calibration_confidence: 0.95
+  note: the same frames score every candidate; the impaired variant draws one receiver session per selection session; the clean variant is reported only
+selection_rule:
+  metric: int8_pd_impaired
+  metric_definition: pooled INT8 detections of QPSK over all selection H1 SNRs and impaired selection sessions, each session calibrated on its own H0 frames at the 5 percent target and 95 percent confidence
+  tie_breaks: [int8_fp32_agreement_impaired]
+  agreement_definition: fraction of impaired test frames, H0 and H1, where the INT8 and FP32 decisions agree, each at its own calibrated threshold
+  final_tie_break: lowest model seed
