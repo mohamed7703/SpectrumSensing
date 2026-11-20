@@ -1,0 +1,21 @@
+scope: fixed synthetic QPSK/Gaussian noise benchmark
+model_seeds: [19031, 19032, 19033, 19034, 19035]
+sessions_per_model: 3
+seed_base: 821000
+gains_db: [-1, 0, 1]
+transfer_gain_db: 0.5
+noise_stress_db: 1
+snrs_db: [-10, 0, 10]
+calibration_budgets_per_gain: [100, 200, 400]
+primary_budget: 200
+primary_snr_db: 0
+target_pfa: 0.05
+calibration_confidence: 0.95
+training_frames_per_snr: 64
+validation_frames_per_snr: 32
+epochs: 8
+batch_size: 32
+representative_frames: 128
+test_h0_frames_per_condition: 300
+test_h1_frames_per_snr: 80
+optimizer: {name: SGD, learning_rate: 0.001, weight_decay: 0.0001, momentum: 0.0}

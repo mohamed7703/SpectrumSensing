@@ -1,70 +1,16 @@
 ---
 name: math-foundations
-description: >-
-  Mathematical modeling for spectrum sensing: binary hypothesis testing (H0/H1),
-  energy detection statistics, Pd/Pfa derivations, ROC curve generation,
-  threshold optimization, noise models (AWGN), and channel fading PDFs
-  (Rayleigh, Rician, Nakagami-m). Use when implementing or verifying the
-  theoretical foundation of the cognitive radio system.
+description: Derive and verify spectrum sensing detector laws, SNR and fading conventions, tied-score ROC operating points, false-alarm thresholds, and uncertainty in detection rates.
 ---
 
-# Mathematical Foundations Skill
+# Mathematical foundations
 
-## Scope
-This skill covers all mathematical modeling required before any ML or hardware work.
-It implements the equations from the paper (Abdelbaset et al., Sensors 2024) and the
-deployment plan's theoretical framework section.
+- Define H0 as noise only and H1 as signal plus noise. State whether noise variance is total complex power, how the detector aggregates samples, and where SNR is measured. For a flat channel, received signal power includes the factor `|h|²`.
+- With independent circular complex Gaussian noise, scaled accumulated energy under H0 has a central chi-square law with twice the complex sample count as degrees of freedom. Under H1, a fixed-energy waveform produces a noncentral chi-square law, while an independent circular Gaussian signal changes the scale of the central law. State conditioning on the channel and verify fading and detector formulas under their assumptions.
+- For unit nominal noise, actual noise in `[1/rho, rho]`, and fixed received signal power `S`, robust mean separation requires `S > rho - 1/rho`. At a symmetric 1 dB bound this boundary is approximately −3.33 dB. Use the [recovery report](../../../docs/recovery/RECOVERY_PROGRESS.md) for the assumptions and conservative sample bound. A mean-separation boundary establishes a property of this energy model.
+- Compute Pd from detections over H1 and Pfa from false alarms over H0. Use the existing exact ROC that admits one tied score block at a time. Include both endpoints and record the deployed comparator. When INT8 ties skip the target operating point, report the attainable deterministic points. If a class is absent, report its conditional rate as undefined.
+- Use an independent H0 calibration set and keep the final test sealed. Exact binomial intervals apply to independent Bernoulli trials. For adjacent or overlapping frames from shared sessions, report independent session counts and account for grouping in comparisons. If evidence is limited to too few independent sessions, report that limitation.
 
-## Workflow
+Use the [measurement contract](../../../docs/recovery/MEASUREMENT_CONTRACT.md) and existing metric, calibration, and foundation regression tests.
 
-### Step 1: Binary Hypothesis Testing Module
-Implement the core H0/H1 signal model:
-- `H0: r(n) = w(n)` — spectrum idle (noise only)
-- `H1: r(n) = h·s(n) + w(n)` — PU transmitting + noise
-- Generate synthetic signals under both hypotheses
-- Validate with known noise variance σ²_n and signal variance σ²_s
-
-### Step 2: Energy Detection Decision Statistic
-Implement test statistic D(Y) = accumulated energy over L samples:
-- Under H0: central chi-square distribution with 2L DoF
-- Under H1: non-central chi-square distribution
-- Threshold γ comparison logic
-
-### Step 3: Detection Metrics (Pd and Pfa)
-Implement probability calculations:
-- `Pd = P(r(n) ≥ γ | H1)` — correct detection probability
-- `Pfa = P(Ĥ1 = H1 | H0)` — false alarm probability
-- Operational ratios: Pd = correct_detections / total_PU_transmissions
-- Pfa = false_alarms / total_idle_periods
-
-### Step 4: ROC Curve Generation
-- Sweep threshold γ across range
-- Plot Pd vs Pfa for various SNR levels
-- Compare against paper's benchmark results
-
-### Step 5: Channel Fading Models
-Implement fading PDFs:
-- **Rayleigh**: `f(a) = (a/σ²) · exp(-a²/2σ²)` — no line-of-sight
-- **Rician**: Includes Bessel function I₀ for dominant path
-- **Nakagami-m**: Generalized fading model
-- Validate: At SNR=0dB, accuracy drops below 70% under Rayleigh/Rician
-- At SNR≥8dB, accuracy exceeds 95%
-
-### Step 6: Noise Uncertainty and SNR Wall
-- Implement the SNR wall phenomenon (-12 to -8 dB)
-- Show where energy detection fails
-- Motivate the transition to ML-based sensing
-
-## Output Files
-All implementations go to `/src/math_models/`:
-- `hypothesis_testing.py` — H0/H1 signal generation and testing
-- `energy_detection.py` — Test statistic and threshold logic
-- `detection_metrics.py` — Pd, Pfa, ROC computation
-- `channel_fading.py` — Rayleigh, Rician, Nakagami-m PDFs
-- `noise_models.py` — AWGN generation, SNR wall analysis
-- `__init__.py` — Module exports
-
-## Verification
-- Each module has tests in `/tests/test_math_models.py`
-- ROC curves must match known theoretical values for energy detection
-- Pd at SNR=10dB with AWGN must exceed 0.95 for reasonable threshold
+References: [K-Dense Statistical Analysis skill](https://github.com/K-Dense-AI/scientific-agent-skills/blob/ec59a29a03d5c40f73ab40878df04860bc00e876/skills/statistical-analysis/SKILL.md) and [SciPy binomial intervals](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats._result_classes.BinomTestResult.proportion_ci.html).

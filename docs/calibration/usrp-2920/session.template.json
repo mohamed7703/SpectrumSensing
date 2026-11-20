@@ -1,0 +1,29 @@
+{
+  "device_model": "NI USRP-2920",
+  "serial": "",
+  "driver": "",
+  "setup_id": "",
+  "session_id": "",
+  "started_utc": "",
+  "role": "calibration",
+  "evidence_type": "hardware",
+  "sample_format": "cf32_le",
+  "sample_rate_hz": null,
+  "bandwidth_hz": null,
+  "frequency_hz": null,
+  "antenna_port": "",
+  "gain_control": "manual",
+  "model_scale": null,
+  "full_scale": null,
+  "recordings": [
+    {
+      "iq_file": "",
+      "labels_file": "",
+      "sha256": "",
+      "sample_count": null,
+      "gain_db": null,
+      "overflows": null,
+      "dropped_samples": null
+    }
+  ]
+}

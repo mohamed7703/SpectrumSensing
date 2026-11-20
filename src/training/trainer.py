@@ -271,7 +271,7 @@ class SpectrumSensingTrainer:
 
     def __init__(
         self,
-        config_path: str = "configs/training_config.yaml",
+        config_path: str = "experiments/configs/training_config.yaml",
         learning_rate: Optional[float] = None,
         weight_decay: Optional[float] = None,
     ) -> None:

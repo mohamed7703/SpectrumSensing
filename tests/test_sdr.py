@@ -226,7 +226,7 @@ class TestSDRFactory:
         assert isinstance(sdr_mock, MockSDR)
 
     def test_factory_from_yaml(self) -> None:
-        config_path = Path("configs/sdr_config.yaml")
+        config_path = Path("experiments/configs/sdr_config.yaml")
         assert config_path.exists()
 
         sdr_rtl = SDRFactory.from_config(config_path, "rtlsdr", simulated=True)

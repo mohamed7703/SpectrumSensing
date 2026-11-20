@@ -81,7 +81,7 @@ class SDRFactory:
         """Instantiate an SDR driver using parameters from a YAML config file.
 
         Args:
-            config_path: Path to YAML configuration file (e.g. configs/sdr_config.yaml).
+            config_path: Path to a YAML file, such as experiments/configs/sdr_config.yaml.
             device_type: Key of the device profile within the YAML.
             simulated: Whether to run in simulated HITL mode.
 

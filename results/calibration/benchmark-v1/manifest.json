@@ -1,0 +1,103 @@
+{
+  "config": {
+    "scope": "fixed synthetic QPSK/Gaussian noise benchmark",
+    "model_seeds": [
+      19031,
+      19032,
+      19033,
+      19034,
+      19035
+    ],
+    "sessions_per_model": 3,
+    "seed_base": 821000,
+    "gains_db": [
+      -1,
+      0,
+      1
+    ],
+    "transfer_gain_db": 0.5,
+    "noise_stress_db": 1,
+    "snrs_db": [
+      -10,
+      0,
+      10
+    ],
+    "calibration_budgets_per_gain": [
+      100,
+      200,
+      400
+    ],
+    "primary_budget": 200,
+    "primary_snr_db": 0,
+    "target_pfa": 0.05,
+    "calibration_confidence": 0.95,
+    "training_frames_per_snr": 64,
+    "validation_frames_per_snr": 32,
+    "epochs": 8,
+    "batch_size": 32,
+    "representative_frames": 128,
+    "test_h0_frames_per_condition": 300,
+    "test_h1_frames_per_snr": 80,
+    "optimizer": {
+      "name": "SGD",
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "momentum": 0.0
+    }
+  },
+  "config_sha256": "8d1e8931022a370195653862a03d0b58b00b7efa00e8cf8c6898550e4d1f8f3b",
+  "script_sha256": "d88a57354444454d622edaaf658f147177624d8906a4966a471e7d7857bf6876",
+  "tensorflow": "2.20.0",
+  "blocks": [
+    {
+      "seed": 19031,
+      "train_seed": 821000,
+      "validation_seed": 821001,
+      "representative_seed": 821002,
+      "best_epoch": 8,
+      "int8_path": "saved_models\\checkpoints\\calibration-benchmark-v1\\19031\\gap_int8.tflite",
+      "int8_sha256": "c9dac2c86285ebc371ab55c464d83dd2082f520833afe458086bdb646d57320d",
+      "checkpoint_sha256": "7f3b231804f36938e6d25b94384298107cf5ec238a398c2d6f1b4b9d55b912f3"
+    },
+    {
+      "seed": 19032,
+      "train_seed": 831000,
+      "validation_seed": 831001,
+      "representative_seed": 831002,
+      "best_epoch": 8,
+      "int8_path": "saved_models\\checkpoints\\calibration-benchmark-v1\\19032\\gap_int8.tflite",
+      "int8_sha256": "5bca3a2c6d468d3fcfdec1ea589f6b09014bdade364bfd1b128b703cd61bf4c9",
+      "checkpoint_sha256": "430bcd9b3863a8e83d02deeee83263bf36cd015506f8e5a35fc881532e829c9e"
+    },
+    {
+      "seed": 19033,
+      "train_seed": 841000,
+      "validation_seed": 841001,
+      "representative_seed": 841002,
+      "best_epoch": 8,
+      "int8_path": "saved_models\\checkpoints\\calibration-benchmark-v1\\19033\\gap_int8.tflite",
+      "int8_sha256": "440a871b75f506823095af56196428f0a1dba1577bca865e710179625a81b826",
+      "checkpoint_sha256": "ba9f44328a5acd1283d9a3b571ddf1280fcdea744861cefe7b90d4c4f35163f9"
+    },
+    {
+      "seed": 19034,
+      "train_seed": 851000,
+      "validation_seed": 851001,
+      "representative_seed": 851002,
+      "best_epoch": 8,
+      "int8_path": "saved_models\\checkpoints\\calibration-benchmark-v1\\19034\\gap_int8.tflite",
+      "int8_sha256": "ec93aee20ec3edaa9bb721fd29cceeafe5700e07ea62355bdc31627628a99686",
+      "checkpoint_sha256": "bd2edaf1ea6ba3002ad9b7cb6af37c97784b2bbd47f31920e8bf93b11aa2f4cf"
+    },
+    {
+      "seed": 19035,
+      "train_seed": 861000,
+      "validation_seed": 861001,
+      "representative_seed": 861002,
+      "best_epoch": 8,
+      "int8_path": "saved_models\\checkpoints\\calibration-benchmark-v1\\19035\\gap_int8.tflite",
+      "int8_sha256": "df355e5e77e4b678b321df6a3c8e4bb2725843d01e6e110144f2cd0d74e79c68",
+      "checkpoint_sha256": "482c3cc025d1c3ac597e9f2e4b518ac2d778e80becdfe23584e929961a244da7"
+    }
+  ]
+}

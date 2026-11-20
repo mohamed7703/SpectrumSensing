@@ -43,9 +43,12 @@ def main() -> None:
         protected = ("results" in path.parts or "saved_models" in path.parts or path.parent.name == "scripts"
                      or path.name in {"COMPREHENSIVE_VERIFICATION_REPORT.md", "sensors-24-07907.pdf"})
         if protected:
-            if sha256(path) != expected:
+            current_path = path
+            if path.resolve() == ROOT / "sensors-24-07907.pdf" and not path.exists():
+                current_path = ROOT / "literature" / "papers" / path.name
+            if sha256(current_path) != expected:
                 raise AssertionError(f"historical evidence changed: {path}")
-            preserved.append(str(path))
+            preserved.append(str(current_path))
     assets = json.loads(args.assets_record.read_text(encoding="utf-8"))
     local_assets = []
     for category in ["notebooks", "models", "captures"]:

@@ -1,0 +1,53 @@
+{
+  "session_id": "fixture-1",
+  "day": "2026-01-01",
+  "context": {
+    "device_model": "NI USRP-2920",
+    "serial": "FIXTURE",
+    "frequency_hz": 915000000.0,
+    "sample_rate_hz": 1000000.0,
+    "bandwidth_hz": 1000000.0,
+    "antenna_port": "fixture",
+    "model_scale": 8,
+    "full_scale": 1,
+    "sample_format": "cf32_le",
+    "driver": "synthetic generator",
+    "setup_id": "fixture-v1",
+    "evidence_type": "synthetic_fixture"
+  },
+  "iq_hashes": [
+    "18e547404dcc81c6594f9400de71785c83d082fc137e7ca3896b40a7e053ad1c",
+    "245f84464ed5006eb7c08389f9f4aea4573e716e8983f0384989b02f875b2ffa",
+    "4ef956dbc9ef2d79b957bf399371fbc39b98447dcc5017f735ea95953ef2d035"
+  ],
+  "model_sha256": null,
+  "intervals": [
+    {
+      "gain_db": 9.0,
+      "label": "H0",
+      "snr_db": null,
+      "frames": 100,
+      "tail_discarded": 0,
+      "mean_complex_power": 0.012393356068060019,
+      "near_full_scale_fraction": 0.0
+    },
+    {
+      "gain_db": 10.0,
+      "label": "H0",
+      "snr_db": null,
+      "frames": 100,
+      "tail_discarded": 0,
+      "mean_complex_power": 0.015564239855693775,
+      "near_full_scale_fraction": 0.0
+    },
+    {
+      "gain_db": 11.0,
+      "label": "H0",
+      "snr_db": null,
+      "frames": 100,
+      "tail_discarded": 0,
+      "mean_complex_power": 0.01966252012036824,
+      "near_full_scale_fraction": 0.0
+    }
+  ]
+}

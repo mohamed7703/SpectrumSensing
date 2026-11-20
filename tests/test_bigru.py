@@ -118,7 +118,7 @@ class TestBiGRUArchitecture:
 
     def test_config_consistency(self) -> None:
         """Verify model matches configurations in model_config.yaml."""
-        config_path = os.path.join("configs", "model_config.yaml")
+        config_path = os.path.join("experiments", "configs", "model_config.yaml")
         with open(config_path, "r", encoding="utf-8") as f:
             cfg = yaml.safe_load(f)
 

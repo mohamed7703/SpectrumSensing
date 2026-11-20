@@ -8,6 +8,10 @@ The work studies the methodology in [Deep Learning-Based Spectrum Sensing for Co
 
 ## Start here
 
+- [Pre-USRP decision brief and measured calibration results](docs/calibration/SUPERVISOR_BRIEF.md)
+- [NI USRP-2920 lab handoff and offline replay](docs/calibration/usrp-2920/README.md)
+- [Prior-work and novelty comparison](literature/novelty-comparison.md)
+- [Interactive calibration workflow and synthetic replay](docs/presentations/receiver-calibration-workflow/Receiver_Calibration_Workflow.html)
 - [Current recovery report and prioritized next steps](docs/recovery/RECOVERY_PROGRESS.md)
 - [Claim-by-claim evidence status](docs/recovery/CLAIM_LEDGER.md)
 - [Measurement and statistical conventions](docs/recovery/MEASUREMENT_CONTRACT.md)
@@ -60,16 +64,16 @@ TensorFlow must be installed to execute the native neural checks. A run that ski
 The following commands use synthetic inputs and do not download RadioML. Each run requires a new output path and preserves existing records.
 
 ```sh
-python scripts/validate_recovery_foundations.py --config configs/recovery_foundations.yaml --output results/local-runs/foundations.json
+python scripts/validate_recovery_foundations.py --config experiments/configs/recovery_foundations.yaml --output results/local-runs/foundations.json
 
-python scripts/validate_recovery_native.py --config configs/recovery_native_smoke.yaml --output-directory results/local-runs/native --model-directory saved_models/checkpoints/local-native
+python scripts/validate_recovery_native.py --config experiments/configs/recovery_native_smoke.yaml --output-directory results/local-runs/native --model-directory saved_models/checkpoints/local-native
 ```
 
 The first command checks specified theory, calibrated mock sensing and known network intersections. The second performs small native CNN training/checkpoint/export smoke runs. Its AUCs are not RadioML performance estimates or reliable architecture rankings.
 
 Stored [native experiment records](results/recovery/R003b-native-smoke/record.json), [runtime-stress records](results/recovery/R005-runtime-stress/record.json) and score arrays allow independent numerical inspection. Use `scripts/replay_recovery_scores.py --help` for the recount command. Local experiment outputs and large checkpoint binaries stay out of Git by default.
 
-The next scientific milestone is a controlled FP32 baseline CNN versus energy-detection experiment using verified RadioML H1 inputs, separately documented H0 noise, frozen training/validation/calibration/test partitions, sealed evaluation and repeated model seeds. No RadioML dataset has been downloaded in the work recorded here.
+The pre-USRP threshold sweep, targeted literature comparison and fresh synthetic calibration-budget benchmark are available in the decision brief above. At the primary budget, the linear rule equaled ordinary recalibration in detection and exceeded the false-alarm limit. The next hardware question is whether discrete noise-score ties and threshold transfer behave similarly across real USRP-2920 sessions.
 
 ## Repository layout
 
@@ -79,11 +83,15 @@ The next scientific milestone is a controlled FP32 baseline CNN versus energy-de
 | `src/sdr_interface/`, `src/dsp/`, `src/preprocessing/` | SDR interfaces, mock streams and signal processing |
 | `src/ns3_simulation/` | Lightweight Python discrete-event network model and trace analysis |
 | `src/models/`, `src/training/` | Architecture descriptions, explicit feature baseline, native Keras training and export |
-| `configs/recovery_*.yaml` | Configurations for the corrected local experiments |
+| `experiments/configs/`, `experiments/logs/` | Experiment settings and execution records |
 | `tests/` | Software checks and adversarial regression fixtures |
-| `results/recovery/` | Recorded measurements, scores, provenance and integrity checks |
+| `results/recovery/`, `results/calibration/` | Archived validation records and new calibration measurements |
+| `data/`, `notebooks/` | Local datasets, split manifests, and exploratory analysis |
+| `docs/calibration/`, `literature/` | Study protocol, source papers, and novelty review |
 | `docs/recovery/` | Current assessment and historical audit |
-| `docs/presentations/` | Animated research-progress presentation and editable source |
+| `docs/presentations/` | Progress deck and interactive calibration workflow |
+| `paper/raw_materials/`, `paper/generated/` | Curated manuscript inputs and local generated drafts |
+| `external/` | [Upstream tool guidance](external/README.md) |
 
 The network model produces NS-3-style traces. This does not establish independent validation against the ns-3 simulator.
 
@@ -93,6 +101,6 @@ The [previous repository README](docs/recovery/baseline-audit/LEGACY_README.md) 
 
 The historical NumPy `predict_proba` path and `SpectrumSensingTrainer` execute a shared four-feature logistic baseline. Declared CNN/GRU layer metadata does not make that path neural. Use a native `to_keras()` graph and `KerasSensingTrainer` for actual convolutional training.
 
-Legacy `scripts/verify_*.py` scripts are preserved for audit context. Some use superseded assumptions or export interfaces. The `validate_recovery_*.py` scripts are the current experiment entry points. Optional Bi-GRU, game-theory and ONNX deployment claims need separate validation.
+The `validate_recovery_*.py` scripts are the current experiment entry points. Legacy `scripts/verify_*.py` scripts preserve original assumptions, export interfaces, and configuration paths. Reproduce those scripts from the checkout that supplied the corresponding historical evidence. Optional Bi-GRU, game-theory and ONNX deployment claims need separate validation.
 
 Historical provenance records contain paths from the machine where experiments ran. Those paths identify original inputs and locally retained model binaries; they are not required to open the presentation or recount the committed score arrays.

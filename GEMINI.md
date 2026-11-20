@@ -9,7 +9,7 @@
 ## Code Rules
 - All Python files must include module-level docstrings describing their purpose
 - Use type hints on all function signatures
-- Never hardcode hyperparameters — use `/configs/*.yaml`
+- Never hardcode hyperparameters — use `/experiments/configs/*.yaml`
 - Every new module needs tests in `/tests/`
 - Mathematical formulas must be documented with LaTeX in docstrings
 

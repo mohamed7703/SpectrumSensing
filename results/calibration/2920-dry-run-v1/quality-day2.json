@@ -1,0 +1,80 @@
+{
+  "session_id": "fixture-2",
+  "day": "2026-01-02",
+  "context": {
+    "device_model": "NI USRP-2920",
+    "serial": "FIXTURE",
+    "frequency_hz": 915000000.0,
+    "sample_rate_hz": 1000000.0,
+    "bandwidth_hz": 1000000.0,
+    "antenna_port": "fixture",
+    "model_scale": 8,
+    "full_scale": 1,
+    "sample_format": "cf32_le",
+    "driver": "synthetic generator",
+    "setup_id": "fixture-v1",
+    "evidence_type": "synthetic_fixture"
+  },
+  "iq_hashes": [
+    "415d890e761a0f25a694c9ddef2628a2f82d126e9cef07fdfd516cddedae460a",
+    "c853a886ece0cd4eee25b3d1e7eec60b4c845d10548e86f4ab4e00c822ee04f5",
+    "ca08b8bc03f0f598b94ded1c521881d2213ad66b470dcecb150c09504a551f57"
+  ],
+  "model_sha256": null,
+  "intervals": [
+    {
+      "gain_db": 9.0,
+      "label": "H0",
+      "snr_db": null,
+      "frames": 32,
+      "tail_discarded": 0,
+      "mean_complex_power": 0.012370779132722729,
+      "near_full_scale_fraction": 0.0
+    },
+    {
+      "gain_db": 9.0,
+      "label": "H1",
+      "snr_db": 0.0,
+      "frames": 32,
+      "tail_discarded": 0,
+      "mean_complex_power": 0.02494587929256516,
+      "near_full_scale_fraction": 0.0
+    },
+    {
+      "gain_db": 10.0,
+      "label": "H0",
+      "snr_db": null,
+      "frames": 32,
+      "tail_discarded": 0,
+      "mean_complex_power": 0.015741122905107256,
+      "near_full_scale_fraction": 0.0
+    },
+    {
+      "gain_db": 10.0,
+      "label": "H1",
+      "snr_db": 0.0,
+      "frames": 32,
+      "tail_discarded": 0,
+      "mean_complex_power": 0.03135069004740666,
+      "near_full_scale_fraction": 0.0
+    },
+    {
+      "gain_db": 11.0,
+      "label": "H0",
+      "snr_db": null,
+      "frames": 32,
+      "tail_discarded": 0,
+      "mean_complex_power": 0.01978345441155337,
+      "near_full_scale_fraction": 0.0
+    },
+    {
+      "gain_db": 11.0,
+      "label": "H1",
+      "snr_db": 0.0,
+      "frames": 32,
+      "tail_discarded": 0,
+      "mean_complex_power": 0.03911563239643405,
+      "near_full_scale_fraction": 0.0
+    }
+  ]
+}

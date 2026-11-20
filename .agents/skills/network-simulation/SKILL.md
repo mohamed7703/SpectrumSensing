@@ -1,71 +1,16 @@
 ---
 name: network-simulation
-description: >-
-  NS-3 network simulation for Cognitive Radio Networks: CRN topology setup,
-  MAC protocol optimization (Pure ALOHA, Slotted ALOHA, ILA-CSMA), end-to-end
-  delay measurement, trace parsing, collision probability analysis, and Nash
-  equilibrium evaluation. Use when building or running network simulations.
+description: Design and verify cognitive radio network experiments, Python discrete-event simulations, packet overlap and delay, trace analysis, and reproducible ns-3 comparisons when requested.
 ---
 
-# Network Simulation Skill
+# Network simulation
 
-## Scope
-Covers NS-3 discrete-event simulation of the Cognitive Radio Network, including
-MAC layer optimization and delay analytics before physical SDR deployment.
+- Start with the Python discrete-event implementation in `src/ns3_simulation/` for local protocol and timing checks. Record the simulator and implementation version in each run. An ns-3 experiment requires a pinned ns-3 version, executable scenario, configuration, and generated traces.
+- Compare Pure ALOHA, Slotted ALOHA, and ILA-CSMA on matched offered traffic, packet sizes, primary-user activity, observation horizon, and channel conditions. Configure seeds and log run identifiers and RNG streams. Use matched inputs within each replication and independent run identifiers across replications. In ns-3, document both seed and run number.
+- Verify primary-user activity that starts and ends mid-packet, symmetric secondary-user overlap, and exact boundary contact. Resolve delivery at packet completion. Count pending packets at the observation cutoff and preserve them when the horizon extends.
+- Preserve time order when replaying sensing decisions into a MAC. Track the sensing-to-access delay, false alarms, and duration of missed detections. Treat the current overlap rule as a simplified interference proxy. Receiver protection claims require a validated receiver model or measurements.
+- Reconcile send, delivery, drop, and pending counts. Report delivered-only delay alongside delivery, loss and pending rates, offered load, and interference exposure. Give results across independent runs with uncertainty. Report any energy result with its measurement or model boundary.
 
-## Workflow
+Use [network YAML](../../../experiments/configs/ns3_config.yaml), write new run metadata to [experiment logs](../../../experiments/logs/), and preserve traces with their result records. Run the existing MAC, trace parser, topology, and network recovery tests for timing and accounting changes.
 
-### Step 1: NS-3 Environment Setup
-- Install NS-3 (version 3.38+ recommended)
-- Configure CRN module or custom spectrum sensing module
-- Set up point-to-point links with predefined channel delays and data rates
-
-### Step 2: CRN Topology Builder
-Implement in `/src/ns3_simulation/`:
-- `topology_builder.py` — Define PU/SU node positions, mobility models
-- `traffic_generator.py` — UDP Echo client/server, deterministic loads
-  - 1000 packets, 1024 bytes each, 0.01s intervals
-- `channel_model.py` — Propagation loss, fading integration
-
-### Step 3: MAC Protocol Implementation
-- `mac_pure_aloha.py` — Baseline random access
-- `mac_slotted_aloha.py` — Synchronized slot access
-- `mac_ila_csma.py` — ILA-CSMA hybrid sensing:
-  - Stage 1: Channel Activity Detection (CAD)
-  - Stage 2: RSSI comparison against AI-driven threshold
-  - Interference screening (CSMA-HS) + Time-on-Air spacing (CSMA-AB)
-
-### Step 4: End-to-End Delay Measurement
-- Enable NS-3 ASCII tracing → `.tr` event log
-- Implement trace parser (`trace_parser.py`):
-  ```python
-  send_times = {}
-  recv_times = {}
-  delays = []
-  # Parse .tr file for send/receive events
-  # Calculate per-packet delay
-  average_delay = sum(delays) / len(delays)
-  ```
-
-### Step 5: Performance Metrics
-- Packet Delivery Ratio (PDR)
-- Collision probability vs offered load
-- Energy consumed per successful packet
-- Compare: ILA-CSMA vs CSMA/CA in 2000-node scenario
-  - Target: +20% PDR improvement
-  - Delay reduction: 18.5s → 8.2s
-
-### Step 6: Nash Equilibrium Analysis
-- Model SU spectrum sharing as a game
-- Verify stable equilibrium where SUs don't encroach on PU rights
-
-## Output Files
-- `/src/ns3_simulation/` — All simulation code
-- `/configs/ns3_config.yaml` — Simulation parameters
-- `/results/logs/` — Trace files and parsed results
-- `/results/plots/` — Delay distributions, PDR curves, collision graphs
-
-## Verification
-- End-to-end delay must be calculable from trace files
-- ILA-CSMA must show measurable improvement over pure ALOHA
-- Results reproducible across simulation runs with same seed
+References: [ns-3 repository guidance](https://github.com/nsnam/ns-3-dev-git/blob/c4f3a4a2897900e63d1b7c5f1953f099b8b1d17a/AGENTS.md) and [ns-3 random-variable manual](https://github.com/nsnam/ns-3-dev-git/blob/c4f3a4a2897900e63d1b7c5f1953f099b8b1d17a/doc/manual/source/random-variables.rst).

@@ -1,0 +1,7 @@
+# Pre-USRP run record
+
+The local CPU run used the [frozen protocol](../../docs/calibration/FROZEN_PROTOCOL.md) and [versioned YAML](../configs/calibration_benchmark_v1.yaml). The [run manifest](../../results/calibration/benchmark-v1/manifest.json) contains the TensorFlow version, script and config hashes, training and validation seeds, best epochs, and identities of all five native and integer models. Calibration and evaluation seeds derive from the recorded block base and session number in the benchmark script. The counts CSV also records the test seed for each condition.
+
+The first integer conversion stopped before scoring. A frozen inference graph passed a native prediction check and converted to integer I/O in the completed run. All five planned blocks completed. The summary program recounted every one of 3,375 rows from the score archives. H0 observations are repeated in the three SNR rows for convenience; use one SNR row when counting H0 frames within a method, budget, session, and gain/noise condition.
+
+The complete local test suite passed 331 cases with 18 upstream deprecation warnings. The packaged first-seed model produced byte-identical replay output on a second run of the synthetic USRP fixture. [Operating-point report](../../results/calibration/frozen-sweep-v1/REPORT.md) · [Benchmark report](../../results/calibration/benchmark-v1/REPORT.md) · [Dry-run artifacts](../../results/calibration/2920-dry-run-v1/)

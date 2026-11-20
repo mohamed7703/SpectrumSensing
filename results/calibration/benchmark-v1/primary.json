@@ -1,0 +1,49 @@
+{
+  "verified_rows": 3375,
+  "paired_model_deltas": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "mean_difference": 0.0,
+  "interval": [
+    0.0,
+    0.0
+  ],
+  "pfa": {
+    "linear_-1": {
+      "observed": 0.20044444444444443,
+      "upper": 0.7479980515777508
+    },
+    "linear_0": {
+      "observed": 0.009111111111111111,
+      "upper": 0.04098024518261057
+    },
+    "linear_1": {
+      "observed": 0.041999999999999996,
+      "upper": 0.18884285782666638
+    },
+    "ordinary_-1": {
+      "observed": 0.0,
+      "upper": 0.0010633213267608468
+    },
+    "ordinary_0": {
+      "observed": 0.0008888888888888889,
+      "upper": 0.004409587984689265
+    },
+    "ordinary_1": {
+      "observed": 0.0035555555555555557,
+      "upper": 0.013136936169784633
+    }
+  },
+  "detection": {
+    "linear": 0.5891666666666666,
+    "ordinary": 0.5891666666666666,
+    "fixed": 0.53,
+    "fp32": 0.6,
+    "energy": 1.0
+  },
+  "recommend_superiority_pilot": false
+}

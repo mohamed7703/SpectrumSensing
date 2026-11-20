@@ -1,7 +1,11 @@
 # Project State — Scientific recovery
-> Last Updated: 2026-11-08 (Africa/Cairo)
+> Last Updated: 2026-11-19 (Africa/Cairo)
 
 ## Current status
+
+Pre-USRP study completed locally. See `docs/calibration/SUPERVISOR_BRIEF.md`. The deterministic frozen GAP INT8 ceiling at nominal gain and 0 dB was 69/100 at the 5% empirical Pfa limit. In the fresh five-model, 15-session benchmark, linear and ordinary calibration both detected 2121/3600 primary signals. Linear calibration produced 902/4500 false alarms at −1 dB gain. Recommendation is to revise the rule and use the USRP-2920 handoff for characterization. The closest IEEE edge study remains abstract-only in the literature review. Real captures are pending.
+
+The calibration research layout was applied locally on `codex/calibration-research-layout`. Nine YAML files and two PDFs were relocated and checked against Git. The draft calibration protocol, prior-work comparison, receiver walkthrough, experiment logs, manuscript folders and external tool reservation have explicit locations. The six project skills validate. The four technical skills now document verified mathematical conventions, reproducible network experiments, capture provenance, and independent INT8 calibration. The root `AGENTS.md` also links `calibration-novelty-review` and `manuscript-evidence`. All 325 software tests passed with 18 upstream deprecation warnings. The next research work is the full-text comparison and threshold feasibility sweep.
 
 Main-branch refresh, 2026-11-08: the user authorized replacing and changing obsolete repository files. The current recovery version and presentation are being promoted to main through normal Git history. The root README now describes supported local evidence, known stress-test failures and the actual recovery commands; the superseded README is preserved as `docs/recovery/baseline-audit/LEGACY_README.md`. Historical experimental records stay available for provenance. Future repository-wide corrections are authorized within the research task; this permission does not itself request a dataset download.
 

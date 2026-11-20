@@ -26,6 +26,11 @@ venv/
 .venv/
 ENV/
 
+# Local upstream checkout and generated manuscript runs
+/external/paper-orchestra/
+/paper/generated/*
+!/paper/generated/.gitkeep
+
 # Testing & Coverage
 .pytest_cache/
 .coverage

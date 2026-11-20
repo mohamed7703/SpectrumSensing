@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 import zipfile
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -13,6 +14,23 @@ ROOT = Path(__file__).resolve().parent.parent
 def sha256(path: Path) -> str:
     """Identify the supplied review file with SHA-256."""
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def working_branch() -> str | None:
+    """Return the branch name when the source is in an attached Git checkout."""
+    try:
+        result = subprocess.run(
+            ["git", "branch", "--show-current"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except FileNotFoundError:
+        return None
+    if result.returncode != 0:
+        return None
+    return result.stdout.strip() or None
 
 
 def main() -> None:
@@ -25,7 +43,7 @@ def main() -> None:
         parser.error("archive or manifest exists; choose new paths")
     paths = {ROOT/"README.md", ROOT/"AGENTS.md"}
     for directory, extensions in [("src", {".py"}), ("tests", {".py"}), ("scripts", {".py"}),
-                                  ("configs", {".yaml"}), ("docs/recovery", {".md"}), (".agents", {".md"}),
+                                  ("experiments/configs", {".yaml"}), ("docs/recovery", {".md"}), (".agents", {".md"}),
                                   ("results/recovery", {".json", ".npz"})]:
         paths.update(path for path in (ROOT/directory).rglob("*") if path.is_file() and path.suffix in extensions)
     entries = {str(path.relative_to(ROOT)).replace("\\", "/"): {"sha256": sha256(path), "bytes": path.stat().st_size}
@@ -41,7 +59,7 @@ def main() -> None:
             if hashlib.sha256(archive.read(filename)).hexdigest() != expected["sha256"]:
                 raise AssertionError("archive content differs from the source manifest")
     result = {"created_at_utc": datetime.now(timezone.utc).isoformat(), "audited_baseline_commit": "cba90a1522c3f4a8b3f839b1750a370713f61a50",
-              "working_branch": "codex/scientific-validation-recovery", "git_changes": "local working changes; no remote push",
+              "working_branch": working_branch(), "git_changes": "local working changes; no remote push",
               "archive": str(args.archive.resolve()), "archive_sha256": sha256(args.archive), "files": entries,
               "scope": "review source/config/test/document snapshot and small evidence records",
               "excluded": ["RadioML or other raw datasets", "virtual environment", "large model binaries; referenced local checkpoint paths remain in records"]}
