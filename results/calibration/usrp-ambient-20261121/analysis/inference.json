@@ -1,0 +1,47 @@
+{
+  "scale": 12278.651350954187,
+  "engineering_samples": 4000000,
+  "tflite": {
+    "input_dtype": "int8",
+    "output_dtype": "int8",
+    "input_quantization": [
+      0.04465017840266228,
+      -7
+    ],
+    "output_quantization": [
+      0.00390625,
+      -128
+    ],
+    "clipped_input_values": 100,
+    "total_input_values": 13647872
+  },
+  "unscaled_int8_input_codes": [
+    -7.0
+  ],
+  "fp32_sha256": "7f3b231804f36938e6d25b94384298107cf5ec238a398c2d6f1b4b9d55b912f3",
+  "int8_sha256": "c9dac2c86285ebc371ab55c464d83dd2082f520833afe458086bdb646d57320d",
+  "models": {
+    "fp32": {
+      "threshold": 0.5275426506996156,
+      "rank": 196,
+      "calibration_triggers": 4,
+      "test_n": 6464,
+      "triggers": 132,
+      "calibration_distinct": 200,
+      "test_distinct": 6215,
+      "modal_test_score": 0.5203225612640381,
+      "modal_test_count": 3
+    },
+    "int8": {
+      "threshold": 0.5273437500000001,
+      "rank": 196,
+      "calibration_triggers": 0,
+      "test_n": 6464,
+      "triggers": 31,
+      "calibration_distinct": 3,
+      "test_distinct": 4,
+      "modal_test_score": 0.5234375,
+      "modal_test_count": 4257
+    }
+  }
+}
