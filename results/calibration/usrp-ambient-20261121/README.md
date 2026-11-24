@@ -4,8 +4,6 @@ At the reported 915 MHz, 1 MS/s and 10 dB gain, 19,820 of 197,236 held-out frame
 
 ## Data
 
-The [GitHub release archive](https://github.com/mohamed7703/SpectrumSensing/releases/download/usrp-ambient-20261121/usrp-ambient-20261121-iq.zip) contains the complete original recording, losslessly compressed. Extract it into this directory for replay.
-
 The original `ampient_turned_off.iq` is **1,855,763,448 bytes**. Retrieve it from the [original Drive file](https://drive.google.com/file/d/1_pmfCVqJa41YR3L2EwPTCnhy2a_BL8Po/view) into this directory, or run `python fetch_capture.py` here to resume a range-based download. Verify its SHA-256 against `9f637ae161606ecd6f17284902597867ebef877f48fae5a8172e70449fc34be1` before replay. GNU Radio wrote little-endian float32 I and Q values. The archived [capture record](analysis/capture.json) includes the sample count and excerpt hash.
 
 The [diagnostic recordings](diagnostics/) include the original early receiver check, tone-dominated capture and independently supplied second at 60 s. The [prefix analysis](prefix_analysis/) records preliminary sampling during transfer. Use the [dense replay totals](analysis/all_test_summary.json) for the final test counts.
