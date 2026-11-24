@@ -1,0 +1,23 @@
+{
+  "bytes": 1855763448,
+  "samples": 231970431,
+  "sha256": "9f637ae161606ecd6f17284902597867ebef877f48fae5a8172e70449fc34be1",
+  "total_exact_zeros": 11251273,
+  "longest_zero_run_samples": 8,
+  "startup_above_001_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "startup_first_three_100us_db": [
+    -30.818704443507787,
+    -80.36993963177554,
+    -79.69041570824066
+  ],
+  "sample_at_60s_sha256": "87bd7eee2721b6f4ebe2299f4f6542f041644ad3832c2a79c023876b5244f106"
+}

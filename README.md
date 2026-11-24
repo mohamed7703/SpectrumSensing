@@ -2,7 +2,7 @@
 
 Research implementation and evidence for mathematical detection, physical/mock SDR processing, network simulation and neural spectrum sensing.
 
-**Current status, 8 November 2026:** the corrected local suite passes **325 software tests**. Three native CNN smoke runs execute real convolutional computation and restore full checkpoints. Nine generated TFLite artifacts load and execute. Full paper reproduction, RF protection and physical edge-device performance remain unverified.
+**Status on 24 November 2026.** The corrected suite has a recorded 331 passing tests. On one USRP-2920 ambient capture, 19,820 of 197,236 held-out frames landed exactly on the INT8 cutoff. Including that tied group increased the ambient trigger rate from 0.43% to 10.48%. Measuring detection and false alarms requires independent labeled captures. [Project history and future plan](docs/PROJECT_STATUS_AND_PLAN_2026-11-24.md) · [Hardware evidence and replay instructions](results/calibration/usrp-ambient-20261121/README.md)
 
 The work studies the methodology in [Deep Learning-Based Spectrum Sensing for Cognitive Radio Applications](https://doi.org/10.3390/s24247907), Sensors 2024, 24, 7907. This repository currently supports an audited implementation and limited local experiments. It does not claim an independently reproduced paper result.
 

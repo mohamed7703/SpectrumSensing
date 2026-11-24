@@ -65,7 +65,11 @@ The complete Bottom-to-Top execution pipeline for AI-driven Cognitive Radio Spec
 
 ---
 
-## Global Verification Summary
+## USRP ambient calibration milestone, 24 November 2026
+
+The corrected suite passed 331 tests. A full 231.970431 s generator-off USRP-2920 recording produced 197,236 held-out frames after setup and threshold calibration. INT8 triggered on 855 frames with 19,820 additional frames tied exactly at the cutoff. Twenty disjoint alternative calibration selections reproduced the INT8 cutoff. Independent labeled receiver sessions remain the next validation step. [Status and plan](../../docs/PROJECT_STATUS_AND_PLAN_2026-11-24.md)
+
+## Historical verification summary
 - **Total Test Suite**: **205 out of 205 unit tests passing** ($100\%$ green)
 - **Experiment Logs**: 19 markdown logs (`results/logs/EXP-001` through `EXP-019`)
 - **Verification Plots**: 19 publication-grade figures (`results/plots/`)

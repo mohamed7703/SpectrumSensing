@@ -1,0 +1,49 @@
+{
+  "frames": 197236,
+  "unused_tail_samples": 767,
+  "clipped_input_values": 2344,
+  "input_values": 403939328,
+  "both_trigger": 855,
+  "models": {
+    "fp32": {
+      "triggers": 3854,
+      "distinct": 88805,
+      "modal_score": 0.522357702255249,
+      "modal_count": 14,
+      "equal_cutoff": 0,
+      "energy_quartile_counts": [
+        49337,
+        49310,
+        49308,
+        49281
+      ],
+      "energy_quartile_triggers": [
+        1,
+        20,
+        371,
+        3462
+      ],
+      "triggered_seconds": 202
+    },
+    "int8": {
+      "triggers": 855,
+      "distinct": 7,
+      "modal_score": 0.5234375,
+      "modal_count": 131796,
+      "equal_cutoff": 19820,
+      "energy_quartile_counts": [
+        49337,
+        49310,
+        49308,
+        49281
+      ],
+      "energy_quartile_triggers": [
+        0,
+        0,
+        5,
+        850
+      ],
+      "triggered_seconds": 193
+    }
+  }
+}
